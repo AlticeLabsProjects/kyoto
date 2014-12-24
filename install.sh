@@ -55,10 +55,8 @@ if ! echo "$KYOTO_ROOT" | egrep -q "/usr(/local)?"; then
 	else
 		echo "ERROR: Must be done manually. Please run these two commands as \"root\":"
 		echo
-		echo "+-----------------------------------------------------------+"
-		echo "|  echo \"$KYOTO_ROOT/lib\" > /etc/ld.so.conf.d/kyoto.conf  |"
-		echo "|  /sbin/ldconfig                                           |"
-		echo "+-----------------------------------------------------------+"
+		echo "  echo \"$KYOTO_ROOT/lib\" > /etc/ld.so.conf.d/kyoto.conf"
+		echo "  /sbin/ldconfig"
 	fi
 fi
 
