@@ -472,7 +472,7 @@ class UpdateLogger {
           if (psiz >= (int64_t)sizeof(hbuf) && file.read(0, hbuf, sizeof(hbuf))) {
             const char* rp = hbuf;
             if (*(uint8_t*)(rp++) == METAMAGIC) {
-              int64_t fsiz = kc::readfixnum(rp, sizeof(uint64_t));
+              uint64_t fsiz = kc::readfixnum(rp, sizeof(uint64_t));
               rp += sizeof(uint64_t);
               uint64_t fts = kc::readfixnum(rp, sizeof(uint64_t));
               FileStatus fs = { path, fsiz, fts };
