@@ -13,7 +13,7 @@ What's this fork?
 
 The development of Kyoto Tycoon and Kyoto Cabinet by the original authors seem to have halted around 2012. Both are very reliable and this may explain the lack of activity, but the software ecosystem has evolved and there are some issues preventing compilation with recent compilers and operating system releases.
 
-This repository isn't mean as a divergent fork for any of these packages, but as a place to keep readily usable versions for modern machines.
+This repository isn't meant as a divergent fork for any of these packages, but as a place to keep readily usable versions for modern machines.
 
 What's included?
 ================
