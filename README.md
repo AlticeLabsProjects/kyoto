@@ -1,7 +1,7 @@
 Kyoto Tycoon
 ============
 
-Kyoto Tycoon is lightweight network server on top of the Kyoto Cabinet key-value database, built for high-performance and concurrency.
+Kyoto Tycoon is a lightweight network server on top of the Kyoto Cabinet key-value database, built for high-performance and concurrency.
 
 It has its own fully-featured protocol based on HTTP and a simpler binary protocol for increased performance. It also supports the [memcached](http://www.memcached.org/) procotol and can be easily configured as a drop-in replacement for _memcached_ in larger-than-RAM scenarios.
 
