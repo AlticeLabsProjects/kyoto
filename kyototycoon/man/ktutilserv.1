@@ -1,0 +1,59 @@
+.TH "KTUTILSERV" 1 "2012-05-25" "Man Page" "Kyoto Tycoon"
+
+.SH NAME
+ktutilserv \- server implementations to test miscellaneous utilities
+
+.SH DESCRIPTION
+.PP
+The command `\fBktutilserv\fR' is a utility for facility test and performance test of the server tool kit.  This command is used in the following format.  `\fIbasedir\fR' specifies the document root directory.
+.PP
+.RS
+.br
+\fBktutilserv echo \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB\fR
+.RS
+Runs the single\-threaded echo server.
+.RE
+.br
+\fBktutilserv mtecho \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-li\fR|\fB\-ls\fR|\fB\-le\fR|\fB\-lz\fR]\fB\fR
+.RS
+Runs the multi\-threaded echo server.
+.RE
+.br
+\fBktutilserv http \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-li\fR|\fB\-ls\fR|\fB\-le\fR|\fB\-lz\fR]\fB \fR[\fB\fIbasedir\fB\fR]\fB\fR
+.RS
+Runs the HTTP server.
+.RE
+.br
+\fBktutilserv rpc \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-li\fR|\fB\-ls\fR|\fB\-le\fR|\fB\-lz\fR]\fB\fR
+.RS
+Runs the RPC server.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-host \fIstr\fR\fR : specifies the host name of the server.
+.br
+\fB\-port \fInum\fR\fR : specifies the port number of the server.
+.br
+\fB\-tout \fInum\fR\fR : specifies the timeout in seconds.
+.br
+\fB\-th \fInum\fR\fR : specifies the number of worker threads.  By default, it is 8.
+.br
+\fB\-li\fR : sets the logging level "INFO".
+.br
+\fB\-ls\fR : sets the logging level "SYSTEM".
+.br
+\fB\-le\fR : sets the logging level "ERROR".
+.br
+\fB\-lz\fR : sets the logging level "NONE".
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR ktutiltest (1),
+.BR ktutilmgr (1)

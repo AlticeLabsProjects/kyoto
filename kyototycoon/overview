@@ -1,0 +1,164 @@
+/**
+
+@mainpage Kyoto Tycoon: a handy cache/storage server
+
+@section Introduction
+
+Kyoto Tycoon is a lightweight database server with auto expiration mechanism, which is useful to handle cache data and persistent data of various applications.  Kyoto Tycoon is also a package of network interface to the DBM called Kyoto Cabinet.  Though the DBM has high performance and high concurrency, you might bother in case that multiple processes share the same database, or remote processes access the database.  Thus, Kyoto Tycoon is provided for concurrent and remote connections to Kyoto Cabinet.  Kyoto Tycoon is composed of the server process managing multiple databases and its access library for client applications.
+
+The network protocol between the server and clients is HTTP so that you can write client applications and client libraries in almost all popular languages.  Both of RESTful-style interface by the GET, HEAD, PUT, DELETE methods and RPC-style inteface by the POST method are supported.  The server can handle more than 10 thousand connections at the same time because it uses modern I/O event notification facilities such as "epoll" and "kqueue" of underlying systems.  The server can embed Lua, a lightweight script language so that you can define arbitrary operations of the database.
+
+The following classes are the most important.  If you are interested in writing applications of Kyoto Tycoon, all you have to learn is how to use the remote database interface.
+
+@li kyototycoon::RemoteDB -- remote database interface
+
+@li kyototycoon::TimedDB -- database implementation with record expiration mechanism
+@li kyototycoon::RPCClient -- utilities to implement your own RPC client
+@li kyototycoon::RPCServer -- utilities to implement your own RPC server
+@li kyototycoon::HTTPClient -- utilities to implement your own HTTP client
+@li kyototycoon::HTTPServer -- utilities to implement your own HTTP server
+@li kyototycoon::ThreadedServer -- utilities to implement your own TCP server
+@li kyototycoon::Poller -- abstraction of system-independent event notification mechanism
+@li kyototycoon::Socket -- abstraction of system-independent client socket mechanism
+@li kyototycoon::ServerSocket -- abstraction of system-independent server socket mechanism
+@li kyototycoon::PluggableServer -- pluggable server interface
+@li kyototycoon::PluggableDB -- pluggable database interface
+
+@section Example
+
+The following code is an example to use a remote database.
+
+@code
+#include <ktremotedb.h>
+
+using namespace std;
+using namespace kyototycoon;
+
+// main routine
+int main(int argc, char** argv) {
+
+  // create the database object
+  RemoteDB db;
+
+  // open the database
+  if (!db.open()) {
+    cerr << "open error: " << db.error().name() << endl;
+  }
+
+  // store records
+  if (!db.set("foo", "hop") ||
+      !db.set("bar", "step") ||
+      !db.set("baz", "jump")) {
+    cerr << "set error: " << db.error().name() << endl;
+  }
+
+  // retrieve a record
+  string value;
+  if (db.get("foo", &value)) {
+    cout << value << endl;
+  } else {
+    cerr << "get error: " << db.error().name() << endl;
+  }
+
+  // traverse records
+  RemoteDB::Cursor* cur = db.cursor();
+  cur->jump();
+  string ckey, cvalue;
+  while (cur->get(&ckey, &cvalue, NULL, true)) {
+    cout << ckey << ":" << cvalue << endl;
+  }
+  delete cur;
+
+  // close the database
+  if (!db.close()) {
+    cerr << "close error: " << db.error().name() << endl;
+  }
+
+  return 0;
+}
+@endcode
+
+The following code is an example to use the TCP server framework.
+
+@code
+#include <ktthserv.h>
+
+using namespace std;
+using namespace kyototycoon;
+
+// the flag whether the server is alive
+ThreadedServer* g_serv = NULL;
+
+// stop the running server
+static void stopserver(int signum) {
+  if (g_serv) g_serv->stop();
+  g_serv = NULL;
+}
+
+// main routine
+int main(int argc, char** argv) {
+
+  // set the signal handler to stop the server
+  setkillsignalhandler(stopserver);
+
+  // prepare the worker
+  class Worker : public ThreadedServer::Worker {
+    bool process(ThreadedServer* serv, ThreadedServer::Session* sess) {
+      bool keep = false;
+      // read a line from the client socket
+      char line[1024];
+      if (sess->receive_line(line, sizeof(line))) {
+        if (!kc::stricmp(line, "/quit")) {
+          // process the quit command
+          sess->printf("> Bye!\n");
+        } else {
+          // echo back the message
+          sess->printf("> %s\n", line);
+          keep = true;
+        }
+      }
+      return keep;
+    }
+  };
+  Worker worker;
+
+  // prepare the server
+  ThreadedServer serv;
+  serv.set_network("127.0.0.1:1978", 1.0);
+  serv.set_worker(&worker, 4);
+  g_serv = &serv;
+
+  // start the server and block until its stop
+  serv.start();
+
+  // clean up connections and other resources
+  serv.finish();
+
+  return 0;
+}
+@endcode
+
+*/
+
+
+/**
+ * Common namespace of Kyoto Tycoon.
+ */
+namespace kyototycoon {}
+
+
+/**
+ * @file ktcommon.h     common symbols for the library
+ * @file ktutil.h       utility functions
+ * @file ktsocket.h     network functions
+ * @file ktthserv.h     threaded server
+ * @file kthttp.h       HTTP utilities
+ * @file ktrpc.h        RPC utilities
+ * @file ktulog.h       update logger
+ * @file ktshlib.h      shared library
+ * @file kttimeddb.h    timed database
+ * @file ktdbext.h      database extension
+ * @file ktremotedb.h   remote database
+ * @file ktplugserv.h   pluggable server interface
+ * @file ktplugdb.h     pluggable database interface
+ */

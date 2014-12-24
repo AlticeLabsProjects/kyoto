@@ -1,0 +1,101 @@
+.TH "KTSERVER" 1 "2012-05-25" "Man Page" "Kyoto Tycoon"
+
+.SH NAME
+ktserver \- a lightweight database server
+
+.SH DESCRIPTION
+.PP
+The command `\fBktserver\fR' runs the server managing database instances.  This command is used in the following format.  `\fIdb\fR' specifies a database name.  If no database is specified, an unnamed on\-memory database is opened.
+.PP
+.RS
+.br
+\fBktserver \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-log \fIfile\fB\fR]\fB \fR[\fB\-li\fR|\fB\-ls\fR|\fB\-le\fR|\fB\-lz\fR]\fB \fR[\fB\-ulog \fIdir\fB\fR]\fB \fR[\fB\-ulim \fInum\fB\fR]\fB \fR[\fB\-uasi \fInum\fB\fR]\fB \fR[\fB\-sid \fInum\fB\fR]\fB \fR[\fB\-ord\fR]\fB \fR[\fB\-oat\fR|\fB\-oas\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-asi \fInum\fB\fR]\fB \fR[\fB\-ash\fR]\fB \fR[\fB\-bgs \fIdir\fB\fR]\fB \fR[\fB\-bgsi \fInum\fB\fR]\fB \fR[\fB\-bgc \fIstr\fB\fR]\fB \fR[\fB\-dmn\fR]\fB \fR[\fB\-pid \fIfile\fB\fR]\fB \fR[\fB\-scr \fIfile\fB\fR]\fB \fR[\fB\-mhost \fIstr\fB\fR]\fB \fR[\fB\-mport \fInum\fB\fR]\fB \fR[\fB\-rts \fIfile\fB\fR]\fB \fR[\fB\-riv \fInum\fB\fR]\fB \fR[\fB\-plsv \fIfile\fB\fR]\fB \fR[\fB\-plex \fIstr\fB\fR]\fB \fR[\fB\-pldb \fIfile\fB\fR]\fB \fR[\fB\fIdb\fB...\fR]\fB\fR
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-host \fIstr\fR\fR : specifies the host name of the server.
+.br
+\fB\-port \fInum\fR\fR : specifies the port number of the server.
+.br
+\fB\-tout \fInum\fR\fR : specifies the timeout in seconds.
+.br
+\fB\-th \fInum\fR\fR : specifies the number of worker threads.  By default, it is 8.
+.br
+\fB\-log \fIfile\fR\fR : specifies the path of the log file.  By default, logs are written into the standard output.
+.br
+\fB\-li\fR : sets the logging level "INFO".
+.br
+\fB\-ls\fR : sets the logging level "SYSTEM".
+.br
+\fB\-le\fR : sets the logging level "ERROR".
+.br
+\fB\-lz\fR : sets the logging level "NONE".
+.br
+\fB\-ulog \fIdir\fR\fR : specifies the path of the update log directory.  By default, it is disabled.
+.br
+\fB\-ulim \fInum\fR\fR : specifies the limit size of each update log file.
+.br
+\fB\-uasi \fInum\fR\fR : specifies the interval of synchronization of update log files.  By default, it is disabled.
+.br
+\fB\-sid \fInum\fR\fR : specifies the server ID number.
+.br
+\fB\-ord\fR : opens the database as a reader.
+.br
+\fB\-oat\fR : opens the database with the auto transaction option.
+.br
+\fB\-oas\fR : opens the database with the auto synchronization option.
+.br
+\fB\-onl\fR : opens the database with the no locking option.
+.br
+\fB\-otl\fR : opens the database with the try locking option.
+.br
+\fB\-onr\fR : opens the database with the no auto repair option.
+.br
+\fB\-asi \fInum\fR\fR : specifies the interval of auto synchronization.  By default, it is disabled.
+.br
+\fB\-ash\fR : does physical synchronization while auto synchronization.
+.br
+\fB\-bgs \fIdir\fR\fR : specifies the path of the background snapshot directory.  By default, it is disabled.
+.br
+\fB\-bgsi \fInum\fR\fR : specifies the interval of background snapshotting.  By default, it is 180.
+.br
+\fB\-bgsc \fIstr\fR\fR : specifies the compression algorithm of the snapshot.  "zlib", "lzo", are "lzma" are supported.
+.br
+\fB\-dmn\fR : switches to a daemon process.
+.br
+\fB\-pid \fIfile\fR\fR : specifies the file to contain the process ID to send signals by.
+.br
+\fB\-cmd \fIdir\fR\fR : specifies the command search path for outer commands.  By default, it is the current directroy.
+.br
+\fB\-scr \fIfile\fR\fR : specifies the script file for the scripting extention.
+.br
+\fB\-mhost \fIstr\fR\fR : specifies the host name of the master server of replication.
+.br
+\fB\-mport \fInum\fR\fR : specifies the port number of the master server of replication.
+.br
+\fB\-rts \fIfile\fR\fR : specifies the file to contain the replication time stamp.
+.br
+\fB\-riv \fInum\fR\fR : specifies the interval of each replication operation in milliseconds.  By default, it is 0.04.
+.br
+\fB\-plsv \fIfile\fR\fR : specifies the shared library file of a pluggable server.
+.br
+\fB\-plex \fIstr\fR\fR : specifies the configuration expression of a pluggable server.
+.br
+\fB\-pldb \fIfile\fR\fR : specifies the shared library file of a pluggable database.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+.PP
+To finish the server process running on foreground, input `\fBCtrl\-C\fR' on the terminal.  To finish the server process running as a daemon, send a termination signal such as SIGTERM by the `\fBkill\fR' command.  If a daemon process catches SIGHUP, the server restarts and the log file is re\-opened.  Because thr current directory of a daemon process is changed to the root directory, paths of related files should be described as their absolute paths.
+.PP
+The naming convention of database name is the same as polymorphic database of Kyoto Cabinet.  If it is "\-", the database will be a prototype hash database.  If it is "+", the database will be a prototype tree database.  If it is ":", the database will be a stash database.  If it is "*", the database will be a cache hash database.  If it is "%", the database will be a cache tree database.  If its suffix is ".kch", the database will be a file hash database.  If its suffix is ".kct", the database will be a file tree database.  If its suffix is ".kcd", the database will be a directory hash database.  If its suffix is ".kcf", the database will be a directory tree database.  Tuning parameters can trail the name, separated by "#".  Each parameter is composed of the name and the value, separated by "=".  If the "type" parameter is specified, the database type is determined by the value in "\-", "+", ":", "*", "%", "kch", "kct", "kcd", and "kcf".  All database types support the logging parameters of "log", "logkinds", and "logpx".  The prototype hash database and the prototype tree database do not support any other tuning parameter.  The stash database supports "bnum".  The cache hash database supports "opts", "bnum", "zcomp", "capcnt", "capsiz", and "zkey".  The cache tree database supports all parameters of the cache hash database except for capacity limitation, and supports "psiz", "rcomp", "pccap" in addition.  The file hash database supports "apow", "fpow", "opts", "bnum", "msiz", "dfunit", "zcomp", and "zkey".  The file tree database supports all parameters of the file hash database and "psiz", "rcomp", "pccap" in addition.  The directory hash database supports "opts", "zcomp", and "zkey".  The directory tree database supports all parameters of the directory hash database and "psiz", "rcomp", "pccap" in addition.
+.PP
+Furthermore, several parameters are added by Kyoto Tycoon.  "ktopts" sets options and the value can contain "p" for the persistent option.  "ktcapcnt" sets the capacity by record number.  "ktcapsiz" sets the capacity by database size.
+
+.SH SEE ALSO
+.PP
+.BR ktremotetest (1),
+.BR ktremotemgr (1)

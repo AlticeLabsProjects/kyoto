@@ -1,0 +1,3801 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>Kyoto Tycoon</title>
+    <link rel="stylesheet" href="../luadoc.css" type="text/css" />
+	<!--meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/-->
+</head>
+
+<body>
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+<div id="main">
+
+<div id="navigation">
+
+
+<h1>LuaDoc</h1>
+<ul>
+	
+	<li><a href="../index.html">Index</a></li>
+	
+</ul>
+
+
+<!-- Module list -->
+
+<h1>Modules</h1>
+<ul>
+
+	<li><strong>kyototycoon</strong></li>
+	
+</ul>
+
+
+
+<!-- File list -->
+
+
+
+
+
+
+</div><!-- id="navigation" -->
+
+<div id="content">
+
+<h1>Module <code>kyototycoon</code></h1>
+
+<p>The scripting extension of Kyoto Tycoon. </p>
+
+
+
+
+
+<h2>Functions</h2>
+<table class="function_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#DB:delete_ptr">DB:delete_ptr</a>&nbsp;(ptr)</td>
+	<td class="summary">Delete a database object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#DB:new">DB:new</a>&nbsp;(ptr)</td>
+	<td class="summary">Create a database object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#DB:new_ptr">DB:new_ptr</a>&nbsp;()</td>
+	<td class="summary">Create a database object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#DB:process">DB:process</a>&nbsp;(proc, path, mode)</td>
+	<td class="summary">Process a database by a functor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#Error:new">Error:new</a>&nbsp;(code, message)</td>
+	<td class="summary">Create an error object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#FileProcessor:new">FileProcessor:new</a>&nbsp;()</td>
+	<td class="summary">Create a file processor object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#Visitor:new">Visitor:new</a>&nbsp;()</td>
+	<td class="summary">Create a visitor object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#arraydump">arraydump</a>&nbsp;(src)</td>
+	<td class="summary">Serialize an array into a string.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#arrayload">arrayload</a>&nbsp;(src)</td>
+	<td class="summary">Deserialize a string into an array.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#atof">atof</a>&nbsp;(str)</td>
+	<td class="summary">Convert a string to a real number.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#atoi">atoi</a>&nbsp;(str)</td>
+	<td class="summary">Convert a string to an integer.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#atoix">atoix</a>&nbsp;(str)</td>
+	<td class="summary">Convert a string with a metric prefix to an integer.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#bit">bit</a>&nbsp;(mode, num, aux)</td>
+	<td class="summary">Perform bit operation of an integer.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#codec">codec</a>&nbsp;(mode, str)</td>
+	<td class="summary">Encode or decode a string.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:__call">cursor:__call</a>&nbsp;(db)</td>
+	<td class="summary">Get a pair of the key and the value of the current record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:__tostring">cursor:__tostring</a>&nbsp;()</td>
+	<td class="summary">Get the string expression.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:accept">cursor:accept</a>&nbsp;(visitor, writable, step)</td>
+	<td class="summary">Accept a visitor to the current record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:db">cursor:db</a>&nbsp;()</td>
+	<td class="summary">Get the database object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:disable">cursor:disable</a>&nbsp;()</td>
+	<td class="summary">Disable the cursor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:error">cursor:error</a>&nbsp;()</td>
+	<td class="summary">Get the last happened error.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:get">cursor:get</a>&nbsp;(step)</td>
+	<td class="summary">Get a pair of the key and the value of the current record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:get_key">cursor:get_key</a>&nbsp;(step)</td>
+	<td class="summary">Get the key of the current record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:get_value">cursor:get_value</a>&nbsp;(step)</td>
+	<td class="summary">Get the value of the current record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:jump">cursor:jump</a>&nbsp;(key)</td>
+	<td class="summary">Jump the cursor to a record for forward scan.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:jump_back">cursor:jump_back</a>&nbsp;(key)</td>
+	<td class="summary">Jump the cursor to a record for backward scan.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:remove">cursor:remove</a>&nbsp;()</td>
+	<td class="summary">Remove the current record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:seize">cursor:seize</a>&nbsp;()</td>
+	<td class="summary">Get a pair of the key and the value of the current record and remove it atomically.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:set_value">cursor:set_value</a>&nbsp;(value, xt, step)</td>
+	<td class="summary">Set the value of the current record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:step">cursor:step</a>&nbsp;()</td>
+	<td class="summary">Step the cursor to the next record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#cursor:step_back">cursor:step_back</a>&nbsp;()</td>
+	<td class="summary">Step the cursor to the previous record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:__index">db:__index</a>&nbsp;(key)</td>
+	<td class="summary">Retrieve the value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:__newindex">db:__newindex</a>&nbsp;(key, value)</td>
+	<td class="summary">Set the value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:__tostring">db:__tostring</a>&nbsp;()</td>
+	<td class="summary">Get the string expression.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:accept">db:accept</a>&nbsp;(key, visitor, writable)</td>
+	<td class="summary">Accept a visitor to a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:accept_bulk">db:accept_bulk</a>&nbsp;(keys, visitor, writable)</td>
+	<td class="summary">Accept a visitor to multiple records at once.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:add">db:add</a>&nbsp;(key, value, xt)</td>
+	<td class="summary">Add a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:append">db:append</a>&nbsp;(key, value, xt)</td>
+	<td class="summary">Append the value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:begin_transaction">db:begin_transaction</a>&nbsp;(hard)</td>
+	<td class="summary">Begin transaction.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:cas">db:cas</a>&nbsp;(key, oval, nval, xt)</td>
+	<td class="summary">Perform compare-and-swap.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:check">db:check</a>&nbsp;(key)</td>
+	<td class="summary">Check the existence of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:clear">db:clear</a>&nbsp;()</td>
+	<td class="summary">Remove all records.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:close">db:close</a>&nbsp;()</td>
+	<td class="summary">Close the database file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:copy">db:copy</a>&nbsp;(dest)</td>
+	<td class="summary">Create a copy of the database file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:count">db:count</a>&nbsp;()</td>
+	<td class="summary">Get the number of records.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:cursor">db:cursor</a>&nbsp;()</td>
+	<td class="summary">Create a cursor object.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:cursor_process">db:cursor_process</a>&nbsp;(proc)</td>
+	<td class="summary">Process a cursor by a functor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:dump_snapshot">db:dump_snapshot</a>&nbsp;(dest)</td>
+	<td class="summary">Dump records into a snapshot file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:end_transaction">db:end_transaction</a>&nbsp;(commit)</td>
+	<td class="summary">End transaction.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:get">db:get</a>&nbsp;(key)</td>
+	<td class="summary">Retrieve the value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:get_bulk">db:get_bulk</a>&nbsp;(keys, atomic)</td>
+	<td class="summary">Retrieve records at once.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:increment">db:increment</a>&nbsp;(key, num, orig, xt)</td>
+	<td class="summary">Add a number to the numeric integer value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:increment_double">db:increment_double</a>&nbsp;(key, num, orig, xt)</td>
+	<td class="summary">Add a number to the numeric double value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:iterate">db:iterate</a>&nbsp;(visitor, writable)</td>
+	<td class="summary">Iterate to accept a visitor for each record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:load_snapshot">db:load_snapshot</a>&nbsp;(src)</td>
+	<td class="summary">Load records from a snapshot file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:mapreduce">db:mapreduce</a>&nbsp;(map, reduce, tmppath, opts, dbnum, clim, cbnum, log, proc)</td>
+	<td class="summary">Execute a MapReduce process.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:match_prefix">db:match_prefix</a>&nbsp;(prefix, max)</td>
+	<td class="summary">Get keys matching a prefix string.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:match_regex">db:match_regex</a>&nbsp;(regex, max)</td>
+	<td class="summary">Get keys matching a regular expression string.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:match_similar">db:match_similar</a>&nbsp;(origin, range, utf, max)</td>
+	<td class="summary">Get keys similar to a string in terms of the levenshtein distance.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:merge">db:merge</a>&nbsp;(srcary, mode)</td>
+	<td class="summary">Merge records from other databases.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:occupy">db:occupy</a>&nbsp;(writable, proc)</td>
+	<td class="summary">Occupy database by locking and do something meanwhile.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:open">db:open</a>&nbsp;(path, mode)</td>
+	<td class="summary">Open a database file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:pairs">db:pairs</a>&nbsp;()</td>
+	<td class="summary">Create three objects for the generic "for" loop.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:path">db:path</a>&nbsp;()</td>
+	<td class="summary">Get the path of the database file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:remove">db:remove</a>&nbsp;(key)</td>
+	<td class="summary">Remove a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:remove_bulk">db:remove_bulk</a>&nbsp;(keys, atomic)</td>
+	<td class="summary">Remove records at once.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:replace">db:replace</a>&nbsp;(key, value, xt)</td>
+	<td class="summary">Replace the value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:seize">db:seize</a>&nbsp;(key)</td>
+	<td class="summary">Retrieve the value of a record and remove it atomically.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:set">db:set</a>&nbsp;(key, value, xt)</td>
+	<td class="summary">Set the value of a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:set_bulk">db:set_bulk</a>&nbsp;(recs, atomic, xt)</td>
+	<td class="summary">Store records at once.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:size">db:size</a>&nbsp;()</td>
+	<td class="summary">Get the size of the database file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:status">db:status</a>&nbsp;()</td>
+	<td class="summary">Get the miscellaneous status information.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:synchronize">db:synchronize</a>&nbsp;(hard, proc)</td>
+	<td class="summary">Synchronize updated contents with the file and the device.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#db:transaction">db:transaction</a>&nbsp;(proc, hard)</td>
+	<td class="summary">Perform entire transaction by a functor.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#error:__tostring">error:__tostring</a>&nbsp;()</td>
+	<td class="summary">Get the string expression.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#error:code">error:code</a>&nbsp;()</td>
+	<td class="summary">Get the error code.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#error:message">error:message</a>&nbsp;()</td>
+	<td class="summary">Get the supplement message.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#error:name">error:name</a>&nbsp;()</td>
+	<td class="summary">Get the readable string of the code.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#error:set">error:set</a>&nbsp;(code, message)</td>
+	<td class="summary">Set the error information.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#fileprocessor:process">fileprocessor:process</a>&nbsp;(path, count, size)</td>
+	<td class="summary">Process the database file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#hash_fnv">hash_fnv</a>&nbsp;(str)</td>
+	<td class="summary">Get the hash value of a string by FNV hashing.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#hash_murmur">hash_murmur</a>&nbsp;(str)</td>
+	<td class="summary">Get the hash value of a string by MurMur hashing.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#levdist">levdist</a>&nbsp;(a, b, utf)</td>
+	<td class="summary">Calculate the levenshtein distance of two strings.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#log">log</a>&nbsp;(kind, message)</td>
+	<td class="summary">Log a message </td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#mapdump">mapdump</a>&nbsp;(src)</td>
+	<td class="summary">Serialize a map into a string.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#mapload">mapload</a>&nbsp;(src)</td>
+	<td class="summary">Deserialize a string into a map.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#pack">pack</a>&nbsp;(format, ary, ...)</td>
+	<td class="summary">Serialize an array of numbers into a string.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#regex">regex</a>&nbsp;(str, pattern, alt)</td>
+	<td class="summary">Perform pattern matching or replacement with regular expressions.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#sleep">sleep</a>&nbsp;(sec)</td>
+	<td class="summary">Suspend execution of the current thread.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#split">split</a>&nbsp;(str, delims)</td>
+	<td class="summary">Split a string into substrings.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#strbwm">strbwm</a>&nbsp;(str, pattern)</td>
+	<td class="summary">Perform backward matching without evaluating any meta character.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#strfwm">strfwm</a>&nbsp;(str, pattern)</td>
+	<td class="summary">Perform forward matching without evaluating any meta character.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#strstr">strstr</a>&nbsp;(str, pattern, alt)</td>
+	<td class="summary">Perform substring matching or replacement without evaluating any meta character.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#time">time</a>&nbsp;()</td>
+	<td class="summary">Get the time of day in seconds.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#unpack">unpack</a>&nbsp;(format, str)</td>
+	<td class="summary">Deserialize a binary string into an array of numbers.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#visitor:visit_after">visitor:visit_after</a>&nbsp;()</td>
+	<td class="summary">Postprocess the main operations.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#visitor:visit_before">visitor:visit_before</a>&nbsp;()</td>
+	<td class="summary">Preprocess the main operations.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#visitor:visit_empty">visitor:visit_empty</a>&nbsp;(key)</td>
+	<td class="summary">Visit a empty record space.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#visitor:visit_full">visitor:visit_full</a>&nbsp;(key, value, xt)</td>
+	<td class="summary">Visit a record.</td>
+	</tr>
+
+</table>
+
+
+
+
+<h2>Tables</h2>
+<table class="table_list">
+
+	<tr>
+	<td class="name" nowrap><a href="#Cursor">Cursor</a></td>
+	<td class="summary">Interface of cursor to indicate a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#DB">DB</a></td>
+	<td class="summary">Interface of database abstraction.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#Error">Error</a></td>
+	<td class="summary">Error data.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#FileProcessor ">FileProcessor </a></td>
+	<td class="summary">Interface to process the database file.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#Visitor">Visitor</a></td>
+	<td class="summary">Interface to access a record.</td>
+	</tr>
+
+	<tr>
+	<td class="name" nowrap><a href="#__kyototycoon__">__kyototycoon__</a></td>
+	<td class="summary">Running environment.</td>
+	</tr>
+
+</table>
+
+
+
+<br/>
+<br/>
+
+
+
+<h2><a name="functions"></a>Functions</h2>
+<dl class="function">
+
+
+
+<dt><a name="DB:delete_ptr"></a><strong>DB:delete_ptr</strong>&nbsp;(ptr)</dt>
+<dd>
+Delete a database object.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ptr: a light user data of the pointer to the database object.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+always nil.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="DB:new"></a><strong>DB:new</strong>&nbsp;(ptr)</dt>
+<dd>
+Create a database object.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  ptr: a light user data of the pointer to a database object to use internally.  If it is omitted, the internal database object is created and destroyed implicitly.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the database object.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="DB:new_ptr"></a><strong>DB:new_ptr</strong>&nbsp;()</dt>
+<dd>
+Create a database object.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+a light user data of the pointer to the created database object.  It should be released with the delete_ptr method when it is no longer in use.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="DB:process"></a><strong>DB:process</strong>&nbsp;(proc, path, mode)</dt>
+<dd>
+Process a database by a functor.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  proc: the functor to process the database, whose object is passd as the parameter.
+	</li>
+	
+	<li>
+	  path: the same to the one of the open method.
+	</li>
+	
+	<li>
+	  mode: the same to the one of the open method.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+nil on success, or an error object on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="Error:new"></a><strong>Error:new</strong>&nbsp;(code, message)</dt>
+<dd>
+Create an error object.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  code: the error code.
+	</li>
+	
+	<li>
+	  message: the supplement message.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the error object.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="FileProcessor:new"></a><strong>FileProcessor:new</strong>&nbsp;()</dt>
+<dd>
+Create a file processor object.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the file processor object.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="Visitor:new"></a><strong>Visitor:new</strong>&nbsp;()</dt>
+<dd>
+Create a visitor object.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the visitor object.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="arraydump"></a><strong>arraydump</strong>&nbsp;(src)</dt>
+<dd>
+Serialize an array into a string.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  src: the source table.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the result string.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="arrayload"></a><strong>arrayload</strong>&nbsp;(src)</dt>
+<dd>
+Deserialize a string into an array.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  src: the source string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the result map.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="atof"></a><strong>atof</strong>&nbsp;(str)</dt>
+<dd>
+Convert a string to a real number.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the real number.  If the string does not contain numeric expression, 0.0 is returned.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="atoi"></a><strong>atoi</strong>&nbsp;(str)</dt>
+<dd>
+Convert a string to an integer.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the integer.  If the string does not contain numeric expression, 0 is returned.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="atoix"></a><strong>atoix</strong>&nbsp;(str)</dt>
+<dd>
+Convert a string with a metric prefix to an integer.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the string, which can be trailed by a binary metric prefix.  "K", "M", "G", "T", "P", and "E" are supported.  They are case-insensitive.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the integer.  If the string does not contain numeric expression, 0 is returned.  If the integer overflows the domain, INT64_MAX or INT64_MIN is returned according to the sign.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="bit"></a><strong>bit</strong>&nbsp;(mode, num, aux)</dt>
+<dd>
+Perform bit operation of an integer.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  mode: the operator; "and" for bitwise-and operation, "or" for bitwise-or operation, "xor" for bitwise-xor operation, "not" for bitwise-not operation, "left" for left shift operation, "right" for right shift operation.
+	</li>
+	
+	<li>
+	  num: the integer, which is treated as an unsigned 32-bit integer.
+	</li>
+	
+	<li>
+	  aux: the auxiliary operand for some operators.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the result value.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="codec"></a><strong>codec</strong>&nbsp;(mode, str)</dt>
+<dd>
+Encode or decode a string.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  mode: the encoding method; "url" for URL encoding, "~url" for URL decoding, "base" for Base64 encoding, "~base" for Base64 decoding, "hex" for hexadecimal encoding, "~hex" for hexadecimal decoding, "zlib" for ZLIB raw compressing, "~zlib" for ZLIB raw decompressing, "deflate" for ZLIB deflate compressing, "~deflate" for ZLIB deflate decompressing, "gzip" for ZLIB gzip compressing, "~gzip" for ZLIB gzip decompressing.
+	</li>
+	
+	<li>
+	  str: the string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the result string.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:__call"></a><strong>cursor:__call</strong>&nbsp;(db)</dt>
+<dd>
+Get a pair of the key and the value of the current record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  db: ignored.  This is just for compatibility with the "next" function for the generic "for" loop.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If the cursor is invalidated, nil is returned.
+
+
+
+<h3>Return value:</h3>
+a pair of the key and the value of the current record, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:__tostring"></a><strong>cursor:__tostring</strong>&nbsp;()</dt>
+<dd>
+Get the string expression.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the string expression.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:accept"></a><strong>cursor:accept</strong>&nbsp;(visitor, writable, step)</dt>
+<dd>
+Accept a visitor to the current record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  visitor: a visitor object which implements the Visitor interface, or a function object which receives the key and the value.
+	</li>
+	
+	<li>
+	  writable: true for writable operation, or false for read-only operation.  If it is omitted, true is specified.
+	</li>
+	
+	<li>
+	  step: true to move the cursor to the next record, or false for no move.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The operation for each record is performed atomically and other threads accessing the same record are blocked.  To avoid deadlock, any explicit database operation must not be performed in this method.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:db"></a><strong>cursor:db</strong>&nbsp;()</dt>
+<dd>
+Get the database object.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the database object.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:disable"></a><strong>cursor:disable</strong>&nbsp;()</dt>
+<dd>
+Disable the cursor.
+
+
+
+
+
+<h3>Usage:</h3>
+This method should be called explicitly when the cursor is no longer in use.
+
+
+
+<h3>Return value:</h3>
+always nil.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:error"></a><strong>cursor:error</strong>&nbsp;()</dt>
+<dd>
+Get the last happened error.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the last happened error.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:get"></a><strong>cursor:get</strong>&nbsp;(step)</dt>
+<dd>
+Get a pair of the key and the value of the current record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  step: true to move the cursor to the next record, or false for no move.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If the cursor is invalidated, nil is returned.
+
+
+
+<h3>Return value:</h3>
+a trio of the key and the value and the expiration time of the current record, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:get_key"></a><strong>cursor:get_key</strong>&nbsp;(step)</dt>
+<dd>
+Get the key of the current record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  step: true to move the cursor to the next record, or false for no move.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If the cursor is invalidated, nil is returned.
+
+
+
+<h3>Return value:</h3>
+the key of the current record, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:get_value"></a><strong>cursor:get_value</strong>&nbsp;(step)</dt>
+<dd>
+Get the value of the current record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  step: true to move the cursor to the next record, or false for no move.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If the cursor is invalidated, nil is returned.
+
+
+
+<h3>Return value:</h3>
+the value of the current record, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:jump"></a><strong>cursor:jump</strong>&nbsp;(key)</dt>
+<dd>
+Jump the cursor to a record for forward scan.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key of the destination record.  if it is omitted, the destination is the first record.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:jump_back"></a><strong>cursor:jump_back</strong>&nbsp;(key)</dt>
+<dd>
+Jump the cursor to a record for backward scan.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key of the destination record.  if it is omitted, the destination is the last record.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+This method is dedicated to tree databases.  Some database types, especially hash databases, will provide a dummy implementation.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:remove"></a><strong>cursor:remove</strong>&nbsp;()</dt>
+<dd>
+Remove the current record.
+
+
+
+
+
+<h3>Usage:</h3>
+If no record corresponds to the key, false is returned.  The cursor is moved to the next record implicitly.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:seize"></a><strong>cursor:seize</strong>&nbsp;()</dt>
+<dd>
+Get a pair of the key and the value of the current record and remove it atomically.
+
+
+
+
+
+<h3>Usage:</h3>
+If the cursor is invalidated, nil is returned.  The cursor is moved to the next record implicitly.
+
+
+
+<h3>Return value:</h3>
+a trio of the key and the value and the expiration time of the current record, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:set_value"></a><strong>cursor:set_value</strong>&nbsp;(value, xt, step)</dt>
+<dd>
+Set the value of the current record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  value: the value.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+	<li>
+	  step: true to move the cursor to the next record, or false for no move.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:step"></a><strong>cursor:step</strong>&nbsp;()</dt>
+<dd>
+Step the cursor to the next record.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="cursor:step_back"></a><strong>cursor:step_back</strong>&nbsp;()</dt>
+<dd>
+Step the cursor to the previous record.
+
+
+
+
+
+<h3>Usage:</h3>
+This method is dedicated to tree databases.  Some database types, especially hash databases, will provide a dummy implementation.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:__index"></a><strong>db:__index</strong>&nbsp;(key)</dt>
+<dd>
+Retrieve the value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the value of the corresponding record, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:__newindex"></a><strong>db:__newindex</strong>&nbsp;(key, value)</dt>
+<dd>
+Set the value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  value: the value.  If it is nil, the record is removed.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If no record corresponds to the key, a new record is created.  If the corresponding record exists, the value is overwritten.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:__tostring"></a><strong>db:__tostring</strong>&nbsp;()</dt>
+<dd>
+Get the string expression.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the string expression.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:accept"></a><strong>db:accept</strong>&nbsp;(key, visitor, writable)</dt>
+<dd>
+Accept a visitor to a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  visitor: a visitor object which implements the Visitor interface, or a function object which receives the key and the value.
+	</li>
+	
+	<li>
+	  writable: true for writable operation, or false for read-only operation.  If it is omitted, true is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The operation for each record is performed atomically and other threads accessing the same record are blocked.  To avoid deadlock, any explicit database operation must not be performed in this method.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:accept_bulk"></a><strong>db:accept_bulk</strong>&nbsp;(keys, visitor, writable)</dt>
+<dd>
+Accept a visitor to multiple records at once.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  keys: specifies an array of the keys.
+	</li>
+	
+	<li>
+	  visitor: a visitor object which implements the Visitor interface, or a function object which receives the key and the value.
+	</li>
+	
+	<li>
+	  writable: true for writable operation, or false for read-only operation.  If it is omitted, true is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The operations for specified records are performed atomically and other threads accessing the same records are blocked.  To avoid deadlock, any explicit database operation must not be performed in this method.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:add"></a><strong>db:add</strong>&nbsp;(key, value, xt)</dt>
+<dd>
+Add a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  value: the value.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If no record corresponds to the key, a new record is created.  If the corresponding record exists, the record is not modified and false is returned.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:append"></a><strong>db:append</strong>&nbsp;(key, value, xt)</dt>
+<dd>
+Append the value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  value: the value.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If no record corresponds to the key, a new record is created.  If the corresponding record exists, the given value is appended at the end of the existing value.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:begin_transaction"></a><strong>db:begin_transaction</strong>&nbsp;(hard)</dt>
+<dd>
+Begin transaction.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  hard: true for physical synchronization with the device, or false for logical synchronization with the file system.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:cas"></a><strong>db:cas</strong>&nbsp;(key, oval, nval, xt)</dt>
+<dd>
+Perform compare-and-swap.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  oval: the old value.  nil means that no record corresponds.
+	</li>
+	
+	<li>
+	  nval: the new value.  nil means that the record is removed.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:check"></a><strong>db:check</strong>&nbsp;(key)</dt>
+<dd>
+Check the existence of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the size of the value, or -1 on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:clear"></a><strong>db:clear</strong>&nbsp;()</dt>
+<dd>
+Remove all records.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:close"></a><strong>db:close</strong>&nbsp;()</dt>
+<dd>
+Close the database file.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:copy"></a><strong>db:copy</strong>&nbsp;(dest)</dt>
+<dd>
+Create a copy of the database file.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  dest: the path of the destination file.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:count"></a><strong>db:count</strong>&nbsp;()</dt>
+<dd>
+Get the number of records.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the number of records, or -1 on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:cursor"></a><strong>db:cursor</strong>&nbsp;()</dt>
+<dd>
+Create a cursor object.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the return value is the created cursor object.  Each cursor should be disabled with the Cursor#disable method when it is no longer in use.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:cursor_process"></a><strong>db:cursor_process</strong>&nbsp;(proc)</dt>
+<dd>
+Process a cursor by a functor.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  proc: the functor of operations for the cursor.  The cursor is disabled implicitly after the block.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+always nil.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:dump_snapshot"></a><strong>db:dump_snapshot</strong>&nbsp;(dest)</dt>
+<dd>
+Dump records into a snapshot file.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  dest: the name of the destination file.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:end_transaction"></a><strong>db:end_transaction</strong>&nbsp;(commit)</dt>
+<dd>
+End transaction.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  commit: true to commit the transaction, or false to abort the transaction.  If it is omitted, true is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:get"></a><strong>db:get</strong>&nbsp;(key)</dt>
+<dd>
+Retrieve the value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the value of the corresponding record, or nil on failure.  The absolute expiration time is also returned as the second value.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:get_bulk"></a><strong>db:get_bulk</strong>&nbsp;(keys, atomic)</dt>
+<dd>
+Retrieve records at once.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  keys: an array of the keys of the records to retrieve.
+	</li>
+	
+	<li>
+	  atomic: true to perform all operations atomically, or false for non-atomic operations.  If it is omitted, true is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+a table of retrieved records, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:increment"></a><strong>db:increment</strong>&nbsp;(key, num, orig, xt)</dt>
+<dd>
+Add a number to the numeric integer value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  num: the additional number.  if it is omitted, 0 is specified.
+	</li>
+	
+	<li>
+	  orig: the origin number if no record corresponds to the key.  If it is omitted, 0 is specified.  If it is negative infinity and no record corresponds, this method fails.  If it is positive infinity, the value is set as the additional number regardless of the current value.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The value is serialized as an 8-byte binary integer in big-endian order, not a decimal string.  If existing value is not 8-byte, this method fails.
+
+
+
+<h3>Return value:</h3>
+the result value, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:increment_double"></a><strong>db:increment_double</strong>&nbsp;(key, num, orig, xt)</dt>
+<dd>
+Add a number to the numeric double value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  num: the additional number.  if it is omitted, 0 is specified.
+	</li>
+	
+	<li>
+	  orig: the origin number if no record corresponds to the key.  If it is omitted, 0 is specified.  If it is negative infinity and no record corresponds, this method fails.  If it is positive infinity, the value is set as the additional number regardless of the current value.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The value is serialized as an 16-byte binary fixed-point number in big-endian order, not a decimal string.  If existing value is not 16-byte, this method fails.
+
+
+
+<h3>Return value:</h3>
+the result value, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:iterate"></a><strong>db:iterate</strong>&nbsp;(visitor, writable)</dt>
+<dd>
+Iterate to accept a visitor for each record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  visitor: a visitor object which implements the Visitor interface, or a function object which receives the key and the value.
+	</li>
+	
+	<li>
+	  writable: true for writable operation, or false for read-only operation.  If it is omitted, true is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The whole iteration is performed atomically and other threads are blocked.  To avoid deadlock, any explicit database operation must not be performed in this method.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:load_snapshot"></a><strong>db:load_snapshot</strong>&nbsp;(src)</dt>
+<dd>
+Load records from a snapshot file.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  src: the name of the source file.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:mapreduce"></a><strong>db:mapreduce</strong>&nbsp;(map, reduce, tmppath, opts, dbnum, clim, cbnum, log, proc)</dt>
+<dd>
+Execute a MapReduce process.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  map: a function to map a record data.  It is called for each record in the database and receives the key, the value, and a function to emit the mapped records.  The emitter function receives a key and a value.  The mapper function should return true normally or false on failure.
+	</li>
+	
+	<li>
+	  reduce: a function to reduce a record data.  It is called for each record generated by emitted records by the map function and receives the key and a function to iterate to get each value.  The reducer function should return true normally or false on failure.
+	</li>
+	
+	<li>
+	  tmppath: the path of a directory for the temporary data storage.  If it is omitted, temporary data are handled on memory.
+	</li>
+	
+	<li>
+	  opts: the optional features by bitwise-or: DB.XNOLOCK to avoid locking against update operations by other threads, DB.XNOCOMP to avoid compression of temporary databases.
+	</li>
+	
+	<li>
+	  dbnum: the number of temporary databases.  If it is omitted, the default setting is specified.
+	</li>
+	
+	<li>
+	  clim: the limit size of the internal cache.  If it is omitted, the default setting is specified.
+	</li>
+	
+	<li>
+	  cbnum: the bucket number of the internal cache.  If it is omitted, the default setting is specified.
+	</li>
+	
+	<li>
+	  log: a function to log each progression message.  If it is omitted, log messages are ignored.
+	</li>
+	
+	<li>
+	  proc: a function called before the mapper, between the mapper and the reducer, and after the reducer.  In the first two calls, the function receives a function to emit the mapped records.  If it is omitted, such triggers are ignored.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:match_prefix"></a><strong>db:match_prefix</strong>&nbsp;(prefix, max)</dt>
+<dd>
+Get keys matching a prefix string.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  prefix: the prefix string.
+	</li>
+	
+	<li>
+	  max: the maximum number to retrieve.  If it is omitted or negative, no limit is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+an array of matching keys, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:match_regex"></a><strong>db:match_regex</strong>&nbsp;(regex, max)</dt>
+<dd>
+Get keys matching a regular expression string.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  regex: the regular expression string.
+	</li>
+	
+	<li>
+	  max: the maximum number to retrieve.  If it is omitted or negative, no limit is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+an array of matching keys, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:match_similar"></a><strong>db:match_similar</strong>&nbsp;(origin, range, utf, max)</dt>
+<dd>
+Get keys similar to a string in terms of the levenshtein distance.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  origin: the origin string.
+	</li>
+	
+	<li>
+	  range: the maximum distance of keys to adopt.  If it is omitted, 1 is specified.
+	</li>
+	
+	<li>
+	  utf: flag to treat keys as UTF-8 strings.  If it is omitted, false is specified.
+	</li>
+	
+	<li>
+	  max: the maximum number to retrieve.  If it is omitted or negative, no limit is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+an array of matching keys, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:merge"></a><strong>db:merge</strong>&nbsp;(srcary, mode)</dt>
+<dd>
+Merge records from other databases.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  srcary: an array of the source detabase objects.
+	</li>
+	
+	<li>
+	  mode: the merge mode.  DB.MSET to overwrite the existing value, DB.MADD to keep the existing value, DB.MAPPEND to append the new value.  If it is omitted, DB.MSET is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:occupy"></a><strong>db:occupy</strong>&nbsp;(writable, proc)</dt>
+<dd>
+Occupy database by locking and do something meanwhile.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  writable: true to use writer lock, or false to use reader lock.  If it is omitted, false is specified.
+	</li>
+	
+	<li>
+	  proc: a processor object which implements the FileProcessor interface, or a function object which receives the same parameters.  If it is omitted or nil, no processing is performed.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The operation of the processor is performed atomically and other threads accessing the same record are blocked.  To avoid deadlock, any explicit database operation must not be performed in this method.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:open"></a><strong>db:open</strong>&nbsp;(path, mode)</dt>
+<dd>
+Open a database file.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: the path of a database file.  If it is "-", the database will be a prototype hash database.  If it is "+", the database will be a prototype tree database.  If it is ":", the database will be a stash database.  If it is "*", the database will be a cache hash database.  If it is "%", the database will be a cache tree database.  If its suffix is ".kch", the database will be a file hash database.  If its suffix is ".kct", the database will be a file tree database.  If its suffix is ".kcd", the database will be a directory hash database.  If its suffix is ".kcf", the database will be a directory tree database.  If its suffix is ".kcx", the database will be a plain text database.  Otherwise, this function fails.  Tuning parameters can trail the name, separated by "#".  Each parameter is composed of the name and the value, separated by "=".  If the "type" parameter is specified, the database type is determined by the value in "-", "+", ":", "*", "%", "kch", "kct", "kcd", kcf", and "kcx".  All database types support the logging parameters of "log", "logkinds", and "logpx".  The prototype hash database and the prototype tree database do not support any other tuning parameter.  The stash database supports "bnum".  The cache hash database supports "opts", "bnum", "zcomp", "capcnt", "capsiz", and "zkey".  The cache tree database supports all parameters of the cache hash database except for capacity limitation, and supports "psiz", "rcomp", "pccap" in addition.  The file hash database supports "apow", "fpow", "opts", "bnum", "msiz", "dfunit", "zcomp", and "zkey".  The file tree database supports all parameters of the file hash database and "psiz", "rcomp", "pccap" in addition.  The directory hash database supports "opts", "zcomp", and "zkey".  The directory tree database supports all parameters of the directory hash database and "psiz", "rcomp", "pccap" in addition.  The plain text database does not support any other tuning parameter.
+	</li>
+	
+	<li>
+	  mode: the connection mode.  DB.OWRITER as a writer, DB.OREADER as a reader.  The following may be added to the writer mode by bitwise-or: DB.OCREATE, which means it creates a new database if the file does not exist, DB.OTRUNCATE, which means it creates a new database regardless if the file exists, DB.OAUTOTRAN, which means each updating operation is performed in implicit transaction, DB.OAUTOSYNC, which means each updating operation is followed by implicit synchronization with the file system.  The following may be added to both of the reader mode and the writer mode by bitwise-or: DB.ONOLOCK, which means it opens the database file without file locking, DB.OTRYLOCK, which means locking is performed without blocking, DB.ONOREPAIR, which means the database file is not repaired implicitly even if file destruction is detected.  If it is omitted, DB.OWRITER + DB.OCREATE is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The tuning parameter "log" is for the original "tune_logger" and the value specifies the path of the log file, or "-" for the standard output, or "+" for the standard error.  "logkinds" specifies kinds of logged messages and the value can be "debug", "info", "warn", or "error".  "logpx" specifies the prefix of each log message.  "opts" is for "tune_options" and the value can contain "s" for the small option, "l" for the linear option, and "c" for the compress option.  "bnum" corresponds to "tune_bucket".  "zcomp" is for "tune_compressor" and the value can be "zlib" for the ZLIB raw compressor, "def" for the ZLIB deflate compressor, "gz" for the ZLIB gzip compressor, "lzo" for the LZO compressor, "lzma" for the LZMA compressor, or "arc" for the Arcfour cipher.  "zkey" specifies the cipher key of the compressor.  "capcnt" is for "cap_count".  "capsiz" is for "cap_size".  "psiz" is for "tune_page".  "rcomp" is for "tune_comparator" and the value can be "lex" for the lexical comparator or "dec" for the decimal comparator.  "pccap" is for "tune_page_cache".  "apow" is for "tune_alignment".  "fpow" is for "tune_fbp".  "msiz" is for "tune_map".  "dfunit" is for "tune_defrag".  Every opened database must be closed by the DB::close method when it is no longer in use.  It is not allowed for two or more database objects in the same process to keep their connections to the same database file at the same time.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:pairs"></a><strong>db:pairs</strong>&nbsp;()</dt>
+<dd>
+Create three objects for the generic "for" loop.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+multiple values composed of the "next" functor, the database object itself, and nil.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:path"></a><strong>db:path</strong>&nbsp;()</dt>
+<dd>
+Get the path of the database file.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the path of the database file, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:remove"></a><strong>db:remove</strong>&nbsp;(key)</dt>
+<dd>
+Remove a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If no record corresponds to the key, false is returned.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:remove_bulk"></a><strong>db:remove_bulk</strong>&nbsp;(keys, atomic)</dt>
+<dd>
+Remove records at once.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  keys: an array of the keys of the records to remove.
+	</li>
+	
+	<li>
+	  atomic: true to perform all operations atomically, or false for non-atomic operations.  If it is omitted, true is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the number of removed records, or -1 on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:replace"></a><strong>db:replace</strong>&nbsp;(key, value, xt)</dt>
+<dd>
+Replace the value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  value: the value.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If no record corresponds to the key, no new record is created and false is returned.  If the corresponding record exists, the value is modified.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:seize"></a><strong>db:seize</strong>&nbsp;(key)</dt>
+<dd>
+Retrieve the value of a record and remove it atomically.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the value of the corresponding record, or nil on failure.  The absolute expiration time is also returned as the second value.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:set"></a><strong>db:set</strong>&nbsp;(key, value, xt)</dt>
+<dd>
+Set the value of a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  value: the value.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+If no record corresponds to the key, a new record is created.  If the corresponding record exists, the value is overwritten.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:set_bulk"></a><strong>db:set_bulk</strong>&nbsp;(recs, atomic, xt)</dt>
+<dd>
+Store records at once.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  recs: a table of the records to store.
+	</li>
+	
+	<li>
+	  atomic: true to perform all operations atomically, or false for non-atomic operations.  If it is omitted, true is specified.
+	</li>
+	
+	<li>
+	  xt: the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the number of stored records, or -1 on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:size"></a><strong>db:size</strong>&nbsp;()</dt>
+<dd>
+Get the size of the database file.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the size of the database file in bytes, or -1 on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:status"></a><strong>db:status</strong>&nbsp;()</dt>
+<dd>
+Get the miscellaneous status information.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+a table of the status information, or nil on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:synchronize"></a><strong>db:synchronize</strong>&nbsp;(hard, proc)</dt>
+<dd>
+Synchronize updated contents with the file and the device.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  hard: true for physical synchronization with the device, or false for logical synchronization with the file system.  If it is omitted, false is specified.
+	</li>
+	
+	<li>
+	  proc: a postprocessor object which implements the FileProcessor interface, or a function object which receives the same parameters.  If it is omitted or nil, no postprocessing is performed.
+	</li>
+	
+</ul>
+
+
+
+
+<h3>Usage:</h3>
+The operation of the processor is performed atomically and other threads accessing the same record are blocked.  To avoid deadlock, any explicit database operation must not be performed in this method.
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="db:transaction"></a><strong>db:transaction</strong>&nbsp;(proc, hard)</dt>
+<dd>
+Perform entire transaction by a functor.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  proc: the functor of operations during transaction.  If the function returns true, the transaction is committed.  If the function returns false or an exception is thrown, the transaction is aborted.
+	</li>
+	
+	<li>
+	  hard: true for physical synchronization with the device, or false for logical synchronization with the file system.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="error:__tostring"></a><strong>error:__tostring</strong>&nbsp;()</dt>
+<dd>
+Get the string expression.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the string expression.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="error:code"></a><strong>error:code</strong>&nbsp;()</dt>
+<dd>
+Get the error code.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the error code.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="error:message"></a><strong>error:message</strong>&nbsp;()</dt>
+<dd>
+Get the supplement message.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the supplement message.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="error:name"></a><strong>error:name</strong>&nbsp;()</dt>
+<dd>
+Get the readable string of the code.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the readable string of the code.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="error:set"></a><strong>error:set</strong>&nbsp;(code, message)</dt>
+<dd>
+Set the error information.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  code: the error code.
+	</li>
+	
+	<li>
+	  message: the supplement message.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+always nil.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="fileprocessor:process"></a><strong>fileprocessor:process</strong>&nbsp;(path, count, size)</dt>
+<dd>
+Process the database file.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  path: the path of the database file.
+	</li>
+	
+	<li>
+	  count: the number of records.
+	</li>
+	
+	<li>
+	  size: the size of the available region.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true on success, or false on failure.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="hash_fnv"></a><strong>hash_fnv</strong>&nbsp;(str)</dt>
+<dd>
+Get the hash value of a string by FNV hashing.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the hash value.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="hash_murmur"></a><strong>hash_murmur</strong>&nbsp;(str)</dt>
+<dd>
+Get the hash value of a string by MurMur hashing.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the hash value.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="levdist"></a><strong>levdist</strong>&nbsp;(a, b, utf)</dt>
+<dd>
+Calculate the levenshtein distance of two strings.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  a: one string.
+	</li>
+	
+	<li>
+	  b: the other string.
+	</li>
+	
+	<li>
+	  utf: flag to treat keys as UTF-8 strings.  If it is omitted, false is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the levenshtein distance.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="log"></a><strong>log</strong>&nbsp;(kind, message)</dt>
+<dd>
+Log a message
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  kind: the kind of the event.  "debug" for debugging, "info" for normal information, "system" for system information, and "error" for fatal error.
+	</li>
+	
+	<li>
+	  message: the supplement message.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+always nil.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="mapdump"></a><strong>mapdump</strong>&nbsp;(src)</dt>
+<dd>
+Serialize a map into a string.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  src: the source table.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the result string.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="mapload"></a><strong>mapload</strong>&nbsp;(src)</dt>
+<dd>
+Deserialize a string into a map.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  src: the source string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the result map.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="pack"></a><strong>pack</strong>&nbsp;(format, ary, ...)</dt>
+<dd>
+Serialize an array of numbers into a string.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  format: the format string.  It should be composed of conversion characters.  "c" for int8_t, "C" for uint8_t, "s" for int16_t, "S" for uint16_t, "i" for int32_t, "I" for uint32_t, "l" for int64_t, "L" for uint64_t, "f" for float, "d" for double, "n" for uint16_t in network byte order, "N" for uint32_t in network byte order, "M" for uint64_t in network byte order, and "w" for BER encoding.  They can be trailed by a numeric expression standing for the iteration count or by "*" for the rest all iteration.
+	</li>
+	
+	<li>
+	  ary: the array of numbers.  It can be trailed optional arguments, which are treated as additional elements of the array.
+	</li>
+	
+	<li>
+	  ...: 
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the serialized string.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="regex"></a><strong>regex</strong>&nbsp;(str, pattern, alt)</dt>
+<dd>
+Perform pattern matching or replacement with regular expressions.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the source string.
+	</li>
+	
+	<li>
+	  pattern: the pattern of regular expressions.
+	</li>
+	
+	<li>
+	  alt: the alternative string corresponding for the pattern.  If it is not defined, matching check is performed.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+If the alternative string is specified, the converted string is returned.  If the alternative string is not specified, the boolean value of whether the source string matches the pattern is returned.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="sleep"></a><strong>sleep</strong>&nbsp;(sec)</dt>
+<dd>
+Suspend execution of the current thread.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  sec: the interval of the suspension in seconds.  If it is omitted, the processor is yielded from the current thread.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="split"></a><strong>split</strong>&nbsp;(str, delims)</dt>
+<dd>
+Split a string into substrings.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the string
+	</li>
+	
+	<li>
+	  delims: a string including separator characters.  If it is omitted, the zero code is specified.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+an array of substrings.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="strbwm"></a><strong>strbwm</strong>&nbsp;(str, pattern)</dt>
+<dd>
+Perform backward matching without evaluating any meta character.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the source string.
+	</li>
+	
+	<li>
+	  pattern: the matching pattern.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if they matches, or false if not.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="strfwm"></a><strong>strfwm</strong>&nbsp;(str, pattern)</dt>
+<dd>
+Perform forward matching without evaluating any meta character.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the source string.
+	</li>
+	
+	<li>
+	  pattern: the matching pattern.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+true if they matches, or false if not.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="strstr"></a><strong>strstr</strong>&nbsp;(str, pattern, alt)</dt>
+<dd>
+Perform substring matching or replacement without evaluating any meta character.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  str: the source string.
+	</li>
+	
+	<li>
+	  pattern: the matching pattern.
+	</li>
+	
+	<li>
+	  alt: the alternative string corresponding for the pattern.  If it is omitted, matching check is performed.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+If the alternative string is specified, the converted string is returned.  If the alternative string is not specified, the index of the substring matching the given pattern or 0 is returned.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="time"></a><strong>time</strong>&nbsp;()</dt>
+<dd>
+Get the time of day in seconds.
+
+
+
+
+
+
+
+<h3>Return value:</h3>
+the time of day in seconds.  The accuracy is in microseconds.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="unpack"></a><strong>unpack</strong>&nbsp;(format, str)</dt>
+<dd>
+Deserialize a binary string into an array of numbers.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  format: the format string.  It should be composed of conversion characters as with the pack function.
+	</li>
+	
+	<li>
+	  str: the binary string.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+the deserialized array.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="visitor:visit_after"></a><strong>visitor:visit_after</strong>&nbsp;()</dt>
+<dd>
+Postprocess the main operations.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="visitor:visit_before"></a><strong>visitor:visit_before</strong>&nbsp;()</dt>
+<dd>
+Preprocess the main operations.
+
+
+
+
+
+
+
+
+
+</dd>
+
+
+
+
+<dt><a name="visitor:visit_empty"></a><strong>visitor:visit_empty</strong>&nbsp;(key)</dt>
+<dd>
+Visit a empty record space.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+If it is a string, the value is replaced by the content.  If it is Visitor.NOP or Visitor.REMOVE, nothing is modified.  The expiration time can be also returned as the second value.
+
+
+
+</dd>
+
+
+
+
+<dt><a name="visitor:visit_full"></a><strong>visitor:visit_full</strong>&nbsp;(key, value, xt)</dt>
+<dd>
+Visit a record.
+
+
+<h3>Parameters</h3>
+<ul>
+	
+	<li>
+	  key: the key.
+	</li>
+	
+	<li>
+	  value: the value.
+	</li>
+	
+	<li>
+	  xt: the absolute expiration time.
+	</li>
+	
+</ul>
+
+
+
+
+
+
+<h3>Return value:</h3>
+If it is a string, the value is replaced by the content.  If it is Visitor.NOP, nothing is modified.  If it is Visitor.REMOVE, the record is removed.  The expiration time can be also returned as the second value.
+
+
+
+</dd>
+
+
+</dl>
+
+
+
+
+<h2><a name="tables"></a>Tables</h2>
+<dl class="table">
+
+<dt><a name="Cursor"></a><strong>Cursor</strong></dt>
+<dd>Interface of cursor to indicate a record.
+
+
+
+</dd>
+
+
+<dt><a name="DB"></a><strong>DB</strong></dt>
+<dd>Interface of database abstraction.
+
+
+<br/>
+<em>Fields</em>
+<ul>
+	
+	<li>
+	  OREADER: open mode: open as a reader
+	</li>
+	
+	<li>
+	  OWRITER: open mode: open as a writer
+	</li>
+	
+	<li>
+	  OCREATE: open mode: writer creating
+	</li>
+	
+	<li>
+	  OTRUNCATE: open mode: writer truncating
+	</li>
+	
+	<li>
+	  OAUTOTRAN: open mode: auto transaction
+	</li>
+	
+	<li>
+	  OAUTOSYNC: open mode: auto synchronization
+	</li>
+	
+	<li>
+	  ONOLOCK: open mode: open without locking
+	</li>
+	
+	<li>
+	  OTRYLOCK: open mode: lock without blocking
+	</li>
+	
+	<li>
+	  ONOREPAIR: open mode: open without auto repair
+	</li>
+	
+	<li>
+	  MSET: merge mode: overwrite the existing value
+	</li>
+	
+	<li>
+	  MADD: merge mode: keep the existing value
+	</li>
+	
+	<li>
+	  MREPLACE: merge mode: modify the existing record only
+	</li>
+	
+	<li>
+	  MAPPEND: merge mode: append the new value
+	</li>
+	
+	<li>
+	  XNOLOCK: mapreduce option: avoid locking against update operations
+	</li>
+	
+	<li>
+	  XNOCOMP: mapreduce option: avoid compression of temporary databases 
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+<dt><a name="Error"></a><strong>Error</strong></dt>
+<dd>Error data.
+
+
+<br/>
+<em>Fields</em>
+<ul>
+	
+	<li>
+	  SUCCESS: error code: success
+	</li>
+	
+	<li>
+	  NOIMPL: error code: not implemented
+	</li>
+	
+	<li>
+	  INVALID: error code: invalid operation
+	</li>
+	
+	<li>
+	  NOREPOS: error code: no repository
+	</li>
+	
+	<li>
+	  NOPERM: error code: no permission
+	</li>
+	
+	<li>
+	  BROKEN: error code: broken file
+	</li>
+	
+	<li>
+	  DUPREC: error code: record duplication
+	</li>
+	
+	<li>
+	  NOREC: error code: no record
+	</li>
+	
+	<li>
+	  LOGIC: error code: logical inconsistency
+	</li>
+	
+	<li>
+	  SYSTEM: error code: system error
+	</li>
+	
+	<li>
+	  MISC: error code: miscellaneous error 
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+<dt><a name="FileProcessor "></a><strong>FileProcessor </strong></dt>
+<dd>Interface to process the database file.
+
+
+
+</dd>
+
+
+<dt><a name="Visitor"></a><strong>Visitor</strong></dt>
+<dd>Interface to access a record.
+
+
+<br/>
+<em>Fields</em>
+<ul>
+	
+	<li>
+	  NOP: magic data: no operation
+	</li>
+	
+	<li>
+	  REMOVE: magic data: remove the record 
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+<dt><a name="__kyototycoon__"></a><strong>__kyototycoon__</strong></dt>
+<dd>Running environment.
+
+
+<br/>
+<em>Fields</em>
+<ul>
+	
+	<li>
+	  RVSUCCESS: status code: success
+	</li>
+	
+	<li>
+	  RVENOIMPL: status code: not implemented
+	</li>
+	
+	<li>
+	  RVEINVALID: status code: invalid operation
+	</li>
+	
+	<li>
+	  RVELOGIC: status code: logical inconsistency
+	</li>
+	
+	<li>
+	  RVEINTERNAL: status code: internal error
+	</li>
+	
+	<li>
+	  VERSION: the version information
+	</li>
+	
+	<li>
+	  thid: the ID number of the worker thread
+	</li>
+	
+	<li>
+	  db: the primary database object
+	</li>
+	
+	<li>
+	  dbs: an array of database objects 
+	</li>
+	
+</ul>
+
+
+</dd>
+
+
+</dl>
+
+
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+Kyoto Tycoon Manual
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->	
+</body>
+</html>

@@ -1,0 +1,26 @@
+#! /bin/sh
+
+#================================================================
+# backupdb
+# Make a back up file of a database file
+#================================================================
+
+
+# set variables
+LANG=C
+LC_ALL=C
+export LANG LC_ALL
+
+
+# count steps
+srcfile="$1"
+destfile="$1.$2"
+cp -f "$srcfile" "$destfile"
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE

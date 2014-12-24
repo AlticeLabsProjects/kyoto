@@ -1,0 +1,560 @@
+2012-05-01  FAL Labs  <info@fallabs.com>
+
+	* cmdcommon.h (DBUpdateLogger::set_rsid): supressed a warning.
+
+	* kttimeddb.h (TimedDB::check): new function.
+
+	* ktremovedb.h (RemoteDB::check): new function.
+
+	- Release: 0.9.56
+
+2012-03-27  FAL Labs  <info@fallabs.com>
+
+	* ktserver.c (Worker::do_synchronize): a source of the timestamp was added.
+
+	- Release: 0.9.55
+
+2012-03-16  FAL Labs  <info@fallabs.com>
+
+	* ktserver.cc (Worker::do_match_similar): new function.
+
+	* ktremotedb.h (RemoteDB::match_similar): new function.
+
+	* kttimeddb.h (TimedDB::match_similar): new function.
+
+	- Release: 0.9.54
+
+2012-01-30  FAL Labs  <info@fallabs.com>
+
+	* ktsocket.cc (setsocketoptions): omit error check because Solaris doesn't implement some options.
+
+	- Release: 0.9.53
+
+2011-10-30  FAL Labs  <info@fallabs.com>
+
+	* ktserver.c (run): check to the number of databases was added.
+
+	* ktulog.h (UpdateLogger::Reader::open): a bug related to ID detection was fixed.
+
+	- Release: 0.9.52
+
+2011-08-17  FAL Labs  <info@fallabs.com>
+
+	* ktulog.h (UpdateLogger::Reader::open): a bug related to unsupported files was fixed.
+
+	- Release: 0.9.51
+
+2011-07-01  FAL Labs  <info@fallabs.com>
+
+	* ktsocket.cc (waitsocket): the poll mode was added.
+
+	- Release: 0.9.50
+
+2011-06-28  FAL Labs  <info@fallabs.com>
+
+	* ktplugservmemc.cc (Worker::do_queue_set): the delimiter was changed.
+
+	- Release: 0.9.49
+
+2011-06-22  FAL Labs  <info@fallabs.com>
+
+	* ktdbext.h (MapReduce::FlushThread): new class.
+
+	* ktdbext.h (MapReduce::cache_flush): parallel mode was added.
+
+	- Release: 0.9.48
+
+2011-06-17  FAL Labs  <info@fallabs.com>
+
+	* kcutil.h (maskthreadsignal): new function.
+
+	* ktthserv.h (TaskQueueImpl::do_start, TaskQueueImpl::do_finish): new functions.
+
+	* ktplugservmmc.cc (Worker::configure): "tout" and "th" parameters were added.
+
+	- Release: 0.9.47
+
+2011-06-12  FAL Labs  <info@fallabs.com>
+
+	* ktplugservmmc.cc (Worker::do_queue_get): signal handler was modified.
+
+	* cmdcommon.h (DEFTHNUM): modified from 8 to 16.
+
+	- Release: 0.9.46
+
+2011-06-11  FAL Labs  <info@fallabs.com>
+
+	* ktsocket.cc (_init_func): new function.
+
+	* kttimeddb.cc (TimedDB::Curosr::seize, TimedDB::seize): new functions.
+
+	* ktremotedb.cc (RemoteDB::Curosr::seize, RemoteDB::seize): new functions.
+
+	* ktplugservmmc.cc (Worker::do_queue_set, Worker::do_queue_get): new functions.
+
+	- Release: 0.9.45
+
+2011-06-11  FAL Labs  <info@fallabs.com>
+
+	* ktserver (Worker::process): "WAIT" and "SIGNAL" parameters were added.
+
+	* ktserver (Worker::do_void): new function.
+
+	* ktserver (proc): handling condition variable was added.
+
+	* ktremotedb.h (RemoteDB::set_signal_waiting, RemoteDB::set_signal_sending): new functions.
+
+	- Release: 0.9.44
+
+2011-05-19  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::scan_parallel): new function.
+
+	* ktdbext.h (MapReduce::execute): parallel options were added.
+
+	* ktdbext.h (MapReduce::tune_thread): new function.
+
+	- Release: 0.9.43
+
+2011-05-17  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::increment): "orig" parameter was added.
+
+	* ktserver.cc (Worker::do_increment): "orig" parameter was added.
+
+	- Release: 0.9.42
+
+2011-05-03  FAL Labs  <info@fallabs.com>
+
+	* ktdbext.h (MapReduce::map): MapEmitter was integrated.
+
+	* ktdbext.h (MapReduce::emit): new function.
+
+	* ktdbext.h (MapReduce::execute): a bug of wrong handling of empty databases was fixed.
+
+	- Release: 0.9.41
+
+2011-04-22  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::recover): expiration was edded.
+
+	- Release: 0.9.40
+
+2011-03-22  FAL Labs  <info@fallabs.com>
+
+	* ktplugservmemc.cc (Worker::do_get): a bug retrieving a useless record was fixed.
+
+	* myscript.cc (ScriptProcessor::call): a bug related to the nil character was fixed.
+
+	* myscript.cc (db_get_bulk): a bug related to the nil character was fixed.
+
+	- Release: 0.9.39
+
+2011-03-06  FAL Labs  <info@fallabs.com>
+
+	* ktplugdbvoid.cc (VoidDB::log): new function.
+
+	- Release: 0.9.38
+
+2011-02-25  FAL Labs  <info@fallabs.com>
+
+	* kctimeddb.h (TimedDB::occupy): new function.
+
+	* kttimeddb.h (TimedDB::dump_snapshot_atomic): fork mechanism was modified.
+
+	* myscript.cc (db_occupy): new function.
+
+	- Release: 0.9.37
+
+2011-02-23  FAL Labs  <info@fallabs.com>
+
+	- all database classes were refactored to support some old compilers.
+
+	- Release: 0.9.36
+
+2011-02-21  FAL Labs  <info@fallabs.com>
+
+	* ktdbext.h (MapReduce::execute): adaptive comparator was added.
+
+	* ktdbext.h (MapReduce::execute_reduce): new function.
+
+	* ktdbext.h (MapReduce::before, MapReduce::after): new functions.
+
+	* myscript.cc (SoftVisitor::visit_before, SoftVisitor::visit_after): new functions.
+
+	- Release: 0.9.35
+
+2011-02-14  FAL Labs  <info@fallabs.com>
+
+	* ktremotemgr.cc (procimport): a bug related to the database expression was fixed.
+
+	- configuration files were modified for affinity for binary distributions.
+
+	- all classes were refactored to abolish unnamed namespaces.
+
+	- Release: 0.9.34
+
+2011-02-08  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::Cursor::get_key): signature was modified.
+
+	* kttimeddb.h (TimedDB::Cursor::get_pair, TimedDBCursor::get): renamed.
+
+	* kttimeddb.h (TimedDB::get): signature was modified.
+
+	- Release: 0.9.33
+
+2011-02-07  FAL Labs  <info@fallabs.com>
+
+	* myscript.cc (kt_hash_murmur, kt_hash_fnv): accuracy was improved.
+
+	- Release: 0.9.32
+
+2011-02-06  FAL Labs  <info@fallabs.com>
+
+	* ktcommon.h: macros for integer range were removed.
+
+	- Release: 0.9.31
+
+2011-01-30  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::merge): type of the comarator was changed.
+
+	* ktdbext.h (MapReduce::execute): type of the comarator was changed.
+
+	- Release: 0.9.30
+
+2011-01-27  FAL Labs  <info@fallabs.com>
+
+	* myscript.cc (arraydump, arrayload, mapdump, mapload): new functions.
+
+	* ktremotemgr.cc (runscript): "-arg" option was changed to the normal arguments.
+
+	- Release: 0.9.29
+
+2011-01-25  FAL Labs  <info@fallabs.com>
+
+	* ktserver (Worker): operation counters were added.
+
+	* ktserver (Worker::do_rest_put): "x-kt-mode" was added.
+
+	* ktplugservmemc.cc (Worker): operation counters were added.
+
+	- Release: 0.9.28
+
+2011-01-21  FAL Labs  <info@fallabs.com>
+
+	* myscript.h (ScriptProcessor::clear): new function.
+
+	* ktserver.cc (proc): the SIGHUP handler was modified.
+
+	- Release: 0.9.27
+
+2011-01-20  FAL Labs  <info@fallabs.com>
+
+	* ktpluvservmemc.cc (Worker::process): "gets" is now supported.
+
+	* kttimeddb.h (TimeDB::status_snapshot_atomic): new function.
+
+	* kttimedmgr.cc (runbgsinfo, procbgsinfo): new functions.
+
+	- Release: 0.9.26
+
+2011-01-18  FAL Labs  <info@fallabs.com>
+
+	* ktserver.cc (dosnapshot): new function.
+
+	* kttimeddb.cc (TimedDB::dump_snapshot_atomic): refactored.
+
+	- Release: 0.9.25
+
+2011-01-08  FAL Labs  <info@fallabs.com>
+
+	* myscript.cc (set_resources): a bug about database name solver was fixed.
+
+	* kttimeddb.h (TimedDB::dump_snapshot_atomic): new function.
+
+	* kttimeddb.cc (fork_impl, wait_impl, nice_impl, exit_impl): new function.
+
+	- Release: 0.9.24
+
+2011-01-05  FAL Labs  <info@fallabs.com>
+
+	* ktthserv.h (TaskQueueImpl::do_task): keep-alive mechanism was modified.
+
+	* ktserver.cc (Worker::do_bin_set_bulk): noreply is now supported.
+
+	* ktplugservmemc (Worker::do_version): new function.
+
+	* ktplugservmemc (Worker::do_set, do_delete, do_incr): noreply is now supported.
+
+	- Release: 0.9.23
+
+2011-01-02  FAL Labs  <info@fallabs.com>
+
+	* kctimeddb.h (TimedDB::accept_bulk): new function.
+
+	* kctimeddb.h (TimedDB::set_bulk, TimedDB::remove_bulk, TimedDB::get_bulk): new functions.
+
+	* ktplugdbvoid.cc (VoidDB::accept_bulk): new function.
+
+	* myscript.cc (db_accept_bulk): new function.
+
+	* myscript.cc (db_set_bulk, db_remove_bulk, db_get_bulk): new functions.
+
+	- Release: 0.9.22
+
+2010-12-27  FAL Labs  <info@fallabs.com>
+
+	* ktremotedb.h (ReplicationClient::open): WHITESID options was added.
+
+	* ktserver.cc (Worker::do_bin_replication): WHITESID options was added.
+
+	- Release: 0.9.21
+
+2010-12-25  FAL Labs  <info@fallabs.com>
+
+	* ktserver.cc (Worker::do_ulog_list, do_ulog_remove): new functions.
+
+	* ktremotedb.cc (RemoteDB::ulog_list, RemoteDB::ulog_remove): new functions.
+
+	* ktremotemgr.cc (runslave, procslave): "-uf" and "-ur" options were added.
+
+	- Release: 0.9.20
+
+2010-12-20  FAL Labs  <info@fallabs.com>
+
+	* ktsocket.h (Poller::wait): EPOLLRDHUP was abolished to support old kernels.
+
+	* kttimeddb.h (TimedDB::tokenize_update_log): new function.
+
+	- Release: 0.9.19
+
+2010-12-20  FAL Labs  <info@fallabs.com>
+
+	* ktplugdb.h, ktplugdbvoid.h: new files.
+
+	- Release: 0.9.18
+
+2010-12-18  FAL Labs  <info@fallabs.com>
+
+	* ktplugservmmc.cc (Worker::do_set, Worker::do_get): "flags" support was added.
+
+	- Release: 0.9.17
+
+2010-12-11  FAL Labs  <info@fallabs.com>
+
+	* cmdcommon.h (oprintf): new function instead of "iprintf".
+
+	- Release: 0.9.16
+
+2010-12-05  FAL Labs  <info@fallabs.com>
+
+	* cmdcommon.h (DBUpdateLogger::trigger): transaction mechanism was modified.
+
+	* ktplugservmmc.cc (Worker::do_incr, Worker::do_decr): new functions.
+
+	* ktserver.cc (Worker::do_regex_match): a bug related to error handling was fixed.
+
+	- Release: 0.9.15
+
+2010-12-03  FAL Labs  <info@fallabs.com>
+
+	* ktshlib.h, ktshlib.cc, ktserver.h, ktplugserv.cc: new files.
+
+	* ktutil.h (printstrvec, strtokenize): new functions.
+
+	- Release: 0.9.14
+
+2010-12-01  FAL Labs  <info@fallabs.com>
+
+	* ktserver.cc (Worker::do_bin_play_script): new function.
+
+	* ktremotedb.cc (RemoteDB::play_script_binary): new function;
+
+	* ktremotemgr.cc (runscript, procscript): "-bin" option was added.
+
+	- Release: 0.9.13
+
+2010-11-27  FAL Labs  <info@fallabs.com>
+
+	* cmdcommon.h (DBUpdateLogger::parse): invalid use of member variables was cleared.
+
+	* ktserver.cc (Worker::do_bin_set_bulk, Worker::do_bin_get_bulk): new functions.
+
+	* kcserver.cc (run, proc): "-uasi" option was added.
+
+	- Release: 0.9.12
+
+2010-11-27  FAL Labs  <info@fallabs.com>
+
+	* ktsocket.h (Poller::deposit): EPOLLRDHUP was abolished to support old kernels.
+
+	* ktremotedb.h (RemoteDB::tune_replication): new function.
+
+	* ktserver.cc (Worker::do_tune_replication): new function.
+
+	* ktremotemgr.cc (runtunerepl, proctunerepl): new functions.
+
+	- Release: 0.9.11
+
+2010-11-20  FAL Labs  <info@fallabs.com>
+
+	* ktulog.h (UpdateLogger::write_meta, validate_meta): new functions.
+
+	- Release: 0.9.10
+
+2010-11-12  FAL Labs  <info@fallabs.com>
+
+	* ktulog.h, ktulog.cc: new files.
+
+	* ktutiltest.cc (runulog, proculog): new functions.
+
+	* kttimeddb.h (TimedDB::tune_update_trigger, TimedDB::recover): new functions.
+
+	* ktserver.cc (main, proc): "-ulog", "-ulim", and "-sid" options were added.
+
+	* ktserver.cc (Worker::process_binary, Worker::do_replication): new functions.
+
+	* ktserver.cc (Worker::do_synchronize): the second parameter was added to the command.
+
+	- Release: 0.9.9
+
+2010-11-12  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::tune_options): abolished.
+
+	* kttimeddb.h (TimedDB::open): some tuning parameters was added.
+
+	- Release: 0.9.8
+
+2010-11-09  FAL Labs  <info@fallabs.com>
+
+	* ktserver (main): the default database was changed to the stash database.
+
+	* myscript.cc (db_open): the default database was changed to the stash database.
+
+	- Release: 0.9.7
+
+2010-11-04  FAL Labs  <info@fallabs.com>
+
+	* kcdbext.h (MapReduce::execute): the cache algorithm was modified.
+
+	* myscript.cc (db_mapreduce): tuning parameters were added.
+
+	- Release: 0.9.6
+
+2010-10-21  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::merge): new function.
+
+	* kttimeddb.h (TimedDB::expire_records): locking model was modified.
+
+	* ktdbext.h: new file.
+
+	- Release: 0.9.5
+
+2010-10-21  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::match_prefix, TimedDB::match_regex): new functions.
+
+	* kttimeddb.h (TimedDB::jump_back, TimedDB::jump_step): a bug about error code was fixed.
+
+	* ktremotedb.h (RemoteDB::match_prefix, RemoteDB::match_regex): new functions.
+
+	* ktserver.cc (do_match_prefix, do_match_regex): new functions.
+
+	- Release: 0.9.4
+
+2010-10-15  FAL Labs  <info@fallabs.com>
+
+	* kttimedtest.cc (procorder, procqueue, procwicked, proctran): "tune_logger" was added.
+
+	* kttimedmgr.cc (runcreate, runinform, runset, runget): "-lv" option was added.
+
+	* ktthserv.h (SESSIDLE, SESSTIMER): new constants.
+
+	* ktthserv.h (ThreadedServer::Worker::process_timer): new function.
+
+	* ktserver.cc (Worker::process_idle): efficiency of the auto vacuum was improved.
+
+	- Release: 0.9.3
+
+2010-10-13  FAL Labs  <info@fallabs.com>
+
+	* ktutil.h (FEATURES): new constant.
+
+	* ktserver.cc (do_report): "kc_conf_features" and "kt_conf_features" were added.
+
+	* ktserver.cc (do_play_scriot): the rule related to the status code was modified.
+
+	* kttimedmgr.cc (runclear, procclear): new functions.
+
+	- Release: 0.9.2
+
+2010-10-14  FAL Labs  <info@fallabs.com>
+
+	* ktsocket.cc (Poller::Poller, Poller::~Poller, Poller::wait): "kqueue" is now supported.
+
+	- Release: 0.9.1
+
+2010-10-13  FAL Labs  <info@fallabs.com>
+
+	* ktsocket.cc (Poller::Poller, Poller::~Poller, Poller::wait): "epoll" is now supported.
+
+	* ktserver.cc (do_report): connection stats data were added.
+
+	- Release: 0.9.0
+
+2010-10-11  FAL Labs  <info@fallabs.com>
+
+	* ktserver.cc (Worker::process_idle): a bug related to the read only mode was fixed.
+
+	* myscript.cc (serv_log, kt_pack, kt_unpack, kt_split, kt_codec, kt_bit): new functions.
+
+	- Release: 0.8.1
+
+2010-10-08  FAL Labs  <info@fallabs.com>
+
+	* kttimeddb.h (TimedDB::vacuum): new function.
+
+	* ktremotedb.h (RemoteDB::vacuum): new function.
+
+	* ktserver.cc (Worker::process_idle): new function.
+
+	* ktserver.cc (Worker::do_play_script): new function.
+
+	* kttimedmgr.cc (runimport, procimport): "-xt" option was added.
+
+	* ktremovemgr.cc (runimport, procimport): new functions.
+
+	* myscript.h, myscript.cc: new files.
+
+	- Release: 0.8.0
+
+2010-10-05  FAL Labs  <info@fallabs.com>
+
+	* ktserver (Worker::process): the URL convention for RESTful interface was extended.
+
+	- Release: 0.7.1
+
+2010-10-03  FAL Labs  <info@fallabs.com>
+
+	* ktrpc.h (RPIClient::NOIMPL): new constant.
+
+	* ktremotedb.h (RemoteDB::bulk_set, RemoteDB::bulk_get): new functions.
+
+	* ktserver.cc (Worker::do_bulk_set, Worker::do_bulk_get): new functions.
+
+	* ktserver.cc (Worker::do_synchronize): new function.
+
+	* ktremotetest (runwicked, procwicked): new functions.
+
+	- Release: 0.7.0
+
+2010-09-06  FAL Labs  <info@fallabs.com>
+
+	- The initial version.
+
+	- Release: 0.6.5
+

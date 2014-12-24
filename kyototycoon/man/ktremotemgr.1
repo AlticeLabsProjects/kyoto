@@ -1,0 +1,172 @@
+.TH "KTREMOTEMGR" 1 "2012-05-25" "Man Page" "Kyoto Tycoon"
+
+.SH NAME
+ktremotemgr \- command line interface to manage the remote database
+
+.SH DESCRIPTION
+.PP
+The command `\fBktremotedmgr\fR' is a utility for test and debugging of the remote database and its applications.  `\fIproc\fR' specifies the name of a procedure.  `\fIparams\fR' specifies arbitrary parameters.  `\fImhost\fR' specifies the host name of the master server.  `\fIkey\fR' specifies the key of a record.  `\fIvalue\fR' specifies the value of a record.
+.PP
+.RS
+.br
+\fBktremotemgr report \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB\fR
+.RS
+Prints statistics of the server.
+.RE
+.br
+\fBktremotemgr script \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fIproc\fB \fR[\fB\fIparams\fB...\fR]\fB\fR
+.RS
+Calls a procedure of the scripting extension.
+.RE
+.br
+\fBktremotemgr tunerepl \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-mport \fIstr\fB\fR]\fB \fR[\fB\-ts \fInum\fB\fR]\fB \fR[\fB\-iv \fInum\fB\fR]\fB \fR[\fB\fImhost\fB\fR]\fB\fR
+.RS
+Sets the replication configuration.
+.RE
+.br
+\fBktremotemgr inform \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-st\fR]\fB\fR
+.RS
+Prints status information of a database.
+.RE
+.br
+\fBktremotemgr clear \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB\fR
+.RS
+Removes all records of a database.
+.RE
+.br
+\fBktremotemgr sync \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-hard\fR]\fB \fR[\fB\-cmd \fIstr\fB\fR]\fB\fR
+.RS
+Synchronizes updated contents with the file and the device.
+.RE
+.br
+\fBktremotemgr set \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-add\fR|\fB\-rep\fR|\fB\-app\fR|\fB\-inci\fR|\fB\-incd\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-xt \fInum\fB\fR]\fB \fIkey\fB \fIvalue\fB\fR
+.RS
+Stores a record.
+.RE
+.br
+\fBktremotemgr remove \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fIkey\fB\fR
+.RS
+Removes a record.
+.RE
+.br
+\fBktremotemgr get \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-rm\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fR[\fB\-pt\fR]\fB \fR[\fB\-pz\fR]\fB \fIkey\fB\fR
+.RS
+Prints the value of a record.
+.RE
+.br
+\fBktremotemgr list \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-des\fR]\fB \fR[\fB\-max \fInum\fB\fR]\fB \fR[\fB\-rm\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-pv\fR]\fB \fR[\fB\-px\fR]\fB \fR[\fB\-pt\fR]\fB \fR[\fB\fIkey\fB\fR]\fB\fR
+.RS
+Prints keys of all records, separated by line feeds.
+.RE
+.br
+\fBktremotemgr import \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-xt \fInum\fB\fR]\fB \fR[\fB\fIfile\fB\fR]\fB\fR
+.RS
+Imports records from a TSV file.
+.RE
+.br
+\fBktremotemgr vacuum \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-step \fInum\fB\fR]\fB \fIpath\fB\fR
+.RS
+Eliminates regions of expired records.
+.RE
+.br
+\fBktremotemgr slave \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-ts \fInum\fB\fR]\fB \fR[\fB\-sid \fInum\fB\fR]\fB \fR[\fB\-ux\fR]\fB \fR[\fB\-uw\fR]\fB \fR[\fB\-uf\fR]\fB \fR[\fB\-ur\fR]\fB\fR
+.RS
+Simulates a client of replication and prints update logs.
+.RE
+.br
+\fBktremotemgr setbulk \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-xt \fInum\fB\fR]\fB \fIkey\fB \fIvalue\fB ...\fR
+.RS
+Store records at once.
+.RE
+.br
+\fBktremotemgr removebulk \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fIkey\fB ...\fR
+.RS
+Remove records at once.
+.RE
+.br
+\fBktremotemgr getbulk \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fIkey\fB ...\fR
+.RS
+Retrieve records at once.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-host \fIstr\fR\fR : specifies the host name of the server.
+.br
+\fB\-port \fInum\fR\fR : specifies the port number of the server.
+.br
+\fB\-tout \fInum\fR\fR : specifies the timeout in seconds.
+.br
+\fB\-swname \fIstr\fR\fR : waits for a signal by a named condition variable.
+.br
+\fB\-swtime \fInum\fR\fR : specifies the timeout of signal waiting in seconds.
+.br
+\fB\-ssname \fIstr\fR\fR : sends a signal to a named condition variable.
+.br
+\fB\-ssbrd\fR : switches signal sending to broadcasting.
+.br
+\fB\-bin\fR : uses the binary protocol.
+.br
+\fB\-mport \fInum\fR\fR : specifies the port number of the master server.
+.br
+\fB\-ts \fInum\fR\fR : specifies the maximum time stamp of already read logs.  "now" means the current time stamp.
+.br
+\fB\-iv \fInum\fR\fR : specifies the interval of each replication operation in milliseconds.
+.br
+\fB\-db \fIstr\fR\fR : specifies the target database.
+.br
+\fB\-st\fR : prints miscellaneous information.
+.br
+\fB\-hard\fR : performs physical synchronization with the device.
+.br
+\fB\-cmd \fIstr\fR\fR : specifies an outer command for postprocessing.
+.br
+\fB\-add\fR : performs adding operation.
+.br
+\fB\-app\fR : performs appending operation.
+.br
+\fB\-rep\fR : performs replacing operation.
+.br
+\fB\-inci\fR : performs integer increment operation.
+.br
+\fB\-incd\fR : performs real number increment operation.
+.br
+\fB\-sx\fR : the input data is evaluated as a hexadecimal data string.
+.br
+\fB\-xt \fInum\fR\fR : specifies the expiration time.
+.br
+\fB\-rm\fR : removes the record.
+.br
+\fB\-px\fR : the output data is converted into a hexadecimal data string.
+.br
+\fB\-pt\fR : prints the expiration time also.
+.br
+\fB\-pz\fR : does not append line feed at the end of the output.
+.br
+\fB\-des\fR : visits records in descending order.
+.br
+\fB\-max \fInum\fR\fR : specifies the maximum number of shown records.
+.br
+\fB\-pv\fR : prints values of records also.
+.br
+\fB\-step \fInum\fR\fR : specifies the number of steps.
+.br
+\fB\-sid \fInum\fR\fR : specifies the server ID number.
+.br
+\fB\-ux\fR : fetches update logs of the specified server ID number only.
+.br
+\fB\-uw\fR : waits for update forever.
+.br
+\fB\-uf\fR : prints status of each update log file.
+.br
+\fB\-ur\fR : remove old update log files.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR ktremotetest (1)

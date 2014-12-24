@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="FAL Labs" />
+<meta name="keywords" content="Kyoto Tycoon, kyototycoon, database, DBM" />
+<meta name="description" content="homepage of Kyoto Tycoon" />
+<link rel="contents" href="./" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:info@fallabs.com" />
+<link rel="alternate" href="index.html" lang="en" xml:lang="en" title="the English version" />
+<title>Kyoto Tycoon: キャッシュとストレージの便利サーバ</title>
+<script type="text/javascript">function startup() {
+  if (!navigator) return;
+  var elem = document.getElementById("headline");
+  if (!elem) return;
+  var now = new Date();
+  if ((now.getFullYear() + now.getMonth() + now.getDate() + now.getHours()) % 5 == 0) {
+    var labels = [ "丸太町", "竹屋町", "夷川", "二条", "押小路", "御池", "姉小路", "三条",
+      "六角", "蛸薬師", "錦小路", "四条", "綾小路", "仏光寺", "高辻", "松原", "万寿寺",
+      "五条", "雪駄屋町", "鍵屋町", "魚棚", "六条", "三哲", "七条", "八条", "九条", "十条" ];
+    var label = labels[Math.floor(now.getTime()/3000)%labels.length] + "収納棚";
+    var text = "キャッシュとストレージの便利サーバ";
+    if (now.getDate() % 3 == 0) {
+      label = "京都大君";
+      var texts = [ "丸竹夷二押御池", "姉三六角蛸錦", "四綾仏高松万五条",
+        "雪駄せったちゃらちゃら魚の棚", "六条三哲とおりすぎ",
+        "七条こえれば八九条", "十条東寺でとどめさす" ];
+      text = texts[Math.floor(now.getTime()/10000)%texts.length];
+    }
+    elem.firstChild.nodeValue = label + ": " + text;
+  }
+}
+</script>
+</head>
+
+<body onload="startup();">
+
+<h1 id="headline">Kyoto Tycoon: キャッシュとストレージの便利サーバ</h1>
+
+<div class="note">Copyright (C) 2009-2012 FAL Labs</div>
+<div class="note">Last Update: Fri, 25 May 2012 02:44:22 +0900</div>
+
+<hr />
+
+<h2 id="overview">概要</h2>
+
+<p>Kyoto Tycoonは時限削除機能付きの軽量データベースサーバであり、各種アプリケーションのキャッシュや永続データを取り扱うのに便利です。Kyoto TycoonはKyoto CabinetというDBMのネットワークインターフェイスのパッケージであるとも言えます。DBMは高速かつ並列な動作において優位性がありますが、複数のプロセスで同一のデータベースを共有できないという欠点もあります。そこで、Kyoto TycoonはKyoto Cabinetへの並列かつ遠隔の接続ができるようにするために提供されます。Kyoto Cabinetは複数のデータベースを処理できるサーバプロセスと、それにアクセスするためのクライアントライブラリによって構成されます。</p>
+
+<p>サーバとクライアントの間のネットワークプロトコルはHTTPに基づいているので、各種の言語でクライアントアプリケーションやクライアントライブラリの開発をするのが容易です。GET、HEAD、PUT、DELETEといったメソッドを用いるRESTful風のインターフェイスと、全てをPOSTで扱うRPC風インターフェイスの両方が提供されます。下層のOSが提供するepollやkqueueなどのモダンなイベント通知機構を利用することによって、ひとつのサーバは1万以上のクライアントからの接続を同時に受け付けることができます。ホットバックアップや更新ログや非同期レプリケーションなどの機能によって高可用性を備えた運用を支援します。軽量スクリプト言語であるLuaの処理系を埋め込むことで、サーバ上で任意のデータベース処理を行うことができます。</p>
+
+<p>Kyoto TycoonのサーバはC++言語で記述されています。サーバはC++03とTR1ライブラリ拡張に準拠するAPIを備えた環境にて利用できます。クライアントはHTTPさえ使えればどんな環境でも利用できます。Kyoto CabinetはGNU一般公衆利用許諾に基づいて利用許諾されたフリーソフトウェアです。</p>
+
+<hr />
+
+<h2 id="documents">文書</h2>
+
+<p>以下はKyoto Tycoonの文書群です。これらはソースパッケージにも含まれています。</p>
+
+<ul>
+<li><a href="spex.html">基本仕様書</a></li>
+<li><a href="command.html">コマンドラインの仕様書</a></li>
+<li><a href="api/">コアライブラリ（C/C++）のAPI文書群</a></li>
+<li><a href="luadoc/">スクリプト言語拡張（Lua）のAPI文書群</a></li>
+</ul>
+
+<hr />
+
+<h2 id="packages">パッケージ</h2>
+
+<p>以下はKyoto Tycoonのソースパッケージ群です。バイナリパッケージに関しては、各々の配布者のサイトをご覧ください。</p>
+
+<ul>
+<li><a href="http://fallabs.com/kyototycoon/pkg/">Source Packages of the core library (C/C++)</a></li>
+</ul>
+
+<hr />
+
+<h2 id="information">情報</h2>
+
+<p>Kyoto Cabinetは<a href="http://fallabs.com/">FAL Labs</a>によって開発され保守されています。開発者の連絡先メールアドレスは `info@fallabs.com' です。</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

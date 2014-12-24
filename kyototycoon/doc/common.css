@@ -1,0 +1,221 @@
+/*
+ * Style Sheets commonly used by documents of Kyoto Cabinet
+ */
+
+html {
+  margin: 0ex 0ex;
+  padding: 0ex 0ex;
+  text-align:center;
+  background: #f8f8f8 none;
+}
+body {
+  display: inline-block;
+  text-align: left;
+  max-width: 100ex;
+  margin: 1ex 1ex;
+  padding: 0ex 0ex;
+  color: #111111;
+}
+
+hr {
+  margin: 4.0ex 0ex 1.5ex 0ex;
+  height: 1px;
+  border: none;
+  background: #999999 none;
+  color: #999999;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: bold;
+}
+h1 {
+  margin: 2.0ex 0ex 1.3ex 0ex;
+  padding: 0ex 0ex;
+  font-size: 130%;
+  color: #000000;
+}
+h2 {
+  margin: 2.0ex 0ex 1.0ex 0.2ex;
+  padding: 0.5ex 0.8ex;
+  border-left: solid 0.8ex #889999;
+  border-bottom: solid 1px #cccccc;
+  font-size: 125%;
+  color: #000011;
+}
+h3 {
+  margin: 1.6ex 0ex 0.5ex 0.2ex;
+  padding: 0ex 0ex;
+  font-size: 105%;
+  color: #001111;
+}
+
+p {
+  margin: 0.8ex 0ex;
+  line-height: 140%;
+  text-indent: 1.4ex;
+}
+
+div,pre,table {
+  margin: 0.8ex 1.5ex;
+}
+
+div.note,div.navi {
+  text-align: right;
+  margin: 0ex 0.5ex;
+  color: #333333;
+}
+span.void {
+  color: #888888;
+}
+
+div.logo {
+  text-align: center;
+  margin: 4ex 0ex;
+}
+div.logo img {
+  border: inset 2px #ccccdd;
+}
+div.illust {
+  margin: 1ex 0ex;
+  text-align: center;
+}
+div.illust img {
+  border: solid 1px #ccccdd;
+}
+
+pre {
+  padding: 0.2ex;
+  background-color: #eeeef8;
+  border: 1px solid #ddddee;
+  font-size: 90%;
+}
+
+li,dt,dd {
+  line-height: 130%;
+}
+dt {
+  margin-left: 2.0ex;
+}
+dd {
+  margin-left: 4.0ex;
+  text-indent: -0.5ex;
+}
+dl.api dd {
+  margin-left: 5.0ex;
+  font-size: 95%;
+  color: #333333;
+}
+ul {
+  margin: 0.8ex 4.0ex;
+  padding: 0ex;
+}
+ul.options {
+  list-style-type: none;
+  margin: 0.8ex 3.0ex;
+  font-size: 95%;
+  color: #333333;
+}
+ul ul {
+  margin-top: 0ex;
+  margin-bottom: 0ex;
+}
+
+table {
+  border-collapse: collapse;
+}
+th,td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.2ex 0.8ex;
+}
+td {
+  border: solid 1px #aaaabb;
+  font-size: 95%;
+}
+td.label {
+  border: none;
+  font-size: 80%;
+  color: #333333;
+}
+td.number {
+  text-align: right;
+}
+td div {
+  margin: 0ex;
+}
+
+a {
+  color: #0022aa;
+  text-decoration: none;
+}
+a:hover,a:focus {
+  color: #0033ee;
+  text-decoration: underline;
+}
+code,kbd {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 100%;
+  color: #001111;
+}
+var {
+  padding: 0ex 0.25ex 0ex 0ex;
+  font-style: italic;
+  color: #001122;
+}
+
+@media (max-device-width:480px) {
+  body {
+    max-width: none;
+    margin: 2ex 2ex;
+  }
+}
+
+@media print {
+  html,body {
+    margin: 0ex 0ex;
+    background-color: #ffffff;
+    color: #000000;
+  }
+  h1 {
+    padding: 8ex 0ex 0.5ex 0ex;
+    text-align: center;
+  }
+  h2 {
+    page-break-before: always;
+  }
+  div.note {
+    text-align: center;
+  }
+  div.navi,div.logo {
+    display: none;
+  }
+  hr {
+    display: none;
+  }
+  pre {
+    margin: 1.2ex 1.2ex;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+  }
+  a,code,kbd {
+    color: #000000;
+    text-decoration: none;
+  }
+  h1,h2,h3 {
+    font-family: sans-serif;
+  }
+  p,div,li,dt,dd {
+    font-family: serif;
+  }
+  pre,code,kbd {
+    font-family: monospace;
+  }
+  dd {
+    font-size: 90%;
+  }
+}
+
+
+
+/* END OF FILE */

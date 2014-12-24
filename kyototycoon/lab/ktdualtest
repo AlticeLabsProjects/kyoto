@@ -1,0 +1,89 @@
+#! /bin/sh
+
+#----------------------------------------------------------------
+# Startup script to test of dual master settings of Kyoto Tycoon
+#----------------------------------------------------------------
+
+
+# configuration variables
+prog="ktservctl"
+basedir=`pwd`
+kchopts="#bnum=10m#msiz=1g"
+kctopts="#bnum=1m#msiz=1g"
+retval=0
+
+# setting environment variables
+LANG=C
+LC_ALL=C
+PATH="$PATH:/sbin:/usr/sbin:/usr/local/sbin:."
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:."
+export LANG LC_ALL PATH LD_LIBRARY_PATH
+
+
+# start the server
+start(){
+  rm -rf *.kch *.kct *.log *-ulog *.rts
+  ktserver -port 1978 -log "$basedir/0001.log" -ls \
+    -ulog "$basedir/0001-ulog" -ulim 10m -sid 1 \
+    -dmn -pid "$basedir/0001.pid" \
+    -mhost localhost -mport 1979 -rts "$basedir/0001.rts" -riv 0 \
+    -cmd "$basedir/lab" "$basedir/0001-01.kch$kchopts" "$basedir/0001-02.kct$kctopts"
+  ktserver -port 1979 -log "$basedir/0002.log" -ls \
+    -ulog "$basedir/0002-ulog" -ulim 10m -sid 2 \
+    -dmn -pid "$basedir/0002.pid" \
+    -mhost localhost -mport 1978 -rts "$basedir/0002.rts" -riv 0 \
+    -cmd "$basedir/lab" "$basedir/0002-01.kch$kchopts" "$basedir/0002-02.kct$kctopts"
+  sleep 1
+  printf "0001: %s\n" "`cat 0001.pid`"
+  printf "0002: %s\n" "`cat 0002.pid`"
+}
+
+
+# stop the server
+stop(){
+  pid=`cat 0001.pid`
+  [ -n "$pid" ] && kill -TERM "$pid"
+  pid=`cat 0002.pid`
+  [ -n "$pid" ] && kill -TERM "$pid"
+  sleep 3
+}
+
+
+# send HUP to the server for log rotation
+hup(){
+  pid=`cat 0001.pid`
+  [ -n "$pid" ] && kill -HUP "$pid"
+  pid=`cat 0002.pid`
+  [ -n "$pid" ] && kill -HUP "$pid"
+  sleep 3
+}
+
+
+# dispatch the command
+case "$1" in
+start)
+  start
+  ;;
+stop)
+  stop
+  ;;
+restart)
+  stop
+  start
+  ;;
+hup)
+  hup
+  ;;
+*)
+  printf 'Usage: %s {start|stop|restart|hup}\n' "$prog"
+  exit 1
+  ;;
+esac
+
+
+# exit
+exit "$retval"
+
+
+
+# END OF FILE

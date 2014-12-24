@@ -1,0 +1,113 @@
+/*************************************************************************************************
+ * IDL for bindings of scripting languages
+ *                                                               Copyright (C) 2009-2012 FAL Labs
+ * This file is part of Kyoto Tycoon.
+ * This program is free software: you can redistribute it and/or modify it under the terms of
+ * the GNU General Public License as published by the Free Software Foundation, either version
+ * 3 of the License, or any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ *************************************************************************************************/
+
+
+/**
+ * namespace of Kyoto Tycoon
+ */
+module kyototycoon {
+  //----------------------------------------------------------------
+  // prediction
+  //----------------------------------------------------------------
+  interface List;
+  interface Map;
+  interface Error;
+  interface Cursor;
+  interface DB;
+  //----------------------------------------------------------------
+  // list of strings (substituted by the native mechanism)
+  //----------------------------------------------------------------
+  interface List {
+    string get(in long index);
+  };
+  //----------------------------------------------------------------
+  // map of strings (substituted by the native mechanism)
+  //----------------------------------------------------------------
+  interface Map {
+    string get(in string key);
+  };
+  //----------------------------------------------------------------
+  // error information
+  //----------------------------------------------------------------
+  interface Error {
+    const long SUCCESS = 0;
+    const long NOIMPL = 1;
+    const long INVALID  = 2;
+    const long LOGIC = 3;
+    const long INTERNAL = 4;
+    const long NETWORK = 5;
+    const long EMISC = 15;
+    long code();
+    string name();
+    string message();
+  };
+  //----------------------------------------------------------------
+  // cursor
+  //----------------------------------------------------------------
+  interface Cursor {
+    boolean set_value(in string value, in long long xt, in boolean step);
+    boolean remove();
+    string get_key(in boolean step);
+    string get_value(in boolean step);
+    boolean jump();
+    boolean jump_(in string key);
+    boolean jump_back();
+    boolean jump_back_(in string key);
+    boolean step();
+    boolean step_back();
+    DB db();
+    Error error();
+  };
+  //----------------------------------------------------------------
+  // common database operations
+  //----------------------------------------------------------------
+  interface DB {
+    Error error();
+    boolean open(in string host, in long port, in double timeout);
+    boolean close();
+    Map report();
+    Map play_script(in string name, in Map args);
+    boolean tune_replication(in string host, in long port, in long long ts, in double iv);
+    List ulog_list();
+    boolean ulog_remove(in long long ts);
+    Map status();
+    boolean clear();
+    long long count();
+    long long size();
+    boolean set(in string key, in string value, in long long xt);
+    boolean add(in string key, in string value, in long long xt);
+    boolean replace(in string key, in string value, in long long xt);
+    boolean append(in string key, in string value, in long long xt);
+    long long increment(in string key, in long long num, in long long orig, in long long xt);
+    double increment_double(in string key, in double num, in double orig, in long long xt);
+    boolean cas(in string key, in string oval, in string nval, in long long xt);
+    boolean remove(in string key);
+    string get(in string key);
+    string seize(in string key);
+    long long set_bulk(in Map recs, in long long xt);
+    long long remove_bulk(in List keys);
+    Map get_bulk(in List keys);
+    boolean vacuum(in long long steps);
+    List match_prefix(in string prefix, in long long max);
+    List match_regex(in string regex, in long long max);
+    List match_similar(in string origin, in long long range, in boolean utf, in long long max);
+    void set_target(in string expr);
+    string expression();
+    Cursor cursor();
+  };
+};
+
+
+
+/* END OF FILE */

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="FAL Labs" />
+<meta name="keywords" content="Kyoto Tycoon, kyototycoon, database, DBM" />
+<meta name="description" content="homepage of Kyoto Tycoon" />
+<link rel="contents" href="./" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:info@fallabs.com" />
+<link rel="alternate" href="index.ja.html" lang="ja" xml:lang="ja" title="the Japanese version" />
+<title>Kyoto Tycoon: a handy cache/storage server</title>
+<script type="text/javascript">function startup() {
+  if (!navigator) return;
+  var elem = document.getElementById("headline");
+  if (!elem) return;
+  var now = new Date();
+  if ((now.getFullYear() + now.getMonth() + now.getDate() + now.getHours()) % 5 == 0) {
+    var labels = [ "Marutamachi", "Takeyamachi", "Ebisugawa", "Nijo", "Oshikoji", "Oike",
+      "Anekoji", "Sanjo", "Rokkaku", "Takoyakushi", "Nishikikoji", "Shijo", "Ayanokoji",
+      "Bukkoji", "Takatsuji", "Matsubara", "Manjuji", "Gojo", "Settayacho", "Kagiyamachi",
+      "Uonotana", "Rokujo", "Santetsu", "Hiccho", "Haccho", "Kujo", "Jujo" ];
+    var label = labels[Math.floor(now.getTime()/3000)%labels.length] + " Cabinet";
+    var text = "a handy cache/storage server";
+    if (now.getDate() % 3 == 0) {
+      label = "Kyoto Tycoon";
+      var texts = [ "Maru Take Ebisu Ni Oshi Oike", "Ane San Rokkaku Tako Nishiki",
+        "Shi Aya Bu tTaka Matsu Man Gojo", "Setta Charachara Uonotana",
+        "Rokujo Santetsu torisugi", "Hiccho koereba Hachi Kujo", "Jujo tojidetodomesasu" ];
+      text = texts[Math.floor(now.getTime()/10000)%texts.length];
+    }
+    elem.firstChild.nodeValue = label + ": " + text;
+  }
+}
+</script>
+</head>
+
+<body onload="startup();">
+
+<h1 id="headline">Kyoto Tycoon: a handy cache/storage server</h1>
+
+<div class="note">Copyright (C) 2009-2012 FAL Labs</div>
+<div class="note">Last Update: Fri, 25 May 2012 02:44:22 +0900</div>
+
+<hr />
+
+<h2 id="overview">Overview</h2>
+
+<p>Kyoto Tycoon is a lightweight database server with auto expiration mechanism, which is useful to handle cache data and persistent data of various applications.  Kyoto Tycoon is also a package of network interface to the DBM called Kyoto Cabinet.  Though the DBM has high performance and high concurrency, you might bother in case that multiple processes share the same database, or remote processes access the database.  Thus, Kyoto Tycoon is provided for concurrent and remote connections to Kyoto Cabinet.  Kyoto Tycoon is composed of the server process managing multiple databases and its access library for client applications.</p>
+
+<p>The network protocol between the server and clients is HTTP so that you can write client applications and client libraries in almost all popular languages.  Both of RESTful-style interface by the GET, HEAD, PUT, DELETE methods and RPC-style inteface by the POST method are supported.  The server can handle more than 10 thousand connections at the same time because it uses modern I/O event notification facilities such as "epoll" and "kqueue" of underlying systems.  The server supports high availability mechanisms, which are hot backup, update logging, and asynchronous replication.  The server can embed Lua, a lightweight script language so that you can define arbitrary operations of the database.</p>
+
+<p>The server program of Kyoto Tycoon is written in the C++ language.  It is available on platforms which have API conforming to C++03 with the TR1 library extensions.  Kyoto Tycoon is a free software licensed under the GNU General Public License.</p>
+
+<hr />
+
+<h2 id="documents">Documents</h2>
+
+<p>The following are documents of Kyoto Tycoon.  They are contained also in the source package.</p>
+
+<ul>
+<li><a href="spex.html">Fundamental Specifications</a></li>
+<li><a href="command.html">Specifications of Command Line Utilities</a></li>
+<li><a href="api/">API Documents of the core library (C/C++)</a></li>
+<li><a href="luadoc/">API Documents of the scripting extension (Lua)</a></li>
+</ul>
+
+<hr />
+
+<h2 id="packages">Packages</h2>
+
+<p>The following are the source packages of Kyoto Tycoon.  As for binary packages, see the site of each distributor.</p>
+
+<ul>
+<li><a href="http://fallabs.com/kyototycoon/pkg/">Source Packages of the core library (C/C++)</a></li>
+</ul>
+
+<hr />
+
+<h2 id="information">Information</h2>
+
+<p>Kyoto Tycoon was written and is maintained by <a href="http://fallabs.com/">FAL Labs</a>.  You can contact the author by e-mail to `info@fallabs.com'.</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

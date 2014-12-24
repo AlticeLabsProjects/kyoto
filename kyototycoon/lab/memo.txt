@@ -1,0 +1,76 @@
+================================================================
+ Easy way to check replication functionality
+================================================================
+
+
+
+[clean-up]
+----------------------------------------------------------------
+
+$ killall ktserver
+$ rm -rf *-ulog *.pid *.rts casket*
+
+----------------------------------------------------------------
+
+
+
+[Server 1]
+----------------------------------------------------------------
+
+- start the server
+$ ./ktserver -port 2001 -ulog 2001-ulog -ulim 5m -sid 2001 -pid 2001.pid -mhost localhost -mport 2002 -rts 2001.rts -cmd ./lab casket-2001.kch
+
+----------------------------------------------------------------
+
+
+
+[Server 2]
+----------------------------------------------------------------
+
+- start the server
+$ ./ktserver -port 2002 -ulog 2002-ulog -ulim 5m -sid 2002 -pid 2002.pid -mhost localhost -mport 2001 -rts 2002.rts -cmd ./lab casket-2002.kch
+
+----------------------------------------------------------------
+
+
+
+[Client 1]
+----------------------------------------------------------------
+
+- make a million records and their update logs on server 1
+$ ./ktremotetest bulk -bulk 100 -bin -set -port 2001 1000000
+
+- wait until the server 2 has about 0.5 million records checking the number of records
+$ ./ktremotemgr inform -port 2002
+
+- create the backup file
+$ ./ktremotemgr sync -cmd dbbackup -port 2002
+
+- kill the server 2 immediately
+
+- copy the backup file (casket-2002.kch.*) as the original database
+$ cp casket-2002.kch.* casket-2002.kch
+
+- write the timestamp file from the timestamp of the backup file
+$ ls casket-2002.kch.*
+$ echo 0123xxxxxxx > 2002.rts
+
+- restart the server 2
+- check if the number of records becomes 1000000
+
+- kill the server 2
+
+- check the update log files on the server 1
+$ ./ktremotemgr slave -port 2001 -uf
+
+- remove update log files older than the timestamp of the backup
+$ ls casket-2002.kch.*
+$ ./ktremotemgr slave -port 2001 -ur -ts 0123xxxx
+
+- check again
+$ ./ktremotemgr slave -port 2001 -uf
+
+- do the above recovery process again
+- check if the number of records becomes 1000000
+
+----------------------------------------------------------------

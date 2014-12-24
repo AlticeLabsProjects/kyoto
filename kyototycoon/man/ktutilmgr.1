@@ -1,0 +1,105 @@
+.TH "KTUTILMGR" 1 "2012-05-25" "Man Page" "Kyoto Tycoon"
+
+.SH NAME
+ktutilmgr \- command line interface of miscellaneous utilities
+
+.SH DESCRIPTION
+.PP
+The command `\fBktutilmgr\fR' is a tool of miscellaneous utilities, and to show the configuration.  This command is used in the following format.  `\fIurl\fR' specifies the target URL.  `\fIproc\fR' specifies the name of the procedure to call.  `\fIname\fR' and `\fIvalue\fR' specify a pair of the key and the value of an input parameter.  `\fIpath\fR' specifies the path of a repository.
+.PP
+.RS
+.br
+\fBktutilmgr date \fR[\fB\-ds \fIstr\fB\fR]\fB \fR[\fB\-jl \fInum\fB\fR]\fB \fR[\fB\-wf\fR]\fB \fR[\fB\-rf\fR]\fB\fR
+.RS
+Prints date information.  By default, prints the current UNIX time.
+.RE
+.br
+\fBktutilmgr http \fR[\fB\-get\fR|\fB\-head\fR|\fB\-post\fR|\fB\-put\fR|\fB\-delete\fR]\fB \fR[\fB\-body \fIfile\fB\fR]\fB \fR[\fB\-ah \fIname\fB \fIvalue\fB\fR]\fB \fR[\fB\-qs \fIname\fB \fIvalue\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-ph\fR]\fB \fR[\fB\-ec \fInum\fB\fR]\fB \fIurl\fB\fR
+.RS
+Performs an HTTP session.
+.RE
+.br
+\fBktutilmgr rpc \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-ienc \fIstr\fB\fR]\fB \fR[\fB\-oenc \fIstr\fB\fR]\fB \fIproc\fB \fR[\fB\fIname\fB \fIvalue\fB ...\fR]\fB\fR
+.RS
+Performs an RPC session.
+.RE
+.br
+\fBktutilmgr ulog \fR[\fB\-ts \fInum\fB\fR]\fB \fR[\fB\-uw\fR]\fB \fR[\fB\-uf\fR]\fB \fIpath\fB\fR
+.RS
+Prints update logs.
+.RE
+.br
+\fBktutilmgr conf \fR[\fB\-v\fR|\fB\-i\fR|\fB\-l\fR|\fB\-p\fR]\fB\fR
+.RS
+Shows the configuration of Kyoto Tycoon.
+.RE
+.br
+\fBktutilmgr version\fR
+.RS
+Shows the version information of Kyoto Tycoon.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-ds \fIstr\fR\fR : specifies the datetime string.
+.br
+\fB\-jl \fInum\fR\fR : specifies the jet lag.
+.br
+\fB\-wf\fR : formats the output in W3CDTF.
+.br
+\fB\-rf\fR : formats the output in RFC 1123 format.
+.br
+\fB\-get\fR : uses the GET method.
+.br
+\fB\-head\fR : uses the HEAD method.
+.br
+\fB\-post\fR : uses the POST method.
+.br
+\fB\-put\fR : uses the PUT method.
+.br
+\fB\-delete\fR : uses the DELETE method.
+.br
+\fB\-body \fIfile\fR\fR : sends the entity body of the content the file.
+.br
+\fB\-ah \fIname\fR \fIvalue\fR\fR : adds an HTTP header.
+.br
+\fB\-qs \fIname\fR \fIvalue\fR\fR : adds a key/value pair to the query string.
+.br
+\fB\-tout \fInum\fR\fR : specifies the timeout in seconds.
+.br
+\fB\-ph\fR : prints response headers.
+.br
+\fB\-ec \fInum\fR\fR : reports error if the response code is not the same as the expected.
+.br
+\fB\-host \fIstr\fR\fR : specifies the host name of the server.
+.br
+\fB\-port \fInum\fR\fR : specifies the port number of the server.
+.br
+\fB\-ienc \fIstr\fR\fR : specifies the encoding of the input data.
+.br
+\fB\-oenc \fIstr\fR\fR : specifies the encoding of the output data.
+.br
+\fB\-ts \fInum\fR\fR : specifies the maximum time stamp of already read logs.  "now" means the current time stamp.
+.br
+\fB\-uw\fR : waits for update forever.
+.br
+\fB\-uf\fR : prints status of each update log file.
+.br
+\fB\-v\fR : show the version number of Kyoto Tycoon.
+.br
+\fB\-i\fR : show options to include the headers of Tokyo Tycoon.
+.br
+\fB\-l\fR : show options to link the library of Tokyo Tycoon.
+.br
+\fB\-p\fR : show the directory path of the commands.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR ktutiltest (1),
+.BR ktutilserv (1)

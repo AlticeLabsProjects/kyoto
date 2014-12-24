@@ -1,0 +1,76 @@
+.TH "KTREMOTETEST" 1 "2012-05-25" "Man Page" "Kyoto Tycoon"
+
+.SH NAME
+ktremotetest \- command line interface to test the remote database
+
+.SH DESCRIPTION
+.PP
+The command `\fBktremotetest\fR' is a utility for facility test and performance test of the remote database.  This command is used in the following format.  `\fIrnum\fR' specifies the number of iterations.
+.PP
+.RS
+.br
+\fBktremotetest order \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-set\fR|\fB\-get\fR|\fB\-rem\fR|\fB\-etc\fR]\fB \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fIrnum\fB\fR
+.RS
+Performs in\-order tests.
+.RE
+.br
+\fBktremotetest bulk \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-set\fR|\fB\-get\fR|\fB\-rem\fR|\fB\-etc\fR]\fB \fR[\fB\-bulk \fInum\fB\fR]\fB \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bnr\fR]\fB \fIrnum\fB\fR
+.RS
+Performs bulk operation tests.
+.RE
+.br
+\fBktremotetest wicked \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fIrnum\fB\fR
+.RS
+Performs mixed operations selected at random.
+.RE
+.br
+\fBktremotetest usual \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-kp \fInum\fB\fR]\fB \fR[\fB\-vs \fInum\fB\fR]\fB \fR[\fB\-xt \fInum\fB\fR]\fB \fR[\fB\-iv \fInum\fB\fR]\fB \fIrnum\fB\fR
+.RS
+Performs mixed operations to simulate usual use cases.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-th \fInum\fR\fR : specifies the number of worker threads.
+.br
+\fB\-rnd\fR : performs random test.
+.br
+\fB\-set\fR : performs setting operation only.
+.br
+\fB\-get\fR : performs getting operation only.
+.br
+\fB\-rem\fR : performs removing operation only.
+.br
+\fB\-etc\fR : performs miscellaneous operations.
+.br
+\fB\-host \fIstr\fR\fR : specifies the host name of the server.
+.br
+\fB\-port \fInum\fR\fR : specifies the port number of the server.
+.br
+\fB\-tout \fInum\fR\fR : specifies the timeout in seconds.
+.br
+\fB\-bin\fR : uses the binary protocol.
+.br
+\fB\-bulk \fInum\fR\fR : specifies the number of records in a bulk operation.
+.br
+\fB\-bnr\fR : enables the no\-reply option in the binary protocol.
+.br
+\fB\-it \fInum\fR\fR : specifies the number of repetition.
+.br
+\fB\-kp \fInum\fR\fR : specifies the number of patterns of keys.
+.br
+\fB\-vs \fInum\fR\fR : specifies the size of each value.
+.br
+\fB\-xt \fInum\fR\fR : specifies the expiration date.
+.br
+\fB\-iv \fInum\fR\fR : specifies the interval of each operation in milliseconds.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR ktremotemgr (1)

@@ -1,0 +1,66 @@
+.TH "KTUTILTEST" 1 "2012-05-25" "Man Page" "Kyoto Tycoon"
+
+.SH NAME
+ktutiltest \- command line interface to test the utility functions
+
+.SH DESCRIPTION
+.PP
+The command `\fBktutiltest\fR' is a utility for facility test and performance test of the utility functions.  This command is used in the following format.  `\fIurl\fR' specifies the target URL.  `\fIrnum\fR' specifies the number of iterations.  `\fIproc\fR' specifies the name of the procedure to call.  `\fIname\fR' and `\fIvalue\fR' specify a pair of the key and the value of an input parameter.  `\fIpath\fR' specifies the path of a repository.
+.PP
+.RS
+.br
+\fBktutiltest http \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-get\fR|\fB\-head\fR|\fB\-post\fR|\fB\-put\fR|\fB\-delete\fR]\fB \fR[\fB\-body \fIfile\fB\fR]\fB \fR[\fB\-ah \fIname\fB \fIvalue\fB\fR]\fB \fR[\fB\-qs \fIname\fB \fIvalue\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-ka\fR]\fB \fIurl\fB \fIrnum\fB\fR
+.RS
+Performs test of HTTP sessions.
+.RE
+.br
+\fBktutiltest rpc \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fIproc\fB \fIrnum\fB \fR[\fB\fIname\fB \fIvalue\fB ...\fR]\fB\fR
+.RS
+Performs test of RPC sessions.
+.RE
+.br
+\fBktutiltest ulog \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-ulim \fInum\fB\fR]\fB \fIpath\fB \fIrnum\fB \fR[\fB\fIname\fB \fIvalue\fB ...\fR]\fB\fR
+.RS
+Performs test of update logging.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-th \fInum\fR\fR : specifies the number of worker threads.
+.br
+\fB\-get\fR : uses the GET method.
+.br
+\fB\-head\fR : uses the HEAD method.
+.br
+\fB\-post\fR : uses the POST method.
+.br
+\fB\-put\fR : uses the PUT method.
+.br
+\fB\-delete\fR : uses the DELETE method.
+.br
+\fB\-body \fIfile\fR\fR : sends the entity body of the content the file.
+.br
+\fB\-ah \fIname\fR \fIvalue\fR\fR : adds an HTTP header.
+.br
+\fB\-qs \fIname\fR \fIvalue\fR\fR : adds a key/value pair to the query string.
+.br
+\fB\-tout \fInum\fR\fR : specifies the timeout in seconds.
+.br
+\fB\-ka\fR : use keep\-alive connection.
+.br
+\fB\-host \fIstr\fR\fR : specifies the host name of the server.
+.br
+\fB\-port \fInum\fR\fR : specifies the port number of the server.
+.br
+\fB\-ulim \fInum\fR\fR : specifies the limit size of each update log file.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR ktutilmgr (1),
+.BR ktutilserv (1)

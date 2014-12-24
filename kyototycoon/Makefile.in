@@ -1,0 +1,581 @@
+# Makefile for Kyoto Tycoon
+
+
+
+#================================================================
+# Setting Variables
+#================================================================
+
+
+# Generic settings
+SHELL = @SHELL@
+
+# Package information
+PACKAGE = @PACKAGE_NAME@
+PACKAGE_TARNAME = @PACKAGE_TARNAME@
+VERSION = @PACKAGE_VERSION@
+PACKAGEDIR = $(PACKAGE)-$(VERSION)
+PACKAGETGZ = $(PACKAGE)-$(VERSION).tar.gz
+LIBVER = @MYLIBVER@
+LIBREV = @MYLIBREV@
+
+# Targets
+HEADERFILES = @MYHEADERFILES@
+LIBRARYFILES = @MYLIBRARYFILES@
+LIBOBJFILES = @MYLIBOBJFILES@
+SHLIBFILES = @MYSHLIBFILES@
+COMMANDFILES = @MYCOMMANDFILES@
+MAN1FILES = @MYMAN1FILES@
+DOCUMENTFILES = @MYDOCUMENTFILES@
+PCFILES = @MYPCFILES@
+
+# Install destinations
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+datarootdir = @datarootdir@
+INCLUDEDIR = @includedir@
+LIBDIR = @libdir@
+BINDIR = @bindir@
+LIBEXECDIR = @libexecdir@
+DATADIR = @datadir@/$(PACKAGE)
+MAN1DIR = @mandir@/man1
+DOCDIR = @docdir@
+PCDIR = @libdir@/pkgconfig
+DESTDIR =
+
+# Building configuration
+CC = @CC@
+CXX = @CXX@
+CPPFLAGS = @MYCPPFLAGS@ \
+  -D_KT_PREFIX="\"$(prefix)\"" -D_KT_INCLUDEDIR="\"$(INCLUDEDIR)\"" \
+  -D_KT_LIBDIR="\"$(LIBDIR)\"" -D_KT_BINDIR="\"$(BINDIR)\"" -D_KT_LIBEXECDIR="\"$(LIBEXECDIR)\"" \
+  -D_KT_APPINC="\"-I$(INCLUDEDIR)\"" -D_KT_APPLIBS="\"-L$(LIBDIR) -lkyototycoon @LIBS@\""
+CFLAGS = @MYCFLAGS@
+CXXFLAGS = @MYCXXFLAGS@
+LDFLAGS = @MYLDFLAGS@
+CMDLDFLAGS = @MYCMDLDFLAGS@
+CMDLIBS = @MYCMDLIBS@
+LIBS = @LIBS@
+RUNENV = @MYLDLIBPATHENV@=@MYLDLIBPATH@
+POSTCMD = @MYPOSTCMD@
+
+
+
+#================================================================
+# Suffix rules
+#================================================================
+
+
+.SUFFIXES :
+.SUFFIXES : .c .cc .o
+
+.c.o :
+	$(CC) -c $(CPPFLAGS) $(CFLAGS) $<
+
+.cc.o :
+	$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) $<
+
+
+
+#================================================================
+# Actions
+#================================================================
+
+
+all : $(LIBRARYFILES) $(SHLIBFILES) $(COMMANDFILES)
+	@$(POSTCMD)
+	@printf '\n'
+	@printf '#================================================================\n'
+	@printf '# Ready to install.\n'
+	@printf '#================================================================\n'
+
+
+clean :
+	rm -rf $(LIBRARYFILES) $(LIBOBJFILES) $(SHLIBFILES) $(COMMANDFILES) $(CGIFILES) \
+	  *.o *.gch a.out check.in check.out gmon.out *.log *.vlog words.tsv \
+	  casket* *.kch *.kct *.kcd *.kcf *.wal *.tmpkc* *.kcss *.ktss *.pid *-ulog *.rts \
+	  *~ hoge moge tako ika
+
+
+version :
+	sed -e 's/_KT_VERSION.*/_KT_VERSION    "$(VERSION)"/' \
+	  -e "s/_KT_LIBVER.*/_KT_LIBVER     $(LIBVER)/" \
+	  -e "s/_KT_LIBREV.*/_KT_LIBREV     $(LIBREV)/" myconf.h > myconf.h~
+	[ -f myconf.h~ ] && mv -f myconf.h~ myconf.h
+
+
+untabify :
+	ls *.cc *.h *.idl | while read name ; \
+	  do \
+	    sed -e 's/\t/        /g' -e 's/ *$$//' $$name > $$name~; \
+	    [ -f $$name~ ] && mv -f $$name~ $$name ; \
+	  done
+
+
+install :
+	mkdir -p $(DESTDIR)$(INCLUDEDIR)
+	cp -Rf $(HEADERFILES) $(DESTDIR)$(INCLUDEDIR)
+	mkdir -p $(DESTDIR)$(LIBDIR)
+	cp -Rf $(LIBRARYFILES) $(DESTDIR)$(LIBDIR)
+	mkdir -p $(DESTDIR)$(LIBEXECDIR)
+	cp -Rf $(SHLIBFILES) $(DESTDIR)$(LIBEXECDIR)
+	mkdir -p $(DESTDIR)$(BINDIR)
+	cp -Rf $(COMMANDFILES) $(DESTDIR)$(BINDIR)
+	mkdir -p $(DESTDIR)$(MAN1DIR)
+	cd man && cp -Rf $(MAN1FILES) $(DESTDIR)$(MAN1DIR)
+	mkdir -p $(DESTDIR)$(DOCDIR)
+	cp -Rf $(DOCUMENTFILES) $(DESTDIR)$(DOCDIR)
+	mkdir -p $(DESTDIR)$(PCDIR)
+	cp -Rf $(PCFILES) $(DESTDIR)$(PCDIR)
+	@printf '\n'
+	@printf '#================================================================\n'
+	@printf '# Thanks for using Kyoto Tycoon.\n'
+	@printf '#================================================================\n'
+
+
+install-strip :
+	$(MAKE) DESTDIR=$(DESTDIR) install
+	cd $(DESTDIR)$(BINDIR) && strip $(COMMANDFILES)
+
+
+uninstall :
+	-cd $(DESTDIR)$(INCLUDEDIR) && rm -f $(HEADERFILES)
+	-cd $(DESTDIR)$(LIBDIR) && rm -f $(LIBRARYFILES)
+	-cd $(DESTDIR)$(LIBEXECDIR) && rm -f $(SHLIBFILES)
+	-cd $(DESTDIR)$(BINDIR) && rm -f $(COMMANDFILES)
+	-cd $(DESTDIR)$(MAN1DIR) && rm -f $(MAN1FILES)
+	-cd $(DESTDIR)$(DOCDIR) && rm -rf $(DOCUMENTFILES) && rmdir $(DOCDIR)
+	-cd $(DESTDIR)$(PCDIR) && rm -f $(PCFILES)
+
+
+dist :
+	$(MAKE) version
+	$(MAKE) untabify
+	$(MAKE) distclean
+	cd .. && tar cvf - $(PACKAGEDIR) | gzip -c > $(PACKAGETGZ)
+	sync ; sync
+
+
+distclean : clean
+	cd example && $(MAKE) clean
+	rm -rf Makefile kyototycoon.pc \
+	  config.cache config.log config.status config.tmp autom4te.cache
+
+
+check :
+	$(MAKE) check-util
+	$(MAKE) check-timed
+	rm -rf casket* *-ulog
+	@printf '\n'
+	@printf '#================================================================\n'
+	@printf '# Checking completed.\n'
+	@printf '#================================================================\n'
+
+
+check-util :
+	rm -rf casket* *-ulog
+	$(RUNENV) $(RUNCMD) ./ktutilmgr version
+	$(RUNENV) $(RUNCMD) ./ktutilmgr date -ds '1978-02-11T18:05:00+09:00' -wf
+	$(RUNENV) $(RUNCMD) ./ktutilmgr date -ds '1977-10-07T12:00:00+09:00' -rf
+	rm -rf *-ulog
+	$(RUNENV) $(RUNCMD) ./ktutiltest ulog -ulim 100k 0001-ulog 50000
+	rm -rf *-ulog
+	$(RUNENV) $(RUNCMD) ./ktutiltest ulog -th 4 -ulim 100k 0001-ulog 50000
+	$(RUNENV) $(RUNCMD) ./ktutiltest ulog -th 2 -ulim 100k 0001-ulog 50000
+	$(RUNENV) $(RUNCMD) ./ktutilmgr ulog -ts 1234 0001-ulog > check.out
+	$(RUNENV) $(RUNCMD) ./ktutilmgr ulog -ts 1234 -uf 0001-ulog > check.out
+
+
+check-timed :
+	rm -rf casket* *-ulog
+	$(RUNENV) $(RUNCMD) ./kttimedmgr create -otr "casket.kch#apow=1#fpow=2#bnum=3"
+	$(RUNENV) $(RUNCMD) ./kttimedmgr inform -st casket.kch
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -add -xt 3600 casket.kch duffy 1231
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -add -xt 3600 casket.kch micky 0101
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt 3600 casket.kch fal 1007
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt 3600 casket.kch mikio 0211
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt 3600 casket.kch natsuki 0810
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt 3600 casket.kch micky ""
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -app -xt 3600 casket.kch duffy kukuku
+	$(RUNENV) $(RUNCMD) ./kttimedmgr remove casket.kch micky
+	$(RUNENV) $(RUNCMD) ./kttimedmgr list -pv -pt casket.kch > check.out
+	$(RUNENV) $(RUNCMD) ./kttimedmgr copy casket.kch casket-para
+	$(RUNENV) $(RUNCMD) ./kttimedmgr dump casket.kch check.out
+	$(RUNENV) $(RUNCMD) ./kttimedmgr load -otr casket.kch check.out
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt -9876543210 casket.kch ryu 1
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt -9876543210 casket.kch ken 2
+	$(RUNENV) $(RUNCMD) ./kttimedmgr remove casket.kch duffy
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt 3600 casket.kch ryu syo-ryu-ken
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -xt 3600 casket.kch ken tatsumaki-senpu-kyaku
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -inci -xt 3600 casket.kch int 1234
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -inci -xt 3600 casket.kch int 5678
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -incd -xt 3600 casket.kch double 1234.5678
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -incd -xt 3600 casket.kch double 8765.4321
+	$(RUNENV) $(RUNCMD) ./kttimedmgr get -pt casket.kch mikio
+	$(RUNENV) $(RUNCMD) ./kttimedmgr get -pt casket.kch ryu
+	$(RUNENV) $(RUNCMD) ./kttimedmgr import -xt 60 casket.kch lab/numbers.tsv
+	$(RUNENV) $(RUNCMD) ./kttimedmgr list -pv -pt -px "casket.kch#mode=r" > check.out
+	$(RUNENV) $(RUNCMD) ./kttimedmgr vacuum -onl casket.kch
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kch
+	$(RUNENV) $(RUNCMD) ./kttimedmgr inform -st casket.kch
+	$(RUNENV) $(RUNCMD) ./kttimedmgr create -otr -otl -onr \
+	  "casket.kct#apow=1#fpow=3#opts=slc#bnum=1"
+	$(RUNENV) $(RUNCMD) ./kttimedmgr import -xt 60 casket.kct < lab/numbers.tsv
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set casket.kct mikio kyotocabinet
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -app casket.kct tako ikaunini
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -app casket.kct mikio kyototyrant
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -app casket.kct mikio kyotodystopia
+	$(RUNENV) $(RUNCMD) ./kttimedmgr get -px casket.kct mikio > check.out
+	$(RUNENV) $(RUNCMD) ./kttimedmgr list casket.kct > check.out
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedmgr clear casket.kct
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -set "casket.kct#bnum=5000#msiz=50000" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -get "casket.kct#msiz=50000" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -getw "casket.kct#msiz=5000" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -rem "casket.kct#msiz=50000" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order "casket.kct#bnum=5000#msiz=50000" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -etc \
+	  "casket.kct#bnum=5000#msiz=50000#dfunit=4" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -th 4 \
+	  "casket.kct#bnum=5000#msiz=50000#dfunit=4" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -th 4 -rnd -etc \
+	  "casket.kct#bnum=5000#msiz=0#dfunit=1" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -th 4 -rnd -etc -tran \
+	  "casket.kct#bnum=5000#msiz=0#dfunit=2" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -th 4 -rnd -etc -oat \
+	  "casket.kct#bnum=5000#msiz=0#dfunit=3" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -th 4 -rnd -etc \
+	  "casket.kct#apow=2#fpow=3#opts=slc#bnum=5000#msiz=0#dfunit=4" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest queue \
+	  "casket.kct#bnum=5000#msiz=0" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest queue -rnd \
+	  "casket.kct#bnum=5000#msiz=0" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest queue -th 4 -it 4 \
+	  "casket.kct#bnum=5000#msiz=0" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest queue -th 4 -it 4 -rnd \
+	  "casket.kct#bnum=5000#msiz=0" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest wicked "casket.kct#bnum=5000#msiz=0" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest wicked -th 4 -it 4 \
+	  "casket.kct#bnum=5000#msiz=0#dfunit=1" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest wicked -th 4 -it 4 -oat \
+	  "casket.kct#bnum=5000#msiz=0#dfunit=1" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest wicked -th 4 -it 4 \
+	  "casket.kct#apow=2#fpow=3#opts=slc#bnum=10000#msiz=0#dfunit=1" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr check -onr casket.kct
+	$(RUNENV) $(RUNCMD) ./kttimedtest tran casket.kct 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest tran -th 2 -it 4 casket.kct 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest tran -th 2 -it 4 \
+	  "casket.kct#apow=2#fpow=3#opts=slc#bnum=10000#msiz=0#dfunit=1" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedtest mapred -dbnum 2 -clim 10k casket.kct 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest mapred -tmp . -dbnum 2 -clim 10k -xnl -xnc \
+	  casket.kct 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest mapred -tmp . -dbnum 2 -clim 10k -xpm -xpr -xpf -xnc \
+	  casket.kct 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest mapred -rnd -dbnum 2 -clim 10k casket.kct 10000
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -rnd "casket.kcx" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -th 4 -rnd "casket.kcx" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest wicked "casket.kcx" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest wicked -th 4 "casket.kcx" 10000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr list -pv "casket.kcx" > check.out
+	$(RUNENV) $(RUNCMD) ./kttimedmgr list -max 1000 -pv "casket.kcx" > check.out
+	$(RUNENV) $(RUNCMD) ./kttimedtest mapred casket.kcx 10000
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -rnd "casket.kch#opts=s#bnum=256" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -rnd "casket.kct#opts=l#psiz=256" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -rnd "casket.kcd#opts=c#bnum=256" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -rnd "casket.kcf#opts=c#psiz=256" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -rnd "casket.kcx" 1000
+	$(RUNENV) $(RUNCMD) ./kttimedmgr merge -add "casket#type=kct" \
+	  casket.kch casket.kct casket.kcd casket.kcf casket.kcx
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc "casket#type=-"
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc "casket#type=+"
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc "casket#type=:"
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc "casket#type=*#zcomp=def"
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc "casket#type=%#zcomp=gz"
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc \
+	  "casket#type=kch#log=-#logkinds=debug#zcomp=lzocrc"
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc \
+	  "casket#type=kct#log=-#logkinds=debug#zcomp=lzmacrc"
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc \
+	  "casket#type=kcd#zcomp=arc#zkey=mikio"
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest misc \
+	  "casket#type=kcf#zcomp=arc#zkey=mikio"
+	rm -rf casket*
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -set -th 4 -rnd \
+	  'casket.kch#bnum=100#ktcapcnt=5000' 10000
+	$(RUNENV) $(RUNCMD) ./kttimedtest order -set -th 4 -rnd \
+	  'casket.kch#bnum=100#ktcapsiz=200000' 10000
+	rm -rf casket* *-ulog
+	$(RUNENV) $(RUNCMD) ./kttimedmgr create -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch abc defg
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch hij klmn
+	$(RUNENV) $(RUNCMD) ./kttimedmgr clear -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch tako ika
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch uni kani
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch ebi ikura
+	$(RUNENV) $(RUNCMD) ./kttimedmgr remove -ulog 0001-ulog -sid 1 -dbid 0 \
+	  casket-0001.kch uni
+	$(RUNENV) $(RUNCMD) ./ktutilmgr ulog 0001-ulog
+	$(RUNENV) $(RUNCMD) ./kttimedmgr create -ulog 0002-ulog -sid 2 -dbid 0 \
+	  casket-0002.kch
+	$(RUNENV) $(RUNCMD) ./kttimedmgr recover -ulog 0002-ulog -sid 2 -dbid 0 \
+	  casket-0002.kch 0001-ulog
+	$(RUNENV) $(RUNCMD) ./kttimedmgr set -ulog 0002-ulog -sid 2 -dbid 0 \
+	  casket-0002.kch new NEWBY
+	$(RUNENV) $(RUNCMD) ./ktutilmgr ulog 0002-ulog
+	$(RUNENV) $(RUNCMD) ./kttimedmgr get casket-0002.kch tako
+	$(RUNENV) $(RUNCMD) ./kttimedmgr get casket-0002.kch ebi
+	$(RUNENV) $(RUNCMD) ./kttimedmgr get casket-0002.kch new
+
+
+check-remote :
+	$(RUNENV) $(RUNCMD) ./ktremotemgr report
+	$(RUNENV) $(RUNCMD) ./ktremotemgr inform -st
+	$(RUNENV) $(RUNCMD) ./ktremotemgr clear
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -add -xt 3600 duffy 1231
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -add -xt 3600 micky 0101
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt 3600 fal 1007
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt 3600 mikio 0211
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt 3600 natsuki 0810
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt 3600 micky ""
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -app -xt 3600 duffy kukuku
+	$(RUNENV) $(RUNCMD) ./ktremotemgr remove micky
+	$(RUNENV) $(RUNCMD) ./ktremotemgr list -pv -pt > check.out
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt -9876543210 ryu 1
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt -9876543210 ken 2
+	$(RUNENV) $(RUNCMD) ./ktremotemgr remove duffy
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt 3600 ryu syo-ryu-ken
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -xt 3600 ken tatsumaki-senpu-kyaku
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -inci -xt 3600 int 1234
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -inci -xt 3600 int 5678
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -incd -xt 3600 double 1234.5678
+	$(RUNENV) $(RUNCMD) ./ktremotemgr set -incd -xt 3600 double 8765.4321
+	$(RUNENV) $(RUNCMD) ./ktremotemgr get -pt mikio
+	$(RUNENV) $(RUNCMD) ./ktremotemgr get -pt ryu
+	$(RUNENV) $(RUNCMD) ./ktremotemgr import -xt 60 lab/numbers.tsv
+	$(RUNENV) $(RUNCMD) ./ktremotemgr vacuum -step 4
+	$(RUNENV) $(RUNCMD) ./ktremotemgr vacuum
+	$(RUNENV) $(RUNCMD) ./ktremotemgr setbulk aa aaa bb bbb cc ccc dd ddd
+	$(RUNENV) $(RUNCMD) ./ktremotemgr setbulk -bin AA AAA BB BBB CC CCC DD DDD
+	$(RUNENV) $(RUNCMD) ./ktremotemgr removebulk aa bb zz
+	$(RUNENV) $(RUNCMD) ./ktremotemgr removebulk -bin AA BB ZZ
+	$(RUNENV) $(RUNCMD) ./ktremotemgr getbulk aa bb cc dd
+	$(RUNENV) $(RUNCMD) ./ktremotemgr getbulk -bin AA BB CC DD
+	$(RUNENV) $(RUNCMD) ./ktremotetest order 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest order -rnd 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest order -etc 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest order -rnd -etc 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest order -th 4 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest order -th 4 -rnd 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest order -th 4 -etc 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest order -th 4 -rnd -etc 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -bulk 10 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -rnd -bulk 10 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -bin -bulk 10 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -bin -rnd -bulk 10 -bnr 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -th 4 -bulk 10 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -th 4 -rnd -bulk 10 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -th 4 -bin -bulk 10 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest bulk -th 4 -bin -rnd -bulk 10 -bnr 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest wicked 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest wicked -it 4 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest wicked -th 4 -it 4 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest usual -th 4 10000
+	$(RUNENV) $(RUNCMD) ./ktremotetest usual -th 4 -kp 1000 -vs 2048 -xt -3 -iv 0.3 10000
+
+
+check-heavy :
+	$(MAKE) check-timed-heavy
+
+
+check-timed-heavy :
+	rm -rf casket* *-ulog
+	$(RUNENV) ./kttimedtest order -th 1 -rnd -set 'casket.kch' 4000000
+	$(RUNENV) ./kttimedtest order -th 4 -rnd -set 'casket.kch' 1000000
+	$(RUNENV) ./kttimedtest order -th 4 -rnd -set 'casket.kch#dfunit=8' 1000000
+	$(RUNENV) kcpolymgr check -onr 'casket.kch'
+	$(RUNENV) ./kttimedtest order -th 1 -rnd -set 'casket.kct' 4000000
+	$(RUNENV) ./kttimedtest order -th 4 -rnd -set 'casket.kct' 1000000
+	$(RUNENV) ./kttimedtest order -th 4 -rnd -set 'casket.kct#dfunit=8' 1000000
+	$(RUNENV) kcpolymgr check -onr 'casket.kct'
+
+
+doc :
+	$(MAKE) docclean
+	mkdir -p doc/api
+	doxygen
+	mkdir -p doc/luadoc
+	luadoc -d doc/luadoc --nofiles kyototycoon-doc.lua
+	find doc/luadoc -type f -name '*.html' | \
+	  while read name ; do \
+	    sed -e 's/<title>.*<\/title>/<title>Kyoto Tycoon<\/title>/' \
+	      -e 's/.*validator\.w3\.org.*/Kyoto Tycoon Manual/' $$name > $$name~ ; \
+	    [ -f $$name~ ] && mv -f $$name~ $$name ; \
+	  done
+	lua lab/docrefine.lua
+
+
+docclean :
+	rm -rf doc/api doc/luadoc
+
+
+.PHONY : all clean install check doc
+
+
+
+#================================================================
+# Building binaries
+#================================================================
+
+
+libkyototycoon.a : $(LIBOBJFILES)
+	$(AR) $(ARFLAGS) $@ $(LIBOBJFILES)
+
+
+libkyototycoon.so.$(LIBVER).$(LIBREV).0 : $(LIBOBJFILES)
+	if uname -a | egrep -i 'SunOS' > /dev/null ; \
+	  then \
+	    $(CXX) $(CXXFLAGS) -shared -Wl,-G,-h,libkyototycoon.so.$(LIBVER) -o $@ \
+	      $(LIBOBJFILES) $(LDFLAGS) $(LIBS) ; \
+	  else \
+	    $(CXX) $(CXXFLAGS) -shared -Wl,-soname,libkyototycoon.so.$(LIBVER) -o $@ \
+	      $(LIBOBJFILES) $(LDFLAGS) $(LIBS) ; \
+	  fi
+
+
+libkyototycoon.so.$(LIBVER) : libkyototycoon.so.$(LIBVER).$(LIBREV).0
+	ln -f -s libkyototycoon.so.$(LIBVER).$(LIBREV).0 $@
+
+
+libkyototycoon.so : libkyototycoon.so.$(LIBVER).$(LIBREV).0
+	ln -f -s libkyototycoon.so.$(LIBVER).$(LIBREV).0 $@
+
+
+libkyototycoon.$(LIBVER).$(LIBREV).0.dylib : $(LIBOBJFILES)
+	$(CXX) $(CXXFLAGS) -dynamiclib -o $@ \
+	  -install_name $(LIBDIR)/libkyototycoon.$(LIBVER).dylib \
+	  -current_version $(LIBVER).$(LIBREV).0 -compatibility_version $(LIBVER) \
+	  $(LIBOBJFILES) $(LDFLAGS) $(LIBS)
+
+
+libkyototycoon.$(LIBVER).dylib : libkyototycoon.$(LIBVER).$(LIBREV).0.dylib
+	ln -f -s libkyototycoon.$(LIBVER).$(LIBREV).0.dylib $@
+
+
+libkyototycoon.dylib : libkyototycoon.$(LIBVER).$(LIBREV).0.dylib
+	ln -f -s libkyototycoon.$(LIBVER).$(LIBREV).0.dylib $@
+
+
+ktplugservmemc.so : ktplugservmemc.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -shared -o $@ $< $(LDFLAGS) -lkyototycoon $(LIBS)
+
+
+ktplugservmemc.dylib : ktplugservmemc.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -dynamiclib -o $@ $< $(LDFLAGS) -lkyototycoon $(LIBS)
+
+
+ktplugdbvoid.so : ktplugdbvoid.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -shared -o $@ $< $(LDFLAGS) -lkyototycoon $(LIBS)
+
+
+ktplugdbvoid.dylib : ktplugdbvoid.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -dynamiclib -o $@ $< $(LDFLAGS) -lkyototycoon $(LIBS)
+
+
+ktutiltest : ktutiltest.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+ktutilmgr : ktutilmgr.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+ktutilserv : ktutilserv.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+kttimedtest : kttimedtest.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+kttimedmgr : kttimedmgr.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+ktserver : ktserver.o myscript.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< myscript.o \
+	  $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+ktremotetest : ktremotetest.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+ktremotemgr : ktremotemgr.o $(LIBRARYFILES)
+	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS) $(CMDLDFLAGS) -lkyototycoon $(CMDLIBS)
+
+
+ktutil.o : ktcommon.h ktutil.h myconf.h
+
+ktsocket.o : ktcommon.h ktutil.h ktsocket.h myconf.h
+
+ktthserv.o : ktcommon.h ktutil.h ktsocket.h ktthserv.h myconf.h
+
+kthttp.o : ktcommon.h ktutil.h ktsocket.h ktthserv.h kthttp.h myconf.h
+
+ktrpc.o : ktcommon.h ktutil.h ktsocket.h ktthserv.h kthttp.h ktrpc.h myconf.h
+
+ktulog.o : ktcommon.h ktutil.h ktulog.h myconf.h
+
+ktshlib.o : ktcommon.h ktutil.h ktshlib.h myconf.h
+
+kttimeddb.o : ktcommon.h ktutil.h ktulog.h ktshlib.h kttimeddb.h myconf.h
+
+ktdbext.o : ktcommon.h ktutil.h ktulog.h ktshlib.h kttimeddb.h ktdbext.h myconf.h
+
+ktremotedb.o : ktcommon.h ktutil.h ktsocket.h ktthserv.h kthttp.h ktrpc.h \
+  ktulog.h ktshlib.h kttimeddb.h ktdbext.h ktremotedb.h myconf.h
+
+ktplugservmemc.o : ktcommon.h ktutil.h ktsocket.h ktthserv.h kthttp.h ktrpc.h \
+  ktulog.h ktshlib.h kttimeddb.h ktdbext.h ktremotedb.h ktplugserv.h myconf.h
+
+ktplugdbvoid.o : ktcommon.h ktutil.h ktsocket.h ktthserv.h kthttp.h ktrpc.h \
+  ktulog.h ktshlib.h kttimeddb.h ktdbext.h ktremotedb.h ktplugdb.h myconf.h
+
+myscript.o : ktcommon.h ktutil.h ktsocket.h ktthserv.h kthttp.h ktrpc.h \
+  ktulog.h ktshlib.h kttimeddb.h ktdbext.h ktremotedb.h myconf.h myscript.h
+
+ktutiltest.o ktutilmgr.o ktutilserv.o kttimedtest.o kttimedmgr.o \
+  ktserver.o ktremotetest.o ktremotemgr.o : \
+  ktcommon.h ktutil.h ktsocket.h ktthserv.h kthttp.h ktrpc.h \
+  ktulog.h ktshlib.h kttimeddb.h ktdbext.h ktremotedb.h ktplugserv.h ktplugdb.h \
+  cmdcommon.h myconf.h myscript.h
+
+
+
+# END OF FILE

@@ -1,0 +1,1718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="FAL Labs" />
+<meta name="keywords" content="Kyoto Tycoon, kyototycoon, database, DBM" />
+<meta name="description" content="Specifications of Kyoto Tycoon" />
+<link rel="contents" href="./" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:info@fallabs.com" />
+<title>Fundamental Specifications of Kyoto Tycoon Version 1</title>
+</head>
+
+<body>
+
+<h1 id="headline">Fundamental Specifications of Kyoto Tycoon Version 1</h1>
+
+<div class="note">Copyright (C) 2009-2012 FAL Labs</div>
+<div class="note">Last Update: Fri, 25 May 2012 02:44:22 +0900</div>
+
+<hr />
+
+<h2 id="contents">Table of Contents</h2>
+
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#tutorial">Tutorial</a></li>
+<li><a href="#tips">Tips and Hacks</a></li>
+<li><a href="#protocol">Protocol</a></li>
+<li><a href="#license">License</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Kyoto Tycoon is a lightweight database server with automatic expiration mechanism, which is useful to handle cache data and persistent data of various applications.  Kyoto Tycoon is also a package of network interface to the DBM called Kyoto Cabinet.  Although the DBM has high performance and high concurrency, you might bother in case that multiple processes share the same database, or remote processes access the database.  Thus, Kyoto Tycoon is provided for concurrent and remote connections to Kyoto Cabinet.  Kyoto Tycoon is composed of the server process managing multiple databases and its access library for client applications.</p>
+
+<p>The server features high concurrency due to thread-pool modeled implementation and the epoll/kqueue mechanism of the modern Linux/*BSD kernel.  It can handle more than 10 thousand connections at the same time.  Because such system-specific features as epoll/kqueue are encapsulated and abstracted as the same interface, Kyoto Tycoon has high portability and works almost all UNIX-like systems and Windows.</p>
+
+<p>The server provides hot backup so that you can make backup data without stopping the server while copying the database files.  Update logging is also supported and it compensates for the difference between the contents of backup files and the current database.  Moreover, the server implements asynchronous replication.  A server sends update logs to other servers, which evaluate the logs immediately and keep their databases catching up to the master database.</p>
+
+<p>The server and its clients communicate with each other by HTTP.  So, you can write client applications and client libraries in almost all popular languages.  Both of RESTful-style interface by the GET, HEAD, PUT, DELETE methods and RPC-style inteface by the POST method are supported.  The RPC-style interface is based on the protocol called TSV-RPC.  The entity bodies of the request and the response are text data formatted as tab-separated-values so that parsing them is very easy.  In addition, several operations are available in an efficient binary protocol.</p>
+
+<p>The server can embed Lua, a lightweight script language.  Even if you cannot find any built-in operation matching your requirement among the client API of Kyoto Tycoon, you can define arbitrary operations by defining functions in Lua.  The API for Lua scripts provides full set of database operations of Kyoto Cabinet including visitor, cursor, and transaction mechanisms.</p>
+
+<p>The server can load a shared library file which implements a pluggable server mechanism.  It can run arbitrary network services and operate database objects shared by the main server.  It is useful to implement other network protocols.  An implementation to support the memcached protocol is included in the source package.  In a similar way, the server can load a shared library file which implements a pluggable database mechanism.  It is useful to use other database libraries except for Kyoto Cabinet.</p>
+
+<p>The server program of Kyoto Tycoon is written in the C++ language.  It is available on platforms which have API conforming to C++03 with the TR1 library extensions.  Kyoto Tycoon is a free software licensed under the GNU General Public License.  You can write client applications which are not under control of our license, by making them just communicate with the server by HTTP without using the core library.</p>
+
+<hr />
+
+<h2 id="installation">Installation</h2>
+
+<p>This section describes how to install Kyoto Tycoon with the source package.  As for a binary package, see its installation manual.</p>
+
+<h3 id="installation_preparation">Preparation</h3>
+
+<p>Kyoto Tycoon is available on UNIX-like systems.  At least, the following environments are supported.  Development for other platworms including Windows is now work-in-progress.</p>
+
+<ul>
+<li>Linux 2.6 and later (i386/x86-64/PowerPC/Alpha/SPARC)</li>
+<li>Mac OS X 10.5 and later (x86-64)</li>
+</ul>
+
+<p><code>gcc</code> (GNU Compiler Collection) 4.2 or later and <code>make</code> (GNU Make) are required to install Kyoto Tycoon with the source package.  They are installed by default on Linux, FreeBSD and so on.</p>
+
+<p>As Kyoto Tycoon depends on the following libraries, install them beforehand.</p>
+
+<ul>
+<li><a href="http://www.zlib.net/">ZLIB</a> : for loss-less data compression.  1.2.3 or later is required.</li>
+<li><a href="http://fallabs.com/kyotocabinet/">Kyoto Cabinet</a> : lightweight embedded database library.  1.2.42 or later is required.</li>
+</ul>
+
+<h3 id="installation_installation">Installation</h3>
+
+<p>When an archive file of Kyoto Tycoon is extracted, change the current working directory to the generated directory and perform installation.</p>
+
+<p>Run the configuration script.</p>
+
+<pre>$ ./configure
+</pre>
+
+<p>Build programs.</p>
+
+<pre>$ make
+</pre>
+
+<p>Perform self-diagnostic test.  This takes a while.</p>
+
+<pre>$ make check
+</pre>
+
+<p>Install programs.  This operation must be carried out by the <code>root</code> user.</p>
+
+<pre># make install
+</pre>
+
+<h3 id="installation_result">Result</h3>
+
+<p>When a series of work finishes, the following files will be installed.</p>
+
+<pre>/usr/local/include/ktcommon.h
+/usr/local/include/ktutil.h
+/usr/local/include/ktsocket.h
+/usr/local/include/ktthserv.h
+/usr/local/include/kthttp.h
+/usr/local/include/ktrpc.h
+/usr/local/include/ktulog.h
+/usr/local/include/ktshlib.h
+/usr/local/include/kttimeddb.h
+/usr/local/include/ktremotedb.h
+/usr/local/include/ktplugserv.h
+/usr/local/include/ktplugdb.h
+/usr/local/lib/libkyototycoon.a
+/usr/local/lib/libkyototycoon.so.x.y.z
+/usr/local/lib/libkyototycoon.so.x
+/usr/local/lib/libkyototycoon.so
+/usr/local/lib/pkgconfig/kyototycoon.pc
+/usr/local/libexec/ktplugservmemc.so
+/usr/local/libexec/ktplugdbvoid.so
+/usr/local/bin/ktutiltest
+/usr/local/bin/ktutilmgr
+/usr/local/bin/ktutilserv
+/usr/local/bin/kttimedtest
+/usr/local/bin/kttimedmgr
+/usr/local/bin/ktserver
+/usr/local/bin/ktremotetest
+/usr/local/bin/ktremotemgr
+/usr/local/man/man1/...
+/usr/local/share/doc/kyototycoon/...
+</pre>
+
+<h3 id="installation_option">Options of Configure</h3>
+
+<p>The following options can be specified with `<code>./configure</code>'.</p>
+
+<ul class="options">
+<li><code>--enable-debug</code> : build for debugging.  Enable debugging symbols, do not perform optimization, and perform static linking.</li>
+<li><code>--enable-devel</code> : build for development.  Enable debugging symbols, perform optimization, and perform dynamic linking.</li>
+<li><code>--enable-profile</code> : build for profiling.  Enable profiling symbols, perform optimization, and perform dynamic linking.</li>
+<li><code>--enable-static</code> : build by static linking.</li>
+<li><code>--disable-shared</code> : avoid to build shared libraries.</li>
+<li><code>--disable-event</code> : avoid to use system-specific event notifiers.</li>
+<li><code>--enable-lua</code> : enable the scripting extension by Lua.</li>
+</ul>
+
+<p>`<code>--prefix</code>' and other options are also available as with usual UNIX software packages.  If you want to install Kyoto Tycoon under `<code>/usr</code>' not `<code>/usr/local</code>', specify `<code>--prefix=/usr</code>'.  As well, the library search path does not include `<code>/usr/local/lib</code>', it is necessary to set the environment variable `<code>LD_LIBRARY_PATH</code>' to include `<code>/usr/local/lib</code>' before running applications of Kyoto Tycoon.</p>
+
+<h3 id="installation_library">How to Use the Library</h3>
+
+<p>Kyoto Tycoon provides API of the C++ language and it is available by programs conforming to the C++03 standard.  As the header files of Kyoto Tycoon are provided as `<code>ktutil.h</code>', `<code>ktremotedb.h</code>', and so on, applications should include one or more of them accordingly to use the API.  As the library is provided as `<code>libkyototycoon.a</code>' and `<code>libkyototycoon.so</code>' and they depends on underlying system libraries, linker options corresponding to them are required by the build command.  The typical build command is the following.</p>
+
+<pre>$ g++ -I/usr/local/include example.cc -o example \
+  -L/usr/local/lib -lkyototycoon -lkyotocabinet -lz -lstdc++ \
+  -lresolv -lnsl -ldl -lrt -lpthread -lm -lc
+</pre>
+
+<p>If you don't use the core library of C++ but an HTTP library in another language, you don't have to know the above messy rules.</p>
+
+<hr />
+
+<h2 id="tutorial">Tutorial</h2>
+
+<p>This section describes how to use Kyoto Tycoon with the command line utilities and some sample application programs.</p>
+
+<h3 id="tutorial_kickstart">Kick-start</h3>
+
+<p>To begin with, let's run the database server program.  Simply execute the following commnad.  Some log messages are printed on the terminal.</p>
+
+<pre>$ ktserver
+2010-10-03T16:24:38.467252+09:00: [SYSTEM]: ================ [START]: pid=19069
+2010-10-03T16:24:38.467473+09:00: [SYSTEM]: opening a database: path=:
+2010-10-03T16:24:38.467645+09:00: [SYSTEM]: starting the server: expr=:1978
+2010-10-03T16:24:38.467751+09:00: [SYSTEM]: server socket opened: expr=:1978 timeout=30.0
+2010-10-03T16:24:38.467775+09:00: [SYSTEM]: listening server socket started: fd=3
+</pre>
+
+<p>The command `<code>ktserver</code>' starts network service accepting commands from clients on local or remote machines.  By default, an unnamed on-memory database is opened and managed by the server through the port 1978.  To finish the server, input `<code>Ctrl-C</code>' on the terminal or send such termination signals as `<code>SIGINT</code>' or `<code>SIGTERM</code>' from another terminal.</p>
+
+<p>Next, insert some records into the database.  Execute the follwoing command on another terminal.  Corresponding access logs will be printed on the server terminal.</p>
+
+<pre>$ ktremotemgr set japan tokyo
+$ ktremotemgr set korea seoul
+$ ktremotemgr set china beijing
+</pre>
+
+<p>The command `<code>ktremotemgr</code>' is a tool kit to manage the database as a client.  The sub command "set" is to set a record.  The first argument next to the sub command name is the key of a record and the second argument is the value of the record.</p>
+
+<p>Retrieve the records by the key of each record using the sub command "get".</p>
+
+<pre>$ ktremotemgr get japan
+tokyo
+$ ktremotemgr get korea
+seoul
+$ ktremotemgr get china
+beijing
+</pre>
+
+<p>Remove a record by the key using the sub command "remove".</p>
+
+<pre>$ ktremotemgr remove japan
+</pre>
+
+<p>Print the keys of all records using the sub command "list".</p>
+
+<pre>$ ktremotemgr list
+korea
+china
+</pre>
+
+<p>That's all for the fundamental operations.  The KVS family have been improving performance thanks to discarding the functionality.  See the specification of `<a href="command.html#ktserver">ktserver</a>' and `<a href="command.html#ktremotemgr">ktremotemgr</a>' for more details.</p>
+
+<h3 id="tutorial_httpcmd">Using HTTP Clients</h3>
+
+<p>Because every operation of the database is called via HTTP, you can use any HTTP client utility such as `<code>curl</code>' to operate the database.</p>
+
+<pre># setting records
+$ curl "http://localhost:1978/rpc/set?key=japan&amp;value=tokyo"
+
+# retrieving records
+$ curl "http://localhost:1978/rpc/get?key=japan"
+value   tokyo
+
+# removing records
+$ curl "http://localhost:1978/rpc/remove?key=japan"
+</pre>
+
+<p>RESTful-style interface is also supported in addition to the above RPC-style interface.</p>
+
+<pre># setting records
+$ echo -n tokyo | curl -X PUT -T - "http://localhost:1978/japan"
+
+# retrieving records
+$ curl "http://localhost:1978/japan"
+tokyo
+
+# removing records
+$ curl -X DELETE "http://localhost:1978/japan"
+</pre>
+
+<p>Of cource, you can use your favorite scripting languages and libraries for more complex use cases.  Because Kyoto Tycoon supports keep-alive connection mechanism, using libraries which support keep-alive is strongly suggested for performance reason.</p>
+
+<h3 id="tutorial_expiration">Expiration of Records</h3>
+
+<p>One of the most important features of Kyoto Tycoon is expiration mechanism of records.  That is, you can specify the expiration time when inserting a record.  The record is automatically deleted after the current time exceeds the expiration time.</p>
+
+<p>To insert a record which will be expired one minute after, execute the following command.</p>
+
+<pre>$ ktremotemgr set -xt 60 japan tokyo
+</pre>
+
+<p>Check the record immediately before the expiration.  The "-pt" option shows the expiration time in seconds from the epoch.</p>
+
+<pre>$ ktremotemgr get -pt japan
+tokyo   1286108387
+</pre>
+
+<p>Wait for more than one minute, and then retrieve the record again.  It will be missing.</p>
+
+<pre>$ ktremotemgr get -pt japan
+ktremotemgr: DB::get failed: :1978: 2: logical inconsistency: DB: 7: no record: no record
+</pre>
+
+<p>You can do the same things with an arbitrary HTTP client by specifiying the "xt" parameter.</p>
+
+<pre>$ curl "http://localhost:1978/rpc/set?key=japan&amp;value=tokyo&amp;xt=60"
+$ curl "http://localhost:1978/rpc/get?key=japan"
+value   tokyo
+xt      1286109204
+$ sleep 60
+$ curl "http://localhost:1978/rpc/get?key=japan"
+ERROR   DB: 7: no record: no record
+</pre>
+
+<h3 id="tutorial_kctremoteex">Sample Application of the Remote Database</h3>
+
+<p>Leaving command line interface, let's write a sample application program handling a remote database.  See the following source code.</p>
+
+<pre>#include &lt;ktremotedb.h&gt;
+
+using namespace std;
+using namespace kyototycoon;
+
+// main routine
+int main(int argc, char** argv) {
+
+  // create the database object
+  RemoteDB db;
+
+  // open the database
+  if (!db.open()) {
+    cerr &lt;&lt; "open error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // store records
+  if (!db.set("foo", "hop") ||
+      !db.set("bar", "step") ||
+      !db.set("baz", "jump")) {
+    cerr &lt;&lt; "set error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // retrieve a record
+  string value;
+  if (db.get("foo", &amp;value)) {
+    cout &lt;&lt; value &lt;&lt; endl;
+  } else {
+    cerr &lt;&lt; "get error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // traverse records
+  RemoteDB::Cursor* cur = db.cursor();
+  cur-&gt;jump();
+  string ckey, cvalue;
+  while (cur-&gt;get(&amp;ckey, &amp;cvalue, NULL, true)) {
+    cout &lt;&lt; ckey &lt;&lt; ":" &lt;&lt; cvalue &lt;&lt; endl;
+  }
+  delete cur;
+
+  // close the database
+  if (!db.close()) {
+    cerr &lt;&lt; "close error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  return 0;
+}
+</pre>
+
+<p>Save the above code as a file "example.cc".  Then, perform the following command line.  The command `<code>kcutilmgr conf</code>' prints the building configuration.</p>
+
+<pre>$ g++ `ktutilmgr conf -i` -o example example.cc `ktutilmgr conf -l`
+</pre>
+
+<p>Execute the application program built by the above.  Of course, run the database server on another terminal beforehand.</p>
+
+<pre>$ ./example
+hop
+foo:hop
+bar:step
+baz:jump
+</pre>
+
+<p>The API of the remote database is defined in the header `<code>ktremote.h</code>'.  So, include the header near the front of a source file.  All symbols of Kyoto Tycoon are packaged in the name space `<code>kyototycoon</code>'.  You can use them without any prefix by importing the name space.</p>
+
+<pre>#include &lt;ktremotedb.h&gt;
+using namespace kyototycoon;
+</pre>
+
+<p>The class `<code>RemoteDB</code>' contains all functionality of the remote database and each instance expresses a remote database file.</p>
+
+<pre>RemoteDB db;
+</pre>
+
+<p>Each connection must be opened by the `<code>open</code>' method before any database operation.  Although it takes three parameters, all of them can be omitted.  The first parameter specifies the host name of the server and the default value is the name of the local host.  The second parameter specifies the port number and the default value is 1978 which is the same as the default port of the database server.  The third parameter specifies the timeout of network operation in seconds and the default value is no timeout.</p>
+
+<pre>db.open();
+</pre>
+
+<p>Every opened connection should be closed by the `<code>close</code>' method when it is no longer in use.</p>
+
+<pre>db.close();
+</pre>
+
+<p>To store a record, use the `<code>set</code>' method with the key and the value.</p>
+
+<pre>db.put("foo", "hop");
+</pre>
+
+<p>To retrieve the value of a record, use the `<code>get</code>' method with the key.  On success, the return value is true and the result is assigned into the string object pointed to by the second parameter.</p>
+
+<pre>string value;
+if (db.get("foo", &amp;value)) {
+  cout &lt;&lt; value &lt;&lt; endl;
+}
+</pre>
+
+<p>Except for `<code>set</code>' and `<code>get</code>', there are other methods; `<code>add</code>', `<code>replace</code>', `<code>append</code>', `<code>remove</code>', `<code>increment</code>', and `<code>cas</code>'.  Each method has two versions; for `<code>std::string</code>' parameters and for `<code>char*</code>' and `<code>size_t</code>' parameters.</p>
+
+<p>Traversing records is a bit complicated task.  It needs a cursor object, which expresses the current position in the sequence of all records in the database.  Each cursor is created by the `<code>cursor</code>' method of the database object.  Each cursor should be initialized by `<code>jump</code>' method before actual record operations.</p>
+
+<pre>RemoteDB::Cursor* cur = db.cursor();
+cur-&gt;jump();
+</pre>
+
+<p>The cursor class has such methods against the record at the current position as `<code>set_value</code>', `<code>remove</code>', `<code>get_key</code>', `<code>get_value</code>', and `<code>get</code>'.  Most methods have an optional stepping parameter to shift the current position to the next record atomically.  Therefore, iterating such methods with the stepping parameter results in that all records are visited.</p>
+
+<pre>string ckey, cvalue;
+while (cur-&gt;get(&amp;ckey, &amp;cvalue, NULL, true)) {
+  cout &lt;&lt; ckey &lt;&lt; ":" &lt;&lt; cvalue &lt;&lt; endl;
+}
+</pre>
+
+<p>Please see the <a href="api/">the API documents</a> for details.  Writing your own sample application is the best way to learn this library.</p>
+
+<h3 id="tutorial_script">Scripting Extension</h3>
+
+<p>If you configured Kyoto Tycoon with the "--enable-lua" option, the scripting extension by Lua is available.  The following is an example code to define a simple operation to store a record.</p>
+
+<pre>kt = __kyototycoon__
+db = kt.db
+
+function set(inmap, outmap)
+   local key = inmap.key
+   local value = inmap.value
+   if not key or not value then
+      return kt.RVEINVALID
+   end
+   local xt = inmap.xt
+   if not db:set(key, value, xt) then
+      return kt.RVEINTERNAL
+   end
+   return kt.RVSUCCESS
+end
+</pre>
+
+<p>If you save the above code as "test.lua", you can embed the operation by stating the server as the following.</p>
+
+<pre>$ ktserver -scr test.lua
+</pre>
+
+<p>To call the operation, execute the following command.</p>
+
+<pre>$ ktremotemgr script set key japan value japan xt 60
+</pre>
+
+<p>See the specification of <a href="luadoc/">the scripting extension</a> for more details.  If you edit the script file and want to make the server reload it, send the `<code>SIGUSR1</code>' signal to the server.  If the server is a daemon, sending the `<code>SIGHUP</code>' signal causes the same effect.</p>
+
+<hr />
+
+<h2 id="tips">Tips and Hacks</h2>
+
+<p>This section describes tips and hacks to use Kyoto Tycoon.</p>
+
+<h3 id="tips_typicalserver">Typical Server Setting</h3>
+
+<p>On the assumption that you runs the server of Kyoto Tycoon on an machine with 16GB main memory and stores 10 million records into a file hash database, the following setting is suggested.</p>
+
+<pre>$ ktserver -port 1978 -tout 10 \
+  -log /var/data/ktserver.log -ls \
+  -dmn -pid /var/data/ktserver.pid \
+  '/var/data/casket.kch#opts=l#bnum=20000000#msiz=12g#dfunit=8'
+</pre>
+
+<p>To improve performance, the bucket number of the hash table by the "bnum" parameter should be two times or more of the number of records.  The size of mapped memory by the "msiz" parameter should be largest as far as the main memory is available.  The unit number of automatic defragmentation by the "dfunit" parameter should be about 8 which means every eight detected fragmentations causes a series of automatic defragmentation steps.  If you want higher availability at the cost of performance, using automatic transaction by the "-oat" option is a good idea.  For details about database tuning, see <a href="http://fallabs.com/kyotocabinet/spex.html#tips">the tips of Kyoto Cabinet</a>.</p>
+
+<p>The option "-dmn" switches the process into the background, which is called daemon.  To stop or restart a daemon process, the PID files should be specified by the "-pid" option.  The PID file contains the process ID by which you can send signals.</p>
+
+<p>By default, verbose log messages are output and printed into the standard output.  For usual use case, the "-ls" option which filters them is suggested.  The "-log" option specifies the file to store log messages.</p>
+
+<p>To stop the above daemon process, execute the following command.</p>
+
+<pre>$ kill -TERM `cat /var/data/ktserver.pid`
+</pre>
+
+<p>To rotate the log file of the above daemon process, execute the following command.</p>
+
+<pre>$ mv -f /var/data/ktserver.log /var/data/ktserver.log.`date '+%Y%M%d%H%M%S'`
+$ kill -HUP `cat /var/data/ktserver.pid`
+</pre>
+
+<h3 id="tips_onmemoryserver">On-memory Server Setting</h3>
+
+<p>You can use Kyoto Tycoon as a volatile (not persistent) cache server with an on-memory database.  In most cases, space efficiency of Kyoto Tycoon is better than that of memcached.  If it is expected that 10 million records are cached in the database using 10GB memory, the following setting is suggested.</p>
+
+<pre>$ ktserver ':#bnum=20000000#ktcapsiz=10g'
+</pre>
+
+<p>Note that the capacity tuning parameter limits the total size of memory allocation in the "user land" layer.  So, actual memory usage will be probably higher than the limit size.  For peaceful operation, the limit should be up to 65% of the total memory size of the machine.</p>
+
+<p>In addition, automatic deletion by the capacity limit is performed at random.  In that case, fresh records may also be deleted soon.  So, setting effectual expiration time not to reach the limit is very important.  If you cannot calculate effectual expiration time beforehand, use the cache hash database instead of the default stash database.  The following setting is suggested.</p>
+
+<pre>$ ktserver '*#bnum=20000000#capsiz=8g'
+</pre>
+
+<p>Note that the space effiency of the cache hash database is worse than that of the stash database.  The limit should be up to 50% of the total memory size of the machine.  However, automatic deletion by the "capsiz" parameter (not "ktcapsiz") of the cache hash database is based on LRU algorithm, which prevents fresh records from sudden deletion.</p>
+
+<h3 id="tips_bgsnapshot">Background Snapshot for On-memory Databases</h3>
+
+<p>Kyoto Tycoon supports the "background snapshot" mechanism for on-memory databases.  This mechanism is similar to the one in Redis.  If background snapshot is enabled, the server saves all records in on-memory databases into files in a directory periodically.  Because snapshot operations are performed in background by child processes forked from the server process, any foreground operation called by clients is not blocked.  Due to the copy-on-write memory mechanism by the operating system, each snapshot operation is performed atomically in logical view.</p>
+
+<p>Snapshot files are saved in a directory specified when the server starts.  Each snapshot operation runs periodically by the given interval and additionally when the server finishes.  If there are snapshot files when the server starts, they are read and all records are restored.  The following setting is an example.</p>
+
+<pre>$ ktserver -bgs mysnap -bgsi 30
+</pre>
+
+<p>Insert some records and wait for 30 seconds.  Then you'll see a snapshot file named "00000000.ktss" in the "mysnap" directory.</p>
+
+<pre>$ ktremotemgr set france paris
+$ ktremotemgr set germany berlin
+</pre>
+
+<p>Terminate the server by Ctrl-C and restart the server.</p>
+
+<pre>$ ktserver -bgs mysnap -bgsi 30
+</pre>
+
+<p>Make sure that the records before termination were restored.</p>
+
+<pre>$ ktremotemgr list -pv
+germany berlin
+france  paris
+</pre>
+
+<p>Because snapshot data are serialized in an compact format and the IO operations are in sequential order, the IO loading of the underlying storage device is much lower than those in file databases.  In order to lower the IO loading at the cost of CPU time, you can use a compression algorithm by the "-bgsc" option.  The supported compression algorithms are "zlib", "lzo" and , "lzma", although the latter two are optional support when building Kyoto Cabinet.  Probably, using "lzo" is a good choice for most use cases.</p>
+
+<h3 id="tips_expiration">Inside Expiration</h3>
+
+<p>The timed database is a database type of wrapper of the polymorphic database of Kyoto Cabinet.  The value of each record in the timed database has the 5 bytes prefix to contain the expiration time in seconds from the epoch.  When a database operation accesses a record, the current time and the expiration time of the record is compared.  If the former is larger, the record is regarded as expired.</p>
+
+<p>In order to eliminate or reuse regions of expired records, the timed database has an implicit cursor called "GC cursor".  Every several updating operations have the GC cursor scan the database gradually.  If a scanned record has been expired, the record is removed and its region is registered to the reusable list.  When the GC cursor reaches the end of the database, the tail end unused regions are discarded and the size of the database file is reduced.  Thus, meta data such as "count" and "size" have latency from the current status.</p>
+
+<p>The above algorithm means that the GC cursor does not work while the database is not being updated.  However, while the server is idle, the GC cursor works implicitly so that the database keeps compact.  Moreover, If you want to cause the full GC operation explicitly, you can call the "vacuum" procedure.</p>
+
+<pre>$ ktremotemgr vacuum
+</pre>
+
+<p>If you use Kyoto Tycoon not for cache but for data storage, create the database with the persistent option by "#ktopts=p" parameter to disable the GC cursor and omit the time stamp region of each record, for the sake of time and space efficiency.  Note that the persistent option works when creating a database and it does not work for existing databases.</p>
+
+<p>If you want to manage a database without the persistent option directly on a local machine, use the `kttimedmgr' command.  Do not use commands of Kyoto Cabinet such as `kchashmgr' and `kcpolymgr' for that purpose.  If you managed Tycoon's "timed" database by Cabinet's command, you would see 5-byte garbage at the beginning of each record.  If you managed Cabinet's "normal" database by Tycoon's command, you couldn't see the first 5-bytes data.</p>
+
+<h3 id="tips_signal">Signal Waiting and Sending</h3>
+
+<p>The signal mechanism is useful to monitor a record to be updated.  Every RPC call can wait for a signal before its operation and can send a signal after its operation.  Each signal is binded to a named condition variable.  If you want to retrieve the new value of a record "hello" immediately after a signal is sent to "hello", execute the following code.  Although you can use a different name of the condition variable from the key of a record to be monigored, using the same strings is straightforward.</p>
+
+<pre>db.set_signal_waiting("hello", 60);
+string value;
+db.get("hello", &amp;value);
+</pre>
+
+<p>You can do the same thing by the following command line.</p>
+
+<pre>$ ktremotemgr get -swname hello -swtime 60 hello
+</pre>
+
+<p>If you want to update the record "hello" and then send a signal to "hello", execute the following code.</p>
+
+<pre>db.set_signal_sending("hello", true);
+db.set("hello", "world");
+</pre>
+
+<p>You can do the same thing by the following command line.</p>
+
+<pre>$ ktremotemgr set -ssname hello -ssbrd hello world
+</pre>
+
+<p>The signal mechanism is useful to realize a job queue as well.  In that case, you should choose one of B+ tree databases as its storage and store job data whose keys are time stamps so that records are always sorted in the accending order of time stamps.  Task producers are to store task data and send a signal for each operation.  Each task workers is to wait for a signal and then retrieve the first record in the queue.  If you want a single queue on a server, use an empty string as the signal name.  If you want plural queues on a server, open plural databases to match the queues and use different signal names to distinguish task kinds.</p>
+
+<p>Note that an RPC call waiting for a signal occupies the thread during its operation.  So, it should be avoided that an unspecified number of clients wait for signals.  The signal mechanism should be used only for monitoring records by a few specified clients.</p>
+
+<h3 id="tips_hotbackup">Hot Backup</h3>
+
+<p>You can make backup files while the server is running, which is called "hot backup".  To do it, prepare the following shell script beforehand and save it as "/ktbin/dbbackup".  It must have executable permissions.</p>
+
+<pre>#! /bin/sh
+srcfile="$1"
+destfile="$1.$2"
+cp -f "$srcfile" "$destfile"
+</pre>
+
+<p>Run the server specifying the command search path "/ktbin".</p>
+
+<pre>$ ktserver -cmd /ktbin casket.kch
+</pre>
+
+<p>When you want to make a backup file, execute the following command to call the backup script.</p>
+
+<pre>$ ktremotemgr sync -cmd dbbackup
+</pre>
+
+<p>The "sync" sub command of the client utility makes the database synchronize, which means dirty buffers on memory are written into the database file.  If the "-cmd" option is specified, an outer command is executed with two arguments.  The first argument is the path of the database file.  The second argument is the current time stamp.  You can call arbitrary scripts other than the above sample.  Using "snapshot" mechanism of the underlying operating system is a good idea to shorten the time to make a backup file.</p>
+
+<h3 id="tips_updatelog">Update Logging</h3>
+
+<p>Even if you take hot backup a day, update operations in 24 hours at most might be lost when an accident occurred.  "update log" is provided to compensate for such data loss.  It keeps track of every update operation in "record-base" model, which is called "row-base" in the context of RDBMS.  You can recover the database entirely by applying update logs to the latest backup database file.</p>
+
+<p>Run the server with update logging enabled.  The "-ulog" option specifies the directory to contain the update log files.  The "-sid" option specifies the server ID between 0 to 65535.  The "-cmd" option enables hot backup by the above instruction.</p>
+
+<pre>$ ktserver -ulog 0001-ulog -sid 1 casket.kch -cmd /ktbin casket.kch
+</pre>
+
+<p>Insert some records.</p>
+
+<pre>$ ktremotemgr set one first
+$ ktremotemgr set two second
+</pre>
+
+<p>Take a backup file.</p>
+
+<pre>$ ktremotemgr sync -cmd dbbackup
+</pre>
+
+<p>Insert more records.</p>
+
+<pre>$ ktremotemgr set three third
+$ ktremotemgr set four fourth
+</pre>
+
+<p>Terminate the server by Ctrl-C and remove the database to simulate database crash.</p>
+
+<pre>$ rm casket.kch
+</pre>
+
+<p>Recover the database by applying update logs.  "xxx..." means the time stamp of the backup database file.  The "-ts" option specifies the time stamp until which old update logs are skipped.</p>
+
+<pre>$ cp casket.kch.xxxxxxxxxxxxxxxxxxxx casket.kch
+$ kttimedmgr recover -ts xxxxxxxxxxxxxxxxxxxx casket.kch 0001-ulog
+.. (2)
+</pre>
+
+<p>Confirm the records in the recovered database.</p>
+
+<pre>$ kttimedmgr list -pv casket.kch
+one     first
+two     second
+three   third
+four    fourth
+</pre>
+
+<p>Update logs are saved in respective files by constant size, which is 256MB by default.  After you take a backup database file, you can remove older update logs than the time stamp of the backup database file.  The command "ktremotemgr slave -uf" prints the size and the maximum time stamp in each update log file.</p>
+
+<pre>$ ktremotemgr slave -uf
+0001-ulog/0000000001.ulog       268459706       1293335993793000167
+0001-ulog/0000000002.ulog       268466346       1293336035697000149
+0001-ulog/0000000003.ulog       268477224       1293336080897000091
+0001-ulog/0000000004.ulog       268456392       1293336132156000021
+0001-ulog/0000000005.ulog       101109851       1293336145396000029
+</pre>
+
+<p>You can remove old log files by the command "ktremotemgr slave -ur".  The "-ts" option specifies the maximum time stamp of disposable logs.  If the time stamp is not specified, all log files except for the current one are removed.</p>
+
+<pre>$ ktremotemgr slave -ur -ts 1293336080897000091
+</pre>
+
+<h3 id="tips_replication">Asynchronous Replication</h3>
+
+<p>Even if you take hot backup and update logs, all data might be lost when the storage device or the computer itself broke down.  Keep in mind that nothing is eternal.  To overcome such critical situation, data replication is supported.  It is a mechanism to synchronize two or more database servers for high availability and high integrity.  The replication source server is called "master" and each destination server is called "slave".  Replication requires the following preconditions.</p>
+
+<ul>
+<li>The master must record the update log.</li>
+<li>The master must specify the unique server ID.</li>
+<li>Each slave must record the update log because it may become the master when fail over.</li>
+<li>Each slave must specify the unique server ID because of the same reason.</li>
+<li>Each slave must specify the address and the port number of the master server.</li>
+<li>Each slave must specify the replication time stamp file.</li>
+</ul>
+
+<p>This section describes how to set up one master at port 1978 and one slave at port 1979 replication.  First, run the master server.</p>
+
+<pre>$ ktserver -port 1978 -ulog 0001-ulog -sid 1 casket-0001.kch
+</pre>
+
+<p>Next, run the slave server.</p>
+
+<pre>$ ktserver -port 1979 -ulog 0002-ulog -sid 2 \
+  -mhost localhost -mport 1978 -rts 0002.rts casket-0002.kch
+</pre>
+
+<p>Insert some records into the master.</p>
+
+<pre>$ ktremotemgr set -port 1978 one first
+$ ktremotemgr set -port 1978 two second
+</pre>
+
+<p>Check consistency of stored records in the master and the slave.</p>
+
+<pre>$ ktremotemgr list -port 1978 -pv
+one     first
+two     second
+$ ktremotemgr list -port 1979 -pv
+one     first
+two     second
+</pre>
+
+<p>Simulate the case that the master is crashed.  Terminate the master by Ctrl-C and remove the database file.</p>
+
+<pre>$ rm casket-0001.kch
+</pre>
+
+<p>Terminate the slave by Ctrl-C and restart it as the new master.</p>
+
+<pre>$ ktserver -port 1979 -ulog 0002-ulog -sid 2 casket-0002.kch
+</pre>
+
+<p>Add a new slave at port 1980.</p>
+
+<pre>$ ktserver -port 1980 -ulog 0003-ulog -sid 3 \
+  -mhost localhost -mport 1979 -rts 0003.rts casket-0003.kch
+</pre>
+
+<p>Check consistency of stored records in the new master and the new slave.</p>
+
+<pre>$ ktremotemgr list -port 1979 -pv
+one     first
+two     second
+$ ktremotemgr list -port 1980 -pv
+one     first
+two     second
+</pre>
+
+<p>Because the master server uses a dedicated worker thread for each connection to slave, the number of worker threads should be increased if you set several slave servers.</p>
+
+<h3 id="tips_dualmaster">Dual-Master Topology</h3>
+
+<p>Kyoto Tycoon supports "dual master" replication topology which realizes higher availability.  It means that two servers replicate each other so that you don't have to restart the survivor when one of them crashed.</p>
+
+<p>This section describes how to set up two masters called A and B which replicate each other.  First, run the server A.</p>
+
+<pre>$ ktserver -port 10001 -ulog 0001-ulog -sid 1 \
+  -mhost localhost -mport 10002 -rts 0001.rts casket-0001.kch
+</pre>
+
+<p>Next, run the server B.</p>
+
+<pre>$ ktserver -port 10002 -ulog 0002-ulog -sid 2 \
+  -mhost localhost -mport 10001 -rts 0002.rts casket-0002.kch
+</pre>
+
+<p>Insert some records into the server A.</p>
+
+<pre>$ ktremotemgr set -port 10001 one first
+$ ktremotemgr set -port 10001 two second
+</pre>
+
+<p>Insert some records into the server B.</p>
+
+<pre>$ ktremotemgr set -port 10002 three third
+$ ktremotemgr set -port 10002 four fourth
+</pre>
+
+<p>Check consistency of stored records in the two servers.</p>
+
+<pre>$ ktremotemgr list -port 10001 -pv
+one     first
+two     second
+three   third
+four    fourth
+$ ktremotemgr list -port 10002 -pv
+one     first
+two     second
+three   third
+four    fourth
+</pre>
+
+<p>Simulate the case that the server A is crashed.  Terminate the server A by Ctrl-C and remove the database file.</p>
+
+<pre>$ rm casket-0001.kch
+</pre>
+
+<p>Run a new server called C which replicates the server B.</p>
+
+<pre>$ ktserver -port 10003 -ulog 0003-ulog -sid 3 \
+  -mhost localhost -mport 10002 -rts 0003.rts casket-0003.kch
+</pre>
+
+<p>Modify the replication configuration of the server B to replicate the server C.</p>
+
+<pre>$ ktremotemgr tunerepl -port 10002 -mport 10003 localhost
+</pre>
+
+<p>Insert some records into the server C.</p>
+
+<pre>$ ktremotemgr set -port 10003 five fifth
+$ ktremotemgr set -port 10003 six sixth
+</pre>
+
+<p>Check consistency of stored records in the current servers.</p>
+
+<pre>$ ktremotemgr list -port 10002 -pv
+one     first
+two     second
+three   third
+four    fourth
+five    fifth
+six     sixth
+$ ktremotemgr list -port 10003 -pv
+one     first
+two     second
+three   third
+four    fourth
+five    fifth
+six     sixth
+</pre>
+
+<p>Of course, using a backup database file to apply "difference recovery" instead of "full recovery" when adding a new server is a good idea.  To apply difference recovery, specify the time stamp of the backup database file with the "-ts" option of the "ktremotemgr tunerepl" command.</p>
+
+<p>Note that updating both of the servers at the same time might cause inconsistency of their databases.  That is, you should use one master as a "active master" and the other as a "standby master".</p>
+
+<h3 id="tops_bgsnaprepl">Replication with Background Snapshot</h3>
+
+<p>Snapshot files of on-memory databases can be used as backup files.  And, you use them in order to set up replication slave servers.  First, run a master server handling an on-memory database.</p>
+
+<pre>$ ktserver -port 10001 -ulog 0001-ulog -sid 1 \
+  -bgs 0001-bgs -bgsi 60 ':#bnum=10000000#ktopts=p'
+</pre>
+
+<p>Insert some records into the master server.</p>
+
+<pre>$ ktremotemgr setbulk -port 10001 one first two second
+</pre>
+
+<p>Wait for 60 seconds and then make sure that the above two records are saved in the snapshot file.  The second field expresses the time stamp of the snapshot.  The third field expresses the number of records.</p>
+
+<pre>$ kttimedmgr bgsinform 0001-bgs
+0       1295607805662000000     2       94906353
+</pre>
+
+<p>Copy the snapshot directory as another one.  Then, extract the time stamp and generate the RTS file for the slave server.</p>
+
+<pre>$ cp -r 0001-bgs 0002-bgs
+$ kttimedmgr bgsinform 0001-bgs | cut -f 2 &lt; 0002.rts
+</pre>
+
+<p>Start the slave server.</p>
+
+<pre>$ ktserver -port 10002 -sid 2 \
+  -bgs 0002-bgs -bgsi 60 -mhost localhost -mport 10001 -rts 0002.rts \
+  ':#bnum=10000000#ktopts=p'
+</pre>
+
+<p>Of cource, you can also set up dual master replicatoin of on-memory databases.  It realizes extremely fast and enough robust database solution.</p>
+
+<h3 id="tips_pluggableserver">Pluggable Server</h3>
+
+<p>If you want other protocols except for HTTP, the "pluggable server" mechanism is useful.  The server can load a shared library which implements arbitrary network services and operate database objects shared by the main server.  The shared library "ktplugservmemc.so" installed under "/usr/local/libexec" implements the memcached protocol.  The following command starts the normal server at the default port 1978 and starts the pluggable server for the memcached protocol at another port 2001 simultaneously.  If your application doesn't access the main server, the number of the main thread should be set 1 by specifying "-th 1".</p>
+
+<pre>$ ktserver -th 1 -plsv /usr/local/libexec/ktplugservmemc.so -plex 'port=2010'
+</pre>
+
+<p>Confirm the functionality by the telnet command.</p>
+
+<pre>$ telnet localhost 2010
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+set japan 0 0 5
+tokyo
+STORED
+get japan
+VALUE japan 0 5
+tokyo
+END
+quit
+Connection closed by foreign host.
+</pre>
+
+<p>This implementation supports a portion of commands supported by the original memcached server.  As for now, "set", "add", "replace", "get", "delete", "incr", "decr", "stats", "flush_all", and "quit" are available.  For the sake of interoperability with HTTP, the "flags" option of some update commands are ignored by default.  If you want to handle the flags, enable the mechanism by adding "#opts=f" in the argument of the "-plex" option.  The mechanism of "cas unique" is not implemented.</p>
+
+<p>The configuration expression by the "-plex" option is composed of named parameters separated by "#".  Each parameter is composed of the name and the value separated by "=".  The supported parameter names are "host", "port", "tout", "th", and "opts".  The default port is 11211, which is the same as the original memcached server.  Don't forget "#opts=f" if your client library uses "flags" to determine the data type of each record.  By default, "flags" are disabled for compatibility of the record format to HTTP.</p>
+
+<p>The most important advantage of the pluggable server mechanism is to share database objects with the main server.  Update operations by a pluggable server is reflected to the main server immediately and vice versa.  Moreover, update operations are written as update logs and picked up by slave servers of replication.  You can implement your own pluggable server.  See the source code in "ktplugservmemc.cc" for details.</p>
+
+<h3 id="tips_pluggabledatabase">Pluggable Database</h3>
+
+<p>If you want other database implementations except for Kyoto Cabinet, the "pluggable database" mechanism is useful.  The server can load a shared library which implements arbitrary storage services conforming to the interface of associative array.  The shared library "ktplugdbvoid.so" installed under "/usr/local/libexec" implements the "void database" mechanism, which is similar to "blackhole storage engine" of MySQL.  It is so-called "no-op" database and do nothing except for writing update logs.  It is useful to get rid of the load of the master server and level the load in the time axis.  The following command starts the replication master server opening a void database.</p>
+
+<pre>$ ktserver -port 1978 -ulog 0001-ulog -sid 1 -pldb /usr/local/libexec/ktplugdbvoid.so
+</pre>
+
+<p>The following command starts the replication slave server opening a file hash database.</p>
+
+<pre>$ ktserver -port 1979 -sid 2 -mhost localhost -mport 1978 -rts 2.rts casket.kch
+</pre>
+
+<p>Store a record into the master server and confirm that the record is discarded.</p>
+
+<pre>$ ktremotemgr set -port 1978 foo bar
+$ ktremotemgr get -port 1978 foo
+ktremotemgr: DB::get failed: :1978: 3: logical inconsistency: DB: 7: no record: no record
+</pre>
+
+<p>Confirm that the record exists in the database of the slave server.</p>
+
+<pre>$ ktremotemgr get -port 1979 foo
+bar
+</pre>
+
+<p>The most important advantage of the pluggable database mechanism is to give networking functionality to other DBM-style database libraries such as BerkeleyDB and GDBM.  You can implement your own pluggable database.  See the source code in "ktplugdbvoid.cc" for details.</p>
+
+<h3 id="tips_slaveagent">Slave Agent</h3>
+
+<p>If you want to replicate update operations from a server of Kyoto Tycoon to another database system like RDBMS, it is useful to pull update logs by the command "ktremotemgr slave" and process each log by your own script command.  The master server setting is not particular.</p>
+
+<pre>$ ktserver -ulog 0001-ulog -sid 1 casket.kch
+</pre>
+
+<p>To generate update logs in the master server, perform some opdate operations.</p>
+
+<pre>$ ktremotemgr clear
+$ ktremotemgr set one first
+$ ktremotemgr set two second
+$ ktremotemgr remove one
+</pre>
+
+<p>Pull the above update logs.</p>
+
+<pre>$ ktremotemgr slave
+1293014011013000000     1       0       clear
+1293014017613000000     1       0       set     b25l    //////9maXJzdA==
+1293014022052000000     1       0       set     dHdv    //////9zZWNvbmQ=
+1293014027262000000     1       0       remove  b25l
+</pre>
+
+<p>The output is in TSV format.  Each line expresses each update operation.  The fields are the time stamp of the update operation, the server ID number, the database ID number, the command name, and Base64-encoded arguments of the command.  The first 5 bytes in the value of the "set" command specifies the expiration time.  You can give the output to another command for post processing via pipe.</p>
+
+<pre>$ ktremotemgr slave -ts "`cat sometime.rts`" -uw | dosomething
+</pre>
+
+<p>The file "sometime.rts" should contain the time stamp of the last pulled update log, which should be recorded by the post processing command.  The "-uw" option is to wait for future update logs forever even when the reader has reached the end of the log files.  A sample implementation of a post processing command in Ruby is included as "example/ktreplprint.rb" in the source package.</p>
+
+<h3 id="tips_messagequeue">Message Queue over Memcached Protocol</h3>
+
+<p>The memcached pluggable server can work as a message queue server.  If the database is one of tree databases (GrassDB, TreeDB, ForestDB) and the "#opts=q" option is specified, behaviors of "set", "get", and "delete" are overwritten.  The default timeout of "get" is 10 seconds and it can be modified by the "qtout" option.  The following is a typical configuration.</p>
+
+<pre>$ ktserver -th 1 -plsv /usr/local/libexec/ktplugservmemc.so \
+  -plex 'port=11211#opts=fq#qtout=5' 'casket.kct#ktopts=p'
+</pre>
+
+<p>Some clients can store messages with arbitrary keys.  Messages are organized by names in the accending order of time stamps.  Some clients can fetch messages with arbitrary keys.  Fetched messages are hidden atomically in order to avoid race condition.  So, multiple clients can monitor the same key simultaneously.  If a client has done with a message, he should delete the message explicitly.  If a client closes the connection witout deleting messages he fetched, those message are registered into the database implicitly.  So, even if a client dies unexpectedly, no message won't be lost.</p>
+
+<p>A typical client to write messages, called "job producer", is implemented like the following pseudo-code.</p>
+
+<pre>memc = Memcached::connect("localhost", 11211)
+memc.set("foo", jobdata)
+</pre>
+
+<p>A typical client to read messages, called "job worker", is implemented like the following pseudo-code.</p>
+
+<pre>memc = Memcached::connect("localhost", 11211)
+while (true) {
+  value = memc.get("foo")
+  if (value) {
+    if (do_something(value)) {
+      memc.delete("foo")
+    }
+  }
+}
+</pre>
+
+<p>"set" and "get" operations are synchronized by the singal mechanism.  When there is no message corresponding to the specified key, the "get" method blocks for 10 seconds or until a corresponding record is stored.  So, the event loop of job workers does not cause useless network traffic or latency as in busy "polling" model.</p>
+
+<hr />
+
+<h2 id="protocol">Protocol</h2>
+
+<p>This section describes detail specifications of the protocol of Kyoto Tycoon.</p>
+
+<h3 id="protocol_overview">Overview</h3>
+
+<p>The server program of Kyoto Cabinet communicates with clients by HTTP.  Although the default service port number is 1978, it can be changed by setting.  The server understands requests of HTTP/1.0 and HTTP/1.1 and sends responses corresponding to each request.</p>
+
+<p>If the request is HTTP/1.1 and the value of the "Content-Type" header is not "close", the server try to perform keep-alive connection.  Keep-alive connection is strongly suggested to access the server for performance reason.  However, usual intermissive connection is also allowed for legacy clients.</p>
+
+<p>Kyoto Cabinet uses an RPC model called TSV-RPC, which is similar to XML-RPC but uses TSV rather than XML.  Although TSV is inferior to XML in terms of expressive ability, TSV is superior to XML in terms of simplicity, space efficiency, and processing effectiveness.</p>
+
+<h3 id="protocol_tsvrpc">TSV-RPC</h3>
+
+<p>TSV-RPC is a client-server modeled synchronous RPC protocol over HTTP.  The following pseudo code is the common interface of each procedure.  TSV is used to serialize the input data and the output data.</p>
+
+<pre>int call(String name, StringMap inmap, StringMap outmap);
+</pre>
+
+<p>Each procedure has its entry point under the path "/rpc/" of URL.  For example the entry point of the command "set" is "/rpc/set".  Clients call each command by the POST method specifying the entry point.  Each procedure receives the input data of an associative array composed of key/value string records.  The associative array is expressed by the entity body formatted in TSV text.  Each line expresses a record.  The first column is the key and the second column is the value.  The value of the "Content-Type" header must be "text/tab-separated-values".  The following is a typical request message.</p>
+
+<pre>POST /rpc/set HTTP/1.1
+Host: localhost:1978
+Content-Type: text/tab-separated-values
+Content-Length: 22
+
+key     japan
+value   tokyo
+</pre>
+
+<p>If a column includes one or more special characters such as tab, line-feed, and control characters, every column must be encoded by one of the following algorithms.</p>
+
+<ul>
+<li>Base64 encoding: colenc=B</li>
+<li>Quoted-printable: colenc=Q</li>
+<li>URL encoding: colenc=U</li>
+</ul>
+
+<p>The encoding name must be described as an attribute of the value of the Content-Type header.  The following is a typical request message with encoded TSV data.</p>
+
+<pre>POST /rpc/hello HTTP/1.1
+Host: localhost:1978
+Content-Type: text/tab-separated-values; colenc=B
+Content-Length: 24
+
+aWQ=    MTIzNDU=
+YWdl    MzE=
+</pre>
+
+<p>As a facile method, clients can send the input data by the entity body in HTML-form format.  That is, the key and the value of a record are encoded respectively in URL encoding and they are concatenated with the "=" character.  All serialized record expressions are concatenated with the "&amp;" character.  The value of the Content-Type header is "application/x-www-form-urlencoded".  The following is a typical request with HTML-form data.</p>
+
+<pre>POST /rpc/goodbye HTTP/1.1
+Host: localhost:1978
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 31
+
+id=1234&amp;name=%e5%b9%b9%e9%9b%84
+</pre>
+
+<p>As a more facile method, clients can use the GET method and specify the input data as the query string with the target path.  The following is an example.</p>
+
+<pre>GET /rpc/paint?color=red&amp;x=30&amp;y=20 HTTP/1.1
+Host: localhost:1978
+</pre>
+
+<p>Clients can select one of TSV, HTML-form, and query string arbitrarily.  However, not that the query string has limit of length, which is 8192 bytes as for Kyoto Tycoon.  TSV with Base64 encoding is recommended for arbitrary string and binary data because its space efficiency is the best of the three formats.</p>
+
+<p>After receiving a request, the server send the result of computation in the response.  The status code of HTTP is one of the follwoing.</p>
+
+<ul>
+<li>200: the procedure was done successfully.</li>
+<li>400: the format of the request was invalid or the arguments are short for the called procedure.</li>
+<li>450: the procedure was done but the result did not fulfill the application logic.</li>
+<li>500: the procedure was aborted by fatal error of the server program or the environment.</li>
+<li>501: the specified procedure is not implemented.</li>
+<li>503: the procedure was not done within the given time so aborted.</li>
+</ul>
+
+<p>200 and 450 is in normality.  400 indicates bugs in the client side.  500 indicates bugs in the server side.  501 is in the literature.</p>
+
+<p>If the status code is 200, the output data of the procedure is sent as the entity body of the response message.  The output data is also an associative array composed of key/value string records.  The format rules are the same as the ones of the input data.  The following is a typical response message.</p>
+
+<pre>HTTP/1.1 200 OK
+Content-Type: text/tab-separated-values; colenc=U
+Content-Length: 25
+
+value   %e5%b9%b3%e6%9e%97
+</pre>
+
+<p>If the status code is other than 200, error information is sent as the entity body of the response message.  It is an assiciative array including one record whose key is "ERROR" and value is the error message.  The following is an example.</p>
+
+<pre>HTTP/1.1 501 Not Implemented
+Content-Type: text/tab-separated-values
+Content-Length: 24
+
+ERROR   no such procedure
+</pre>
+
+<p>The server select the best encoding by scanning the output data.  That is, raw data is selected if encoding is not needed.  URL encoding is selected if ASCII characters are relatively many.  Base64 is selected in the other cases.  Because Quoted-printable is never selected by the server, clients don't have to implement it.</p>
+
+<h3 id="protocol_commonargs">Common Arguments</h3>
+
+<p>The input data of each procedure can be regarded as named paramters.  Although each procedure needs various parameters different with each other, there are common arguments used by several procedures.</p>
+
+<p>Remember that the server can handle multiple databases at the same time.  Opened databases are distinguished by their ID numbers from 0 to N-1 in the order of the command line arguments.  By default, the first database whose ID number is 0 is selected.  The "DB" parameter specifies the identifier of the target database of each operation.  If the identifier starts with a number, it is treated as the ID number.  Otherwise, it is treated as a database name.  The name of each database is made of the file name after the last "/" character of the path.  The following example stores a record into the database named "phone_db.kch".</p>
+
+<pre>POST /rpc/set HTTP/1.1
+Host: localhost:1978
+Content-Type: text/tab-separated-values
+Content-Length: 47
+
+DB      phone_db.kch
+key     09012345678
+value   John Doe
+</pre>
+
+<p>While keep-alive connection, clients can use cursor objects.  Each cursor has the ID number from 0 to 2^63.  Because each connection has a separate name space with each other, the same ID number can be used among different connections.  The cursor ID is specified by the "CUR" parameter.  If an unknown ID is specified, a new cursor with the ID numger is created.  The following example creates a cursor whose ID is 8 and sets its position to the record whose key is "mikio".</p>
+
+<pre>POST /rpc/cur_jump HTTP/1.1
+Host: localhost:1978
+Content-Type: text/tab-separated-values
+Content-Length: 32
+
+DB      staff_db.kch
+CUR     8
+key     mikio
+</pre>
+
+<p>Cursur objects can be reused in the same connection by specifying the ID number.  When each connection is closed, cursor objects created while the connection are destroyed automatically and related resources are cleaned-up.</p>
+
+<p>Every procedure can wait for a signal by a named condition variable before the procedure is performed.  If the "WAIT" parameter is specified, the thread waits for a condition variable whose name is the value of the parameter.  Although the default timeout is 30 second, it can be modified by the "WAITTIME" parameter.  If any signal is sent within the given time, the procedure is aborted.  The following example waits for updating a record for up to 10 seconds and then get the new value.</p>
+
+<pre>GET /rpc/get HTTP/1.1
+Host: localhost:1978
+Content-Type: text/tab-separated-values
+Content-Length: 34
+
+WAIT    summer
+WAITTIME        8
+key     summer
+</pre>
+
+<p>Moreover, every procedure can send a signal to a thread waiting by a named condition variable after the procedure is performed.  If the "SIGNAL" parameter is specified, a signal is sent to a thread waiting by a named condition variable whose name is the value of the parameter.  If the "SIGNALBROAD" parameter is specified at the same time, the signal is sent to every corresponding thread.  If a signal is sent, the response includes the paramter "SIGNALED", which expresses the number of threads waiting for the signal.  The following example stores a record and then sends a signal to every thread waiting for a condition variable.</p>
+
+<pre>GET /rpc/set HTTP/1.1
+Host: localhost:1978
+Content-Type: text/tab-separated-values
+Content-Length: 52
+
+SIGNAL  summer
+SIGNALBROAD
+key     summer
+value   sailing
+</pre>
+
+<h3 id="protocol_procedures">Procedures</h3>
+
+<p>The server provides the following procedures.</p>
+
+<dl>
+<dt><code>/rpc/void</code></dt>
+<dd>Do nothing, just for testing.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/echo</code></dt>
+<dd>Echo back the input data as the output data, just for testing.</dd>
+<dd>input: (optional): arbitrary records.</dd>
+<dd>output: (optional): corresponding records to the input data.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/report</code></dt>
+<dd>Get the report of the server information.</dd>
+<dd>output: (optional): arbitrary records.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/play_script</code></dt>
+<dd>Call a procedure of the script language extension.</dd>
+<dd>input: <code>name</code>: the name of the procedure to call.</dd>
+<dd>input: (optional): arbitrary records whose keys trail the character "_".</dd>
+<dd>output: (optional): arbitrary keys which trail the character "_".</dd>
+<dd>status code: 200, 450 (arbitrary logical error).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/tune_replication</code></dt>
+<dd>Set the replication configuration.</dd>
+<dd>input: <code>host</code>: (optional): the name or the address of the master server.  If it is omitted, replication is disabled.</dd>
+<dd>input: <code>port</code>: (optional): the port numger of the server.  If it is omitted, the default port is specified.</dd>
+<dd>input: <code>ts</code>: (optional): the maximum time stamp of already read logs.  If it is omitted, the current setting is not modified.  If it is "now", the current time is specified.</dd>
+<dd>input: <code>iv</code>: (optional): the interval of each replication operation in milliseconds.  If it is omitted, the current setting is not modified.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/status</code></dt>
+<dd>Get the miscellaneous status information of a database.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>output: <code>count</code>: the number of records.</dd>
+<dd>output: <code>size</code>: the size of the database file.</dd>
+<dd>output: (optional): arbitrary records for other information.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/clear</code></dt>
+<dd>Remove all records in a database.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/synchronize</code></dt>
+<dd>Synchronize updated contents with the file and the device.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>hard</code>: (optional): for physical synchronization with the device.</dd>
+<dd>input: <code>command</code>: (optional): the command name to process the database file.</dd>
+<dd>status code: 200, 450 (the postprocessing command failed).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/set</code></dt>
+<dd>Set the value of a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>input: <code>value</code>: the value of the record.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/add</code></dt>
+<dd>Add a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>input: <code>value</code>: the value of the record.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>status code: 200, 450 (existing record was detected).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/replace</code></dt>
+<dd>Replace the value of a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>input: <code>value</code>: the value of the record.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>status code: 200, 450 (no record was corresponding).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/append</code></dt>
+<dd>Append the value of a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>input: <code>value</code>: the value of the record.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/increment</code></dt>
+<dd>Add a number to the numeric integer value of a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>input: <code>num</code>: the additional number.</dd>
+<dd>input: <code>orig</code>: (optional): the origin number.  If it is omitted, 0 is specified.  "try" means INT64MIN.  "set" means INT64MAX.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>output: <code>num</code>: the result value.</dd>
+<dd>status code: 200, 450 (the existing record was not compatible).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/increment_double</code></dt>
+<dd>Add a number to the numeric double value of a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>input: <code>num</code>: the additional number.</dd>
+<dd>input: <code>orig</code>: (optional): the origin number.  If it is omitted, 0 is specified.  "try" means negative infinity.  "set" means positive infinity.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>output: <code>num</code>: the result value.</dd>
+<dd>status code: 200, 450 (the existing record was not compatible).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cas</code></dt>
+<dd>Perform compare-and-swap.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>input: <code>oval</code>: (optional): the old value.  If it is omittted, no record is meant.</dd>
+<dd>input: <code>nval</code>: (optional): the new value.  If it is omittted, the record is removed.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>status code: 200, 450 (the old value assumption was failed).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/remove</code></dt>
+<dd>Remove a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>status code: 200, 450 (no record was found).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/get</code></dt>
+<dd>Retrieve the value of a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>output: <code>value</code>: (optional): the value of the record.</dd>
+<dd>output: <code>xt</code>: (optional): the absolute expiration time.  If it is omitted, there is no expiration time.</dd>
+<dd>status code: 200, 450 (no record was found).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/check</code></dt>
+<dd>Check the existence of a record.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>output: <code>vsiz</code>: (optional): the size of the value of the record.</dd>
+<dd>output: <code>xt</code>: (optional): the absolute expiration time.  If it is omitted, there is no expiration time.</dd>
+<dd>status code: 200, 450 (no record was found).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/seize</code></dt>
+<dd>Retrieve the value of a record and remove it atomically.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>key</code>: the key of the record.</dd>
+<dd>output: <code>value</code>: (optional): the value of the record.</dd>
+<dd>output: <code>xt</code>: (optional): the absolute expiration time.  If it is omitted, there is no expiration time.</dd>
+<dd>status code: 200, 450 (no record was found).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/set_bulk</code></dt>
+<dd>Store records at once.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>input: <code>atomic</code>: (optional): to perform all operations atomically.  If it is omitted, non-atomic operations are performed.</dd>
+<dd>input: (optional): arbitrary records whose keys trail the character "_".</dd>
+<dd>output: <code>num</code>: the number of stored reocrds.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/remove_bulk</code></dt>
+<dd>Store records at once.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>atomic</code>: (optional): to perform all operations atomically.  If it is omitted, non-atomic operations are performed.</dd>
+<dd>input: (optional): arbitrary keys which trail the character "_".</dd>
+<dd>output: <code>num</code>: the number of removed reocrds.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/get_bulk</code></dt>
+<dd>Retrieve records at once.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>atomic</code>: (optional): to perform all operations atomically.  If it is omitted, non-atomic operations are performed.</dd>
+<dd>input: (optional): arbitrary keys which trail "_".</dd>
+<dd>output: <code>num</code>: the number of retrieved reocrds.</dd>
+<dd>output: (optional): arbitrary keys which trail the character "_".</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/vacuum</code></dt>
+<dd>Scan the database and eliminate regions of expired records.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>step</code>: (optional): the number of steps.  If it is omitted or not more than 0, the whole region is scanned.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/match_prefix</code></dt>
+<dd>Get keys matching a prefix string.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>prefix</code>: the prefix string.</dd>
+<dd>input: <code>max</code>: (optional): the maximum number to retrieve.  If it is omitted or negative, no limit is specified.</dd>
+<dd>output: <code>num</code>: the number of retrieved keys.</dd>
+<dd>output: (optional): arbitrary keys which trail the character "_".  Each value specifies the order of the key.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/match_regex</code></dt>
+<dd>Get keys matching a ragular expression string.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>regex</code>: the regular expression string.</dd>
+<dd>input: <code>max</code>: (optional): the maximum number to retrieve.  If it is omitted or negative, no limit is specified.</dd>
+<dd>output: <code>num</code>: the number of retrieved keys.</dd>
+<dd>output: (optional): arbitrary keys which trail the character "_".  Each value specifies the order of the key.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/match_similar</code></dt>
+<dd>Get keys similar to a string in terms of the levenshtein distance.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>origin</code>: the origin string.</dd>
+<dd>input: <code>range</code>: (optional): the maximum distance of keys to adopt.  If it is omitted or negative, 1 is specified.</dd>
+<dd>input: <code>utf</code>: (optional): flag to treat keys as UTF-8 strings.  If it is omitted, false is specified.</dd>
+<dd>input: <code>max</code>: (optional): the maximum number to retrieve.  If it is omitted or negative, no limit is specified.</dd>
+<dd>output: <code>num</code>: the number of retrieved keys.</dd>
+<dd>output: (optional): arbitrary keys which trail the character "_".  Each value specifies the order of the key.</dd>
+<dd>status code: 200.</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_jump</code></dt>
+<dd>Jump the cursor to the first record for forward scan.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>input: <code>key</code>: (optional): the key of the destination record.  If it is omitted, the first record is specified.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_jump_back</code></dt>
+<dd>Jump the cursor to a record for forward scan.</dd>
+<dd>input: <code>DB</code>: (optional): the database identifier.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>input: <code>key</code>: (optional): the key of the destination record.  If it is omitted, the last record is specified.</dd>
+<dd>status code: 200, 450 (cursor is invalidated), 501 (not implemented).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_step</code></dt>
+<dd>Step the cursor to the next record.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_step_back</code></dt>
+<dd>Step the cursor to the previous record.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>status code: 200, 450 (cursor is invalidated), 501 (not implemented).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_set_value</code></dt>
+<dd>Set the value of the current record.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>input: <code>value</code>: the value of the record.</dd>
+<dd>input: <code>step</code>: (optional): to move the cursor to the next record.  If it is omitted, the cursor stays at the current record.</dd>
+<dd>input: <code>xt</code>: (optional): the expiration time from now in seconds.  If it is negative, the absolute value is treated as the epoch time.  If it is omitted, no expiration time is specified.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_remove</code></dt>
+<dd>Remove the current record.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_get_key</code></dt>
+<dd>Get the key of the current record.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>input: <code>step</code>: (optional): to move the cursor to the next record.  If it is omitted, the cursor stays at the current record.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_get_value</code></dt>
+<dd>Get the value of the current record.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>input: <code>step</code>: (optional): to move the cursor to the next record.  If it is omitted, the cursor stays at the current record.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_get</code></dt>
+<dd>Get a pair of the key and the value of the current record.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>input: <code>step</code>: (optional): to move the cursor to the next record.  If it is omitted, the cursor stays at the current record.</dd>
+<dd>output: <code>xt</code>: (optional): the absolute expiration time.  If it is omitted, there is no expiration time.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_seize</code></dt>
+<dd>Get a pair of the key and the value of the current record and remove it atomically.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>output: <code>xt</code>: (optional): the absolute expiration time.  If it is omitted, there is no expiration time.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<dl>
+<dt><code>/rpc/cur_delete</code></dt>
+<dd>Delete a cursor implicitly.</dd>
+<dd>input: <code>CUR</code>: the cursor identifier.</dd>
+<dd>status code: 200, 450 (cursor is invalidated).</dd>
+</dl>
+
+<h3 id="protocol_restful">RESTful interface</h3>
+
+<p>While the procedure name is described in the URL in the above RPC-style interface, it is specified by the kind of method such as GET, HEAD, PUT, DELETE in the RESTful-style interface.  And, the objective record is described in the URL.  Because a lot of users prefers RESTful-style interface to RPC-style one, Kyoto Tycoon supports the both.  The following methods are used in the RESTful-style interface.</p>
+
+<dl>
+<dt><code>GET</code></dt>
+<dd>Retrieve the value of a record.</dd>
+<dd>request path: the key of the record.</dd>
+<dd>response header: <code>Content-Length</code>: the size of the value.</dd>
+<dd>response header: <code>X-Kt-Xt</code>: (optional): the absolute expiration time.  If it is omitted, there is no expiration time.</dd>
+<dd>response entity body: the value of the record.</dd>
+<dd>status code: 200, 404 (no record was found).</dd>
+</dl>
+
+<dl>
+<dt><code>HEAD</code></dt>
+<dd>Retrieve the value of a record.</dd>
+<dd>request path: the key of the record.</dd>
+<dd>response header: <code>Content-Length</code>: the size of the value.</dd>
+<dd>response header: <code>X-Kt-Xt</code>: (optional): the absolute expiration time.  If it is omitted, there is no expiration time.</dd>
+<dd>status code: 200, 404 (no record was found).</dd>
+</dl>
+
+<dl>
+<dt><code>PUT</code></dt>
+<dd>Set the value of a record.</dd>
+<dd>request path: the key of the record.</dd>
+<dd>request header: <code>Content-Length</code>: the size of the value.</dd>
+<dd>request header: <code>X-Kt-Mode</code>: (optional): the method mode.  "set", "add", and "replace" are supported.  If it is omitted, "set" is specified.</dd>
+<dd>request header: <code>X-Kt-Xt</code>: (optional): the absolute expiration time.  If it is omitted, no expiration time is specified.</dd>
+<dd>request entity body: the value of the record.</dd>
+<dd>status code: 201.</dd>
+</dl>
+
+<dl>
+<dt><code>DELETE</code></dt>
+<dd>Remove a record.</dd>
+<dd>request path: the key of the record.</dd>
+<dd>status code: 204, 404 (no record was found).</dd>
+</dl>
+
+<p>The space efficiency of RESTful-style interface is superior to the one of RPC-style interface because the entity body does not have any data structure and no encoding is needed.</p>
+
+<p>The path of the URL in the request line must be encoded by URL encoding.  If the path begins with "/", the character is ignored and the trailing string is decoded.  Moreover, if the path includes "/" in the middle, the segment before the middle "/" is treated as the database identifier and the next segment is decoded as the key.  For example, the record whose key is "I love you" in the database "words.kch" is expressed "/words.kch/I%20love%20you" in the request line.</p>
+
+<p>The format of date strings by the "X-Kt-Xt" header is the RFC 1123 date format of GMT.  The server understands the W3CDTF format, the RFC 822 (1123) format, and the decimal integer of seconds from the epoch.</p>
+
+<h3 id="protocol_binary">Binary Protocol</h3>
+
+<p>In order to realize the best performance, several commands in an efficient binary protocol are supported.  As they are available at the same port as other HTTP commands, they can be identified by the first one byte of each request.  Every numeric value are expressed in big-endian order.  If some error occurred in the server, the magic data of the output would be 0xBF and no data trails.</p>
+
+<dl>
+<dt><code>replication</code></dt>
+<dd>Continue to send update logs.</dd>
+<dd>input: <code>magic</code>: (uint8_t): <code>0xB1</code>: identifier.</dd>
+<dd>input: <code>flags</code>: (uint32_t): flags of bitwise-or.  0x01 for the while SID option.</dd>
+<dd>input: <code>ts</code>: (uint64_t): the maximum time stamp of already read logs.</dd>
+<dd>input: <code>sid</code>: (uint16_t): the server ID number.</dd>
+<dd>output: <code>magic</code>: (uint8_t): <code>0xB1</code>: identifier.</dd>
+<dd>output: <code>ts</code>: (uint64_t): (iteration): the time stamp of the log.</dd>
+<dd>output: <code>size</code>: (uint32_t): (iteration): the size of the log.</dd>
+<dd>output: <code>log</code>: (variable): (iteration): the data of the log.</dd>
+<dd>note: The magic data of the output can be <code>0xB0</code>.  It means that the log reader has reached the current status and been waiting for the next update.  In this case, the current time stamp of uint64_t trails the magic data.  Clients must respond and send a one-byte message of <code>0xB1</code>.</dd>
+</dl>
+
+<dl>
+<dt><code>play_script</code></dt>
+<dd>Call a procedure of the script language extension.</dd>
+<dd>input: <code>magic</code>: (uint8_t): <code>0xB4</code>: identifier.</dd>
+<dd>input: <code>flags</code>: (uint32_t): flags of bitwise-or.  0x01 for the no-reply option.</dd>
+<dd>input: <code>nsiz</code>: (uint32_t): the size of the procedure name.</dd>
+<dd>input: <code>rnum</code>: (uint32_t): the number of the records in the request.</dd>
+<dd>input: <code>name</code>: (variable): the data of the procedure name.</dd>
+<dd>input: <code>ksiz</code>: (uint32_t): (iteration): the size of the key.</dd>
+<dd>input: <code>vsiz</code>: (uint32_t): (iteration): the size of the value.</dd>
+<dd>input: <code>key</code>: (variable): (iteration): the data of the key.</dd>
+<dd>input: <code>value</code>: (variable): (iteration): the data of the value.</dd>
+<dd>output: <code>magic</code>: (uint8_t): <code>0xB4</code>: identifier.</dd>
+<dd>output: <code>rnum</code>: (uint32_t): the number of the result records.</dd>
+<dd>output: <code>ksiz</code>: (uint32_t): (iteration): the size of the key.</dd>
+<dd>output: <code>vsiz</code>: (uint32_t): (iteration): the size of the value.</dd>
+<dd>output: <code>key</code>: (variable): (iteration): the data of the key.</dd>
+<dd>output: <code>value</code>: (variable): (iteration): the data of the value.</dd>
+</dl>
+
+<dl>
+<dt><code>set_bulk</code></dt>
+<dd>Store records at once.</dd>
+<dd>input: <code>magic</code>: (uint8_t): <code>0xB8</code>: identifier.</dd>
+<dd>input: <code>flags</code>: (uint32_t): flags of bitwise-or.  0x01 for the no-reply option.</dd>
+<dd>input: <code>rnum</code>: (uint32_t): the number of records in the request.</dd>
+<dd>input: <code>dbidx</code>: (uint16_t): (iteration): the index of the target database.</dd>
+<dd>input: <code>ksiz</code>: (uint32_t): (iteration): the size of the key.</dd>
+<dd>input: <code>vsiz</code>: (uint32_t): (iteration): the size of the value.</dd>
+<dd>input: <code>xt</code>: (int64_t): (iteration): the expiration time.</dd>
+<dd>input: <code>key</code>: (variable): (iteration): the data of the key.</dd>
+<dd>input: <code>value</code>: (variable): (iteration): the data of the value.</dd>
+<dd>output: <code>magic</code>: (uint8_t): <code>0xB8</code>: identifier.</dd>
+<dd>output: <code>hits</code>: (uint32_t): the number of stored records.</dd>
+</dl>
+
+<dl>
+<dt><code>remove_bulk</code></dt>
+<dd>Remove records at once.</dd>
+<dd>input: <code>magic</code>: (uint8_t): <code>0xB9</code>: identifier.</dd>
+<dd>input: <code>flags</code>: (uint32_t): flags of bitwise-or.  0x01 for the no-reply option.</dd>
+<dd>input: <code>rnum</code>: (uint32_t): the number of records in the request.</dd>
+<dd>input: <code>dbidx</code>: (uint16_t): (iteration): the index of the target database.</dd>
+<dd>input: <code>ksiz</code>: (uint32_t): (iteration): the size of the key.</dd>
+<dd>input: <code>key</code>: (variable): (iteration): the data of the key.</dd>
+<dd>output: <code>magic</code>: (uint8_t): <code>0xB9</code>: identifier.</dd>
+<dd>output: <code>hits</code>: (uint32_t): the number of removed records.</dd>
+</dl>
+
+<dl>
+<dt><code>get_bulk</code></dt>
+<dd>Retrieve records at once.</dd>
+<dd>input: <code>magic</code>: (uint8_t): <code>0xBA</code>: identifier.</dd>
+<dd>input: <code>flags</code>: (uint32_t): reserved and not used now.  It should be 0.</dd>
+<dd>input: <code>rnum</code>: (uint32_t): the number of records in the request.</dd>
+<dd>input: <code>dbidx</code>: (uint16_t): (iteration): the index of the target database.</dd>
+<dd>input: <code>ksiz</code>: (uint32_t): (iteration): the size of the key.</dd>
+<dd>input: <code>key</code>: (variable): (iteration): the data of the key.</dd>
+<dd>output: <code>magic</code>: (uint8_t): <code>0xBA</code>: identifier.</dd>
+<dd>output: <code>hits</code>: (uint32_t): the number of retrieved records.</dd>
+<dd>output: <code>dbidx</code>: (uint16_t): (iteration): the index of the target database.</dd>
+<dd>output: <code>ksiz</code>: (uint32_t): (iteration): the size of the key.</dd>
+<dd>output: <code>vsiz</code>: (uint32_t): (iteration): the size of the value.</dd>
+<dd>output: <code>xt</code>: (int64_t): (iteration): the expiration time.</dd>
+<dd>output: <code>key</code>: (variable): (iteration): the data of the key.</dd>
+<dd>output: <code>value</code>: (variable): (iteration): the data of the value.</dd>
+</dl>
+
+<h3 id="protocol_impl">Simplest Client Implementations</h3>
+
+<p>If there is no client library for Kyoto Tycoon in your favorite language, you have to write it by yourself or use the memcached protocol by the pluggable memcached server module.  However, it is very easy to implement your own client library for the RESTful interface.</p>
+
+<p>In Python3, the `http.client' module is useful.  Use the `httplib' instead in Python2.</p>
+
+<pre>import time
+import urllib
+import http.client
+
+# RESTful interface of Kyoto Tycoon
+class KyotoTycoon:
+    # connect to the server
+    def open(self, host = "127.0.0.1", port = 1978, timeout = 30):
+        self.ua = http.client.HTTPConnection(host, port, False, timeout)
+    # close the connection
+    def close(self):
+        self.ua.close()
+    # store a record
+    def set(self, key, value, xt = None):
+        if isinstance(key, str): key = key.encode("UTF-8")
+        if isinstance(value, str): value = value.encode("UTF-8")
+        key = "/" + urllib.parse.quote(key)
+        headers = {}
+        if xt != None:
+            xt = int(time.time()) + xt
+            headers["X-Kt-Xt"] = str(xt)
+        self.ua.request("PUT", key, value, headers)
+        res = self.ua.getresponse()
+        body = res.read()
+        return res.status == 201
+    # remove a record
+    def remove(self, key):
+        if isinstance(key, str): key = key.encode("UTF-8")
+        key = "/" + urllib.parse.quote(key)
+        self.ua.request("DELETE", key)
+        res = self.ua.getresponse()
+        body = res.read()
+        return res.status == 204
+    # retrieve the value of a record
+    def get(self, key):
+        if isinstance(key, str): key = key.encode("UTF-8")
+        key = "/" + urllib.parse.quote(key)
+        self.ua.request("GET", key)
+        res = self.ua.getresponse()
+        body = res.read()
+        if res.status != 200: return None
+        return body
+
+# sample usage
+kt = KyotoTycoon()
+kt.open("localhost", 1978)
+kt.set("japan", "tokyo", 60)
+print(kt.get("japan"))
+kt.remove("japan")
+kt.close()
+</pre>
+
+<p>In Ruby, the `Net::HTTP' module is useful.</p>
+
+<pre>require 'uri'
+require 'net/http'
+
+# RESTful interface of Kyoto Tycoon
+class KyotoTycoon
+  # connect to the server
+  def open(host = "127.0.0.1", port = 1978, timeout = 30)
+    @ua = Net::HTTP::new(host, port)
+    @ua.read_timeout = timeout
+    @ua.start
+  end
+  # close the connection
+  def close
+    @ua.finish
+  end
+  # store a record
+  def set(key, value, xt = nil)
+    key = "/" + URI::encode(key)
+    req = Net::HTTP::Put::new(key)
+    if xt
+      xt = Time::now.to_i + xt
+      req.add_field("X-Kt-Xt", xt)
+    end
+    res = @ua.request(req, value)
+    res.code.to_i == 201
+  end
+  # remove a record
+  def remove(key)
+    key = "/" + URI::encode(key)
+    req = Net::HTTP::Delete::new(key)
+    res = @ua.request(req)
+    res.code.to_i == 204
+  end
+  # retrieve the value of a record
+  def get(key)
+    key = "/" + URI::encode(key)
+    req = Net::HTTP::Get::new(key)
+    res = @ua.request(req)
+    return nil if res.code.to_i != 200
+    res.body
+  end
+end
+
+# sample usage
+kt = KyotoTycoon::new
+kt.open("localhost", 1978)
+kt.set("japan", "tokyo", 60)
+printf("%s\n", kt.get("japan"))
+kt.remove("japan")
+kt.close
+</pre>
+
+<hr />
+
+<h2 id="license">License</h2>
+
+<p>Kyoto Tycoon is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.</p>
+
+<p>Kyoto Tycoon is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License along with this program.  If not, see `<code>http://www.gnu.org/licenses/</code>'.</p>
+
+<p>The FOSS License Exception and the Specific FOSS Library Linking Exception are also provided in order to accommodate products under other free and open source licenses.  See the documents of Kyoto Cabinet for details.</p>
+
+<p>Kyoto Tycoon was written and is maintained by FAL Labs.  You can contact the author by e-mail to `<code>info@fallabs.com</code>'.</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->
