@@ -19,3 +19,12 @@ What's included?
 ================
 
 This repository contains the latest upstream releases with additional changes, and are intended to be used together. These changes include patches sourced from Linux distribution packages and some custom patches. Check the commit history for more information.
+
+Installing
+==========
+
+This repository contains a convenience script to build everything in one go. Just run:
+
+    ./install.sh /custom/install/root
+    
+Specifying the installation root is optional. By default it installs into `/usr/local`.
