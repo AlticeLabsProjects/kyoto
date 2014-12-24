@@ -4012,25 +4012,22 @@ fi
 # Atomic operations
 if test "$enable_atomic" != "no"
 then
-  printf 'checking for atomic operations... '
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
+  printf 'checking for 8 byte atomic operations... '
+  if printf '
+/* Some targets support 4 byte atomics, but not 8 byte atomics,
+ * and will fail at link time if they are used.
+ *
+ * http://gcc.gnu.org/onlinedocs/gcc-4.6.3/gcc/Atomic-Builtins.html
+ * http://gcc.gnu.org/wiki/Atomic
+ */
+#include <stdint.h>
 int
 main ()
 {
-__sync_fetch_and_add
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_compile "$LINENO"; then :
-  MYGCCATOMIC=yes
-else
-  MYGCCATOMIC=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-  if test "$MYGCCATOMIC" = "yes"
+uint64_t n = 0xdeadbeaf;
+__sync_bool_compare_and_swap(&n, 0xdeadbeaf, 0);
+return n;
+}' | $CC -xc -o config.tmp - >/dev/null 2>&1
   then
     MYCPPFLAGS="$MYCPPFLAGS -D_MYGCCATOMIC"
     printf 'yes\n'
