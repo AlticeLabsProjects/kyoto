@@ -1,0 +1,77 @@
+From: Shawn Landden <shawnlandden@gmail.com>
+Date: Fri, 8 Jun 2012 00:28:44 -0700
+Subject: configure: disable march native, agressive -m64
+
+disable march=native, don't build 64-bit always when -m64 is available
+---
+ configure    |   22 ----------------------
+ configure.in |   22 ----------------------
+ 2 files changed, 44 deletions(-)
+
+diff --git a/configure b/configure
+index e8342cd..3b62442 100755
+--- a/configure
++++ b/configure
+@@ -3976,28 +3976,6 @@ $as_echo "#define AC_APPLE_UNIVERSAL_BUILD 1" >>confdefs.h
+  esac
+ 
+ 
+-# System-depending optimization
+-printf 'checking for 64-bit availability... '
+-if printf 'main() {}' | $CC -xc -m64 -o config.tmp - >config.tmp 2>&1
+-then
+-  MYCFLAGS="-m64 $MYCFLAGS"
+-  MYCXXFLAGS="-m64 $MYCXXFLAGS"
+-  printf 'yes\n'
+-else
+-  printf 'no\n'
+-fi
+-if test "$enable_opt" != "no"
+-then
+-  printf 'checking for CPU optimization availability... '
+-  if printf 'main() {}' | $CC -xc -march=native -o config.tmp - >config.tmp 2>&1
+-  then
+-    MYCFLAGS="-march=native $MYCFLAGS"
+-    MYCXXFLAGS="-march=native $MYCXXFLAGS"
+-    printf 'yes\n'
+-  else
+-    printf 'no\n'
+-  fi
+-fi
+ printf 'checking for useless warnings... '
+ if printf 'main() {}' | $CC -xc \
+   -Wno-unused-but-set-variable -Wno-unused-but-set-parameter -o config.tmp - >config.tmp 2>&1
+diff --git a/configure.in b/configure.in
+index 84f155a..88f22ea 100644
+--- a/configure.in
++++ b/configure.in
+@@ -202,28 +202,6 @@ test -n "$LDFLAGS" && MYLDFLAGS="$LDFLAGS $MYLDFLAGS"
+ # Byte order
+ AC_C_BIGENDIAN(MYCPPFLAGS="$MYCPPFLAGS -D_MYBIGEND")
+ 
+-# System-depending optimization
+-printf 'checking for 64-bit availability... '
+-if printf 'main() {}' | $CC -xc -m64 -o config.tmp - >config.tmp 2>&1
+-then
+-  MYCFLAGS="-m64 $MYCFLAGS"
+-  MYCXXFLAGS="-m64 $MYCXXFLAGS"
+-  printf 'yes\n'
+-else
+-  printf 'no\n'
+-fi
+-if test "$enable_opt" != "no"
+-then
+-  printf 'checking for CPU optimization availability... '
+-  if printf 'main() {}' | $CC -xc -march=native -o config.tmp - >config.tmp 2>&1
+-  then
+-    MYCFLAGS="-march=native $MYCFLAGS"
+-    MYCXXFLAGS="-march=native $MYCXXFLAGS"
+-    printf 'yes\n'
+-  else
+-    printf 'no\n'
+-  fi
+-fi
+ printf 'checking for useless warnings... '
+ if printf 'main() {}' | $CC -xc \
+   -Wno-unused-but-set-variable -Wno-unused-but-set-parameter -o config.tmp - >config.tmp 2>&1
+-- 

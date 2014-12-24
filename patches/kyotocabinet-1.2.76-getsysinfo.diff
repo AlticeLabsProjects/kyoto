@@ -1,0 +1,42 @@
+From 72f2433a854d7ff0ae62607dc0b7ead6232e521d Mon Sep 17 00:00:00 2001
+From: Shawn Landden <shawnlandden@gmail.com>
+Date: Mon, 9 Jul 2012 16:07:38 -0700
+Subject: [PATCH] kfreebsd: support getsysinfo() on GNU/kFreeBSD
+
+---
+ kcutil.cc |    2 +-
+ myconf.h  |    5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/kcutil.cc b/kcutil.cc
+index f46c6f5..c2d7e81 100644
+--- a/kcutil.cc
++++ b/kcutil.cc
+@@ -323,7 +323,7 @@ void getsysinfo(std::map<std::string, std::string>* strmap) {
+       (*strmap)["mem_rss"] = strprintf("%lld", (long long)size);
+     }
+   }
+-#elif defined(_SYS_FREEBSD_) || defined(_SYS_SUNOS_)
++#elif defined(_SYS_FREEBSD_) || defined(_SYS_SUNOS_) || defined(_SYS_GNUKFREEBSD_)
+   _assert_(strmap);
+   struct ::rusage rbuf;
+   std::memset(&rbuf, 0, sizeof(rbuf));
+diff --git a/myconf.h b/myconf.h
+index 3bb8dd2..c7df16e 100644
+--- a/myconf.h
++++ b/myconf.h
+@@ -33,6 +33,11 @@
+ #define _SYS_FREEBSD_
+ #define _KC_OSNAME     "FreeBSD"
+ 
++#elif defined(__FreeBSD_kernel__) && defined(__GLIBC__)
++
++#define _SYS_GNUKFREEBSD_
++#define _KC_OSNAME     "GNU/kFreeBSD"
++
+ #elif defined(__NetBSD__)
+ 
+ #define _SYS_NETBSD_
+-- 
+1.7.9.5
+

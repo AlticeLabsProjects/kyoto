@@ -1,0 +1,29 @@
+From 95abb4005ec3033b64c4276cb8e7217cdc15d83b Mon Sep 17 00:00:00 2001
+From: Shawn Landden <shawnlandden@gmail.com>
+Date: Wed, 11 Jul 2012 13:04:53 -0700
+Subject: [PATCH] gcc-4.7
+
+include <unistd.h> and <sys/types.h> for compatibility with gcc-4.7
+might be able to move this to kcutil.h, which I have not yet investigated
+
+http://gcc.gnu.org/gcc-4.7/porting_to.html
+---
+ kccommon.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/kccommon.h b/kccommon.h
+index 5cd2e6e..cf78b88 100644
+--- a/kccommon.h
++++ b/kccommon.h
+@@ -18,6 +18,8 @@
+ 
+ extern "C" {
+ #include <stdint.h>
++#include <unistd.h>
++#include <sys/types.h>
+ }
+ 
+ #include <cassert>
+-- 
+1.7.9.5
+

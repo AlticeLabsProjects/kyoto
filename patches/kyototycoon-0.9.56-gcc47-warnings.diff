@@ -1,0 +1,62 @@
+diff -ruN kyototycoon-0.9.56.orig/ktremotedb.h kyototycoon-0.9.56/ktremotedb.h
+--- kyototycoon-0.9.56.orig/ktremotedb.h	2014-02-18 16:08:01.234219254 +0000
++++ kyototycoon-0.9.56/ktremotedb.h	2014-02-18 16:09:24.522222191 +0000
+@@ -298,7 +298,7 @@
+       RPCClient::ReturnValue rv = db_->rpc_.call("cur_get_key", &inmap, &outmap);
+       if (rv != RPCClient::RVSUCCESS) {
+         db_->set_rpc_error(rv, outmap);
+-        return false;
++        return NULL;
+       }
+       size_t ksiz;
+       const char* kbuf = strmapget(outmap, "key", &ksiz);
+@@ -350,7 +350,7 @@
+       RPCClient::ReturnValue rv = db_->rpc_.call("cur_get_value", &inmap, &outmap);
+       if (rv != RPCClient::RVSUCCESS) {
+         db_->set_rpc_error(rv, outmap);
+-        return false;
++        return NULL;
+       }
+       size_t vsiz;
+       const char* vbuf = strmapget(outmap, "value", &vsiz);
+@@ -411,7 +411,7 @@
+         *ksp = 0;
+         *vbp = NULL;
+         *vsp = 0;
+-        return false;
++        return NULL;
+       }
+       size_t ksiz = 0;
+       const char* kbuf = strmapget(outmap, "key", &ksiz);
+@@ -481,7 +481,7 @@
+       RPCClient::ReturnValue rv = db_->rpc_.call("cur_seize", &inmap, &outmap);
+       if (rv != RPCClient::RVSUCCESS) {
+         db_->set_rpc_error(rv, outmap);
+-        return false;
++        return NULL;
+       }
+       size_t ksiz = 0;
+       const char* kbuf = strmapget(outmap, "key", &ksiz);
+@@ -877,8 +877,8 @@
+       size_t idx = it->second.find(':');
+       if (idx != std::string::npos) {
+         const std::string& tsstr = it->second.substr(idx + 1);
+-        int64_t fsiz = kc::atoi(it->second.c_str());
+-        int64_t fts = kc::atoi(tsstr.c_str());
++        uint64_t fsiz = kc::atoi(it->second.c_str());
++        uint64_t fts = kc::atoi(tsstr.c_str());
+         if (!it->first.empty() && fsiz >= 0 && fts >= 0) {
+           UpdateLogger::FileStatus fs = { it->first, fsiz, fts };
+           fstvec->push_back(fs);
+diff -ruN kyototycoon-0.9.56.orig/ktulog.h kyototycoon-0.9.56/ktulog.h
+--- kyototycoon-0.9.56.orig/ktulog.h	2014-02-18 16:08:01.234219254 +0000
++++ kyototycoon-0.9.56/ktulog.h	2014-02-18 16:08:52.826221073 +0000
+@@ -472,7 +472,7 @@
+           if (psiz >= (int64_t)sizeof(hbuf) && file.read(0, hbuf, sizeof(hbuf))) {
+             const char* rp = hbuf;
+             if (*(uint8_t*)(rp++) == METAMAGIC) {
+-              int64_t fsiz = kc::readfixnum(rp, sizeof(uint64_t));
++              uint64_t fsiz = kc::readfixnum(rp, sizeof(uint64_t));
+               rp += sizeof(uint64_t);
+               uint64_t fts = kc::readfixnum(rp, sizeof(uint64_t));
+               FileStatus fs = { path, fsiz, fts };

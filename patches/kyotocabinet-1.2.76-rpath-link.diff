@@ -1,0 +1,45 @@
+From: Shawn Landden <shawnlandden@gmail.com>
+Date: Tue, 3 Jul 2012 12:54:54 -0700
+Subject: configure: GNU/kFreeBSD and disable -rpath
+
+use --as-needed on GNU/kFreeBSD as well as Linux
+
+also, disable -rpath on Linux
+---
+ configure    |    4 ++--
+ configure.in |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/configure b/configure
+index 3b62442..51cea08 100755
+--- a/configure
++++ b/configure
+@@ -4518,9 +4518,9 @@ then
+ fi
+ 
+ # As-needed linking
+-if uname | grep Linux >config.tmp
++if uname -o | egrep "GNU/Linux|GNU/kFreeBSD" >config.tmp
+ then
+-  MYLDFLAGS="$MYLDFLAGS -Wl,-rpath-link,.:/usr/local/lib:$MYLDLIBPATH"
++#  MYLDFLAGS="$MYLDFLAGS -Wl,-rpath-link,.:/usr/local/lib:$MYLDLIBPATH"
+   MYLDFLAGS="$MYLDFLAGS -Wl,--as-needed"
+ else
+   MYCMDLIBS="$MYCMDLIBS $LIBS"
+diff --git a/configure.in b/configure.in
+index 88f22ea..030d59f 100644
+--- a/configure.in
++++ b/configure.in
+@@ -298,9 +298,9 @@ then
+ fi
+ 
+ # As-needed linking
+-if uname | grep Linux >config.tmp
++if uname -o | egrep "GNU/Linux|GNU/kFreeBSD" >config.tmp
+ then
+-  MYLDFLAGS="$MYLDFLAGS -Wl,-rpath-link,.:/usr/local/lib:$MYLDLIBPATH"
++#  MYLDFLAGS="$MYLDFLAGS -Wl,-rpath-link,.:/usr/local/lib:$MYLDLIBPATH"
+   MYLDFLAGS="$MYLDFLAGS -Wl,--as-needed"
+ else
+   MYCMDLIBS="$MYCMDLIBS $LIBS"
+-- 

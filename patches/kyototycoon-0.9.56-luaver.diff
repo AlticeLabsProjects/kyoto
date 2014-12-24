@@ -1,0 +1,24 @@
+diff -ruN kyototycoon-0.9.56.orig/configure kyototycoon-0.9.56/configure
+--- kyototycoon-0.9.56.orig/configure	2012-05-02 14:04:11.000000000 +0100
++++ kyototycoon-0.9.56/configure	2014-02-01 19:49:32.842155455 +0000
+@@ -2248,7 +2248,7 @@
+ 
+ if test "$enable_lua" = "yes"
+ then
+-  luaver=`lua -e 'v = string.gsub(_VERSION, ".* ", ""); print(v)'`
++  luaver=`lua5.1 -e 'v = string.gsub(_VERSION, ".* ", ""); print(v)'`
+   MYCPPFLAGS="$MYCPPFLAGS -D_MYLUA"
+   MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua$luaver -I/usr/local/include/lua$luaver"
+   MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua -I/usr/local/include/lua"
+diff -ruN kyototycoon-0.9.56.orig/configure.in kyototycoon-0.9.56/configure.in
+--- kyototycoon-0.9.56.orig/configure.in	2012-05-02 14:04:04.000000000 +0100
++++ kyototycoon-0.9.56/configure.in	2014-02-01 19:49:40.659242273 +0000
+@@ -142,7 +142,7 @@
+   AC_HELP_STRING([--enable-lua], [build with Lua extension]))
+ if test "$enable_lua" = "yes"
+ then
+-  luaver=`lua -e 'v = string.gsub(_VERSION, ".* ", ""); print(v)'`
++  luaver=`lua5.1 -e 'v = string.gsub(_VERSION, ".* ", ""); print(v)'`
+   MYCPPFLAGS="$MYCPPFLAGS -D_MYLUA"
+   MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua$luaver -I/usr/local/include/lua$luaver"
+   MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua -I/usr/local/include/lua"

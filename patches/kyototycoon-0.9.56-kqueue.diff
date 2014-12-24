@@ -1,0 +1,42 @@
+From 17f831747cd99f817ee9a996fe209db9c7335920 Mon Sep 17 00:00:00 2001
+From: Shawn Landden <shawnlandden@gmail.com>
+Date: Mon, 9 Jul 2012 15:53:25 -0700
+Subject: [PATCH 5/5] kfreebsd
+
+support kqueue on GNU/kFreeBSD
+
+recognize GNU/kFreeBSD
+
+http://svnweb.freebsd.org/base?view=revision&revision=227827
+---
+ myconf.h |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/myconf.h b/myconf.h
+index d1a3127..a51c99d 100644
+--- a/myconf.h
++++ b/myconf.h
+@@ -33,6 +33,11 @@
+ #define _SYS_FREEBSD_
+ #define _KT_OSNAME     "FreeBSD"
+ 
++#elif defined(__FreeBSD_kernel__) && defined(__GLIBC__)
++
++#define _SYS_GNUKFREEBSD_
++#define _KT_OSNAME     "GNU/kFreeBSD"
++
+ #elif defined(__NetBSD__)
+ 
+ #define _SYS_NETBSD_
+@@ -97,7 +102,7 @@
+ #if ! defined(_MYNOEVENT)
+ #if defined(_SYS_LINUX_)
+ #define _KT_EVENT_EPOLL
+-#elif defined(_SYS_FREEBSD_) || defined(_SYS_MACOSX_)
++#elif defined(_SYS_FREEBSD_) || defined(_SYS_MACOSX_) || defined(__FreeBSD_kernel__)
+ #define _KT_EVENT_KQUEUE
+ #endif
+ #endif
+-- 
+1.7.9.5
+
