@@ -1,0 +1,143 @@
+.TH "KCPOLYMGR" 1 "2012-05-24" "Man Page" "Kyoto Cabinet"
+
+.SH NAME
+kcpolymgr \- command line interface to manage the polymorphic database
+
+.SH DESCRIPTION
+.PP
+The command `\fBkcpolymgr\fR' is a utility for test and debugging of the polymorphic database and its applications.  `\fIpath\fR' specifies the path of a database file.  `\fIkey\fR' specifies the key of a record.  `\fIvalue\fR' specifies the value of a record.  `\fIfile\fR' specifies the input/output file.  `\fIsrc\fR' specifies other database files.
+.PP
+.RS
+.br
+\fBkcpolymgr create \fR[\fB\-otr\fR]\fB \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB\fR
+.RS
+Creates a database file.
+.RE
+.br
+\fBkcpolymgr inform \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-st\fR]\fB \fIpath\fB\fR
+.RS
+Prints status information.
+.RE
+.br
+\fBkcpolymgr set \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-add\fR|\fB\-app\fR|\fB\-rep\fR|\fB\-inci\fR|\fB\-incd\fR]\fB \fR[\fB\-sx\fR]\fB \fIpath\fB \fIkey\fB \fIvalue\fB\fR
+.RS
+Stores a record.
+.RE
+.br
+\fBkcpolymgr remove \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-sx\fR]\fB \fIpath\fB \fIkey\fB\fR
+.RS
+Removes a record.
+.RE
+.br
+\fBkcpolymgr get \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-rm\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fR[\fB\-pz\fR]\fB \fIpath\fB \fIkey\fB\fR
+.RS
+Prints the value of a record.
+.RE
+.br
+\fBkcpolymgr list \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-mp\fR|\fB\-mr\fR|\fB\-ms\fR]\fB \fR[\fB\-des\fR]\fB \fR[\fB\-max \fInum\fB\fR]\fB \fR[\fB\-rm\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-pv\fR]\fB \fR[\fB\-px\fR]\fB \fIpath\fB \fR[\fB\fIkey\fB\fR]\fB\fR
+.RS
+Prints keys of all records, separated by line feeds.
+.RE
+.br
+\fBkcpolymgr clear \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB\fR
+.RS
+Removes all records of a database.
+.RE
+.br
+\fBkcpolymgr import \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-sx\fR]\fB \fIpath\fB \fR[\fB\fIfile\fB\fR]\fB\fR
+.RS
+Imports records from a TSV file.
+.RE
+.br
+\fBkcpolymgr copy \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB \fIfile\fB\fR
+.RS
+Copies the whole database.
+.RE
+.br
+\fBkcpolymgr dump \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB \fR[\fB\fIfile\fB\fR]\fB\fR
+.RS
+Dumps records into a snapshot file.
+.RE
+.br
+\fBkcpolymgr load \fR[\fB\-otr\fR]\fB \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB \fR[\fB\fIfile\fB\fR]\fB\fR
+.RS
+Loads records from a snapshot file.
+.RE
+.br
+\fBkcpolymgr merge \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-add\fR|\fB\-app\fR|\fB\-rep\fR]\fB \fIpath\fB \fIsrc\fB...\fR
+.RS
+Merge records from other databases.
+.RE
+.br
+\fBkcpolymgr setbulk \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB \fIkey\fB \fIvalue\fB ...\fR
+.RS
+Store records at once.
+.RE
+.br
+\fBkcpolymgr removebulk \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-sx\fR]\fB \fIpath\fB \fIkey\fB ...\fR
+.RS
+Remove records at once.
+.RE
+.br
+\fBkcpolymgr getbulk \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fIpath\fB \fIkey\fB ...\fR
+.RS
+Retrieve records at once.
+.RE
+.br
+\fBkcpolymgr check \fR[\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB\fR
+.RS
+Checks consistency.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-otr\fR : opens the database with the truncation option.
+.br
+\fB\-onl\fR : opens the database with the no locking option.
+.br
+\fB\-otl\fR : opens the database with the try locking option.
+.br
+\fB\-onr\fR : opens the database with the no auto repair option.
+.br
+\fB\-st\fR : prints miscellaneous information.
+.br
+\fB\-add\fR : performs adding operation.
+.br
+\fB\-app\fR : performs appending operation.
+.br
+\fB\-rep\fR : performs replacing operation.
+.br
+\fB\-inci\fR : performs integer increment operation.
+.br
+\fB\-incd\fR : performs real number increment operation.
+.br
+\fB\-sx\fR : the input data is evaluated as a hexadecimal data string.
+.br
+\fB\-rm\fR : removes the record.
+.br
+\fB\-px\fR : the output data is converted into a hexadecimal data string.
+.br
+\fB\-pz\fR : performs not append line feed at the end of the output.
+.br
+\fB\-mp\fR : performs prefix matching instead of usual scan.
+.br
+\fB\-mr\fR : performs regular expression matching instead of usual scan.
+.br
+\fB\-ms\fR : performs similar matching instead of usual scan.
+.br
+\fB\-des\fR : visits records in descending order.
+.br
+\fB\-max \fInum\fR\fR : specifies the maximum number of shown records.
+.br
+\fB\-pv\fR : prints values of records also.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR kcpolytest (1),
+.BR kclangctest (1)

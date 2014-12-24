@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+
+<head>
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="FAL Labs" />
+<meta name="keywords" content="Kyoto Cabinet, kyotocabinet, database, DBM" />
+<meta name="description" content="homepage of Kyoto Cabinet" />
+<link rel="contents" href="./" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:info@fallabs.com" />
+<link rel="alternate" href="index.html" lang="en" xml:lang="en" title="the English version" />
+<title>Kyoto Cabinet: DBMの率直な壱実装</title>
+<script type="text/javascript">function startup() {
+  if (!navigator) return;
+  var elem = document.getElementById("headline");
+  if (!elem) return;
+  var now = new Date();
+  if ((now.getFullYear() + now.getMonth() + now.getDate() + now.getHours()) % 5 == 0) {
+    var labels = [ "丸太町", "竹屋町", "夷川", "二条", "押小路", "御池", "姉小路", "三条",
+      "六角", "蛸薬師", "錦小路", "四条", "綾小路", "仏光寺", "高辻", "松原", "万寿寺",
+      "五条", "雪駄屋町", "鍵屋町", "魚棚", "六条", "三哲", "七条", "八条", "九条", "十条" ];
+    var label = labels[Math.floor(now.getTime()/3000)%labels.length] + "収納棚";
+    var text = "DBMの率直な壱実装";
+    if (now.getDate() % 3 == 0) {
+      label = "京都収納棚";
+      var texts = [ "丸竹夷二押御池", "姉三六角蛸錦", "四綾仏高松万五条",
+        "雪駄せったちゃらちゃら魚の棚", "六条三哲とおりすぎ",
+        "七条こえれば八九条", "十条東寺でとどめさす" ];
+      text = texts[Math.floor(now.getTime()/10000)%texts.length];
+    }
+    elem.firstChild.nodeValue = label + ": " + text;
+  }
+}
+</script>
+</head>
+
+<body onload="startup();">
+
+<h1 id="headline">Kyoto Cabinet: DBMの率直な壱実装</h1>
+
+<div class="note">Copyright (C) 2009-2012 FAL Labs</div>
+<div class="note">Last Update: Fri, 04 Mar 2011 23:07:26 -0800</div>
+
+<div class="logo"><img src="logo.png" id="logo" alt="Kyoto Cabinet" width="300" height="110" /></div>
+
+<hr />
+
+<h2 id="overview">概要</h2>
+
+<p>Kyoto Cabinetはデータベースを管理するルーチン群のライブラリです。データベースはレコード群を格納した単純なファイルであり、各レコードはキーと値のペアです。全てのキーと値は任意の長さの一連のバイト列です。いわゆるバイナリデータでも文字列の両方をキーや値として利用できます。各キーはデータベース内で一意でなければなりません。テーブルやデータ型の概念はありません。レコード群はハッシュ表またはB+木で編成されます。</p>
+
+<p>Kyoto Cabinetは非常に高速に動作します。例えば、ハッシュ表データベースに100万レコードを格納するのに0.9秒かかり、B+木データベースでは1.1秒かかります。さらに、データベースのサイズが非常に小さいです。例えば、ハッシュ表データベースの各レコードにかかるオーバーヘッドは16バイトであり、B+木データベースでは4バイトです。また、Kyoto Cabinetのスケーラビリティは素晴らしいです。データベースのサイズは8EB（9.22e18バイト）までです。</p>
+
+<p>Kyoto CabinetはC++言語で記述され、C++とCとJavaとPythonとRubyとPerlとLuaのAPIとして提供されます。Kyoto cabinetはC++03とTR1ライブラリ拡張に準拠するAPIを備えた環境にて利用できます。Kyoto CabinetはGNU一般公衆利用許諾に基づいて利用許諾されたフリーソフトウェアです。一方で、商用ライセンスも提供されます。もしあなたがプロプライエタリソフトウェアでKyoto Cabinetを利用する場合には、商用ライセンスが必要です。</p>
+
+<hr />
+
+<h2 id="documents">文書</h2>
+
+<p>以下はKyoto Cabinetの文書群です。これらはソースパッケージにも含まれています。</p>
+
+<ul>
+<li><a href="spex.html">基本仕様書</a></li>
+<li><a href="command.html">コマンドラインの仕様書</a></li>
+<li><a href="kyotoproducts.pdf">プレゼンテーション資料</a></li>
+<li><a href="api/">コアライブラリ（C/C++）のAPI文書群</a></li>
+</ul>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/javadoc/">JavaのAPI文書群</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythondoc/">Python 3.xのAPI文書群</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythonlegacydoc/">Python 2.xのAPI文書群</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/rubydoc/">RubyのAPI文書群</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/perldoc/">PerlのAPI文書群</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/luadoc/">LuaのAPI文書群</a></li>
+</ul>
+
+<hr />
+
+<h2 id="packages">パッケージ</h2>
+
+<p>以下はKyoto Cabinetのソースパッケージ群です。バイナリパッケージに関しては、各々の配布者のサイトをご覧ください。</p>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/pkg/">コアライブラリ（C/C++）のソースパッケージ</a></li>
+</ul>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/javapkg/">Javaのソースパッケージ</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythonpkg/">Python 3.xのソースパッケージ</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythonlegacypkg/">Python 2.xのソースパッケージ</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/rubypkg/">Rubyのソースパッケージ</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/perlpkg/">Perlのソースパッケージ</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/luapkg/">Luaのソースパッケージ</a></li>
+</ul>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/winpkg/">Windows用のバイナリパッケージ（C/C++/Java）</a></li>
+</ul>
+
+<hr />
+
+<h2 id="information">情報</h2>
+
+<p>Kyoto Cabinetは<a href="http://fallabs.com/">FAL Labs</a>によって開発され保守されています。開発者の連絡先メールアドレスは `info@fallabs.com' です。もしあなたが商用ライセンスに興味があるなら、<a href="http://fallabs.com/license/">ライセンスガイド</a>をご覧ください。</p>
+
+<p>以下はKyoto Cabinetの兄弟プロジェクトです。</p>
+
+<ul>
+<li><a href="http://fallabs.com/kyototycoon/">リモートサービス（Kyoto Tycoon）</a></li>
+</ul>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

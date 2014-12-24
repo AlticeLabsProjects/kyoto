@@ -1,0 +1,52 @@
+.TH "KCSTASHTEST" 1 "2012-05-24" "Man Page" "Kyoto Cabinet"
+
+.SH NAME
+kcstashtest \- command line interface to test the stash database
+
+.SH DESCRIPTION
+.PP
+The command `\fBkcstashtest\fR' is a utility for facility test and performance test of the stash database.  This command is used in the following format.  `\fIrnum\fR' specifies the number of iterations.
+.PP
+.RS
+.br
+\fBkccachetest order \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-etc\fR]\fB \fR[\fB\-tran\fR]\fB \fR[\fB\-bnum \fInum\fB\fR]\fB \fR[\fB\-lv\fR]\fB \fIrnum\fB\fR
+.RS
+Performs in\-order tests.
+.RE
+.br
+\fBkccachetest queue \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-bnum \fInum\fB\fR]\fB \fR[\fB\-lv\fR]\fB \fIrnum\fB\fR
+.RS
+Performs queuing operations.
+.RE
+.br
+\fBkccachetest wicked \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-bnum \fInum\fB\fR]\fB \fR[\fB\-lv\fR]\fB \fIrnum\fB\fR
+.RS
+Performs mixed operations selected at random.
+.RE
+.br
+\fBkccachetest tran \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-bnum \fInum\fB\fR]\fB \fR[\fB\-lv\fR]\fB \fIrnum\fB\fR
+.RS
+Performs test of transaction.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-th \fInum\fR\fR : specifies the number of worker threads.
+.br
+\fB\-rnd\fR : performs random test.
+.br
+\fB\-etc\fR : performs miscellaneous operations.
+.br
+\fB\-tran\fR : performs transaction.
+.br
+\fB\-bnum \fInum\fR\fR : specifies the number of buckets of the hash table.
+.br
+\fB\-lv\fR : reports all errors.
+.br
+\fB\-it \fInum\fR\fR : specifies the number of repetition.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.

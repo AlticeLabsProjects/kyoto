@@ -1,0 +1,96 @@
+#! /usr/bin/ruby -w
+
+#================================================================
+# codecheck
+# Check files about compliance of the coding policy
+#================================================================
+
+
+SUFFIXES = /\.(h|cc)$/
+IGNORES = /(kccommon\.h)/
+BADOPEN = /[^\w](if|while|for|switch|catch)\(/
+BADCLOSE = /\)\{/
+BADTYPE = /[^\w](u)*(void|char|int|double|size_t|std::string)[0-9]*(_t)* +\*/
+BADFUNCS = [
+  /[^:.>\w](malloc|calloc|realloc|free|rand|srand|abort|qsort|strtoll|llabs|div|lldiv) *\(/,
+  /[^:.>\w](memset|memcpy|memmove|memcmp|memchr) *\(/,
+  /[^:.>\w](strcpy|strncpy|strcat|strncat|strcmp|strchr|strrchr|strstr|strlen) *\(/,
+  /[^:.>\w](printf|fprintf|sprintf|snprintf|vprintf|vfprintf|vsprintf|vsnprintf) *\(/,
+  /[^:.>\w](isnan|isinf|pow|fabs|sqrt|floor|ceil|modf|modfl) *\(/,
+]
+
+LIMITWIDTH = 97
+
+def checkfile(path)
+  printf("Checking: %s\n", path)
+  ok = true
+  open(path, "r") do |file|
+    num = 0
+    file.each do |line|
+      num += 1
+      line.chomp!
+      if line =~ /\s$/
+        printf("TRAINING SPACE: %s: %d: %s\n", path, num, line)
+        ok = false
+      end
+      if line =~ /\t/
+        printf("TAB CODE: %s: %d: %s\n", path, num, line)
+        ok = false
+      end
+      if line =~ BADOPEN
+        printf("BAD OPEN: %s: %d: %s\n", path, num, line)
+        ok = false
+      end
+      if line =~ BADCLOSE
+        printf("BAD CLOSE: %s: %d: %s\n", path, num, line)
+        ok = false
+      end
+      if line =~ BADTYPE
+        printf("BAD TYPE: %s: %d: %s\n", path, num, line)
+        ok = false
+      end
+      BADFUNCS.each do |badfunc|
+        if line =~ badfunc
+          printf("BAD FUNC: %s: %d: %s\n", path, num, line)
+          ok = false
+        end
+      end
+      if line.length > LIMITWIDTH && !line.index("/*") && !line.index("*/")
+        printf("BAD WIDTH: %s: %d: %s\n", path, num, line)
+        ok = false
+      end
+    end
+  end
+  return ok
+end
+
+ok = true
+list = Array::new(ARGV)
+list.push(".") if list.empty?
+while !list.empty?
+  path = list.shift
+  begin
+    if File::ftype(path) == "directory"
+      Dir.entries(path).each do |cpath|
+        if cpath =~ SUFFIXES && cpath !~ /[#~]/ && cpath !~ IGNORES
+          list.push(path + "/" + cpath)
+        end
+      end
+    else
+      ok = false if !checkfile(path)
+    end
+  rescue
+  end
+end
+
+if ok
+  printf("ALL OK\n")
+  exit(0)
+else
+  printf("ERROR\n")
+  exit(1)
+end
+
+
+
+# END OF FILE

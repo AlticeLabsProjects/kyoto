@@ -1,0 +1,110 @@
+.TH "KCPOLYTEST" 1 "2012-05-24" "Man Page" "Kyoto Cabinet"
+
+.SH NAME
+kcpolytest \- command line interface to test the polymorphic database
+
+.SH DESCRIPTION
+.PP
+The command `\fBkcpolytest\fR' is a utility for facility test and performance test of the polymorphic database.  This command is used in the following format.  `\fIpath\fR' specifies the path of a database file.  `\fIrnum\fR' specifies the number of iterations.
+.PP
+.RS
+.br
+\fBkcpolytest order \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-set\fR|\fB\-get\fR|\fB\-getw\fR|\fB\-rem\fR|\fB\-etc\fR]\fB \fR[\fB\-tran\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs in\-order tests.
+.RE
+.br
+\fBkcpolytest queue \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs queuing operations.
+.RE
+.br
+\fBkcpolytest wicked \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs mixed operations selected at random.
+.RE
+.br
+\fBkcpolytest tran \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-hard\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs test of transaction.
+.RE
+.br
+\fBkcpolytest mapred \fR[\fB\-rnd\fR]\fB \fR[\fB\-ru\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-lv\fR]\fB \fR[\fB\-tmp \fIstr\fB\fR]\fB \fR[\fB\-dbnum \fInum\fB\fR]\fB \fR[\fB\-clim \fInum\fB\fR]\fB \fR[\fB\-cbnum \fInum\fB\fR]\fB \fR[\fB\-xnl\fR]\fB \fR[\fB\-xpm\fR]\fB \fR[\fB\-xpr\fR]\fB \fR[\fB\-xpf\fR]\fB \fR[\fB\-xnc\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs MapReduce operations.
+.RE
+.br
+\fBkcpolytest index \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-set\fR|\fB\-get\fR|\fB\-rem\fR|\fB\-etc\fR]\fB \fR[\fB\-tran\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs indexing operations.
+.RE
+.br
+\fBkcpolytest misc \fIpath\fB\fR
+.RS
+Performs miscellaneous tests.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-th \fInum\fR\fR : specifies the number of worker threads.
+.br
+\fB\-rnd\fR : performs random test.
+.br
+\fB\-set\fR : performs setting operation only.
+.br
+\fB\-get\fR : performs getting operation only.
+.br
+\fB\-getw\fR : performs getting with a buffer operation only.
+.br
+\fB\-rem\fR : performs removing operation only.
+.br
+\fB\-etc\fR : performs miscellaneous operations.
+.br
+\fB\-tran\fR : performs transaction.
+.br
+\fB\-oat\fR : opens the database with the auto transaction option.
+.br
+\fB\-oas\fR : opens the database with the auto synchronization option.
+.br
+\fB\-onl\fR : opens the database with the no locking option.
+.br
+\fB\-otl\fR : opens the database with the try locking option.
+.br
+\fB\-onr\fR : opens the database with the no auto repair option.
+.br
+\fB\-lv\fR : reports all errors.
+.br
+\fB\-it \fInum\fR\fR : specifies the number of repetition.
+.br
+\fB\-hard\fR : performs physical synchronization.
+.br
+\fB\-ru\fR : reuses the existing database.
+.br
+\fB\-tmp \fIstr\fR\fR : specifies the path of a directory for temporary storage.
+.br
+\fB\-dbnum \fInum\fR\fR : specifies the number of temporary databases.
+.br
+\fB\-clim \fInum\fR\fR : specifies the limit size of cache memory.
+.br
+\fB\-cbnum \fInum\fR\fR : specifies the bucket number of cache memory.
+.br
+\fB\-xnl\fR : executes with the no locking option.
+.br
+\fB\-xpm\fR : executes with the parallel mapper option.
+.br
+\fB\-xpr\fR : executes with the parallel reducer option.
+.br
+\fB\-xpf\fR : executes with the parallel flusher option.
+.br
+\fB\-xnc\fR : executes with the no compression option.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR kcpolymgr (1),
+.BR kclangctest (1)

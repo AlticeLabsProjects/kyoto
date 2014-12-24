@@ -1,0 +1,76 @@
+.TH "KCDIRTEST" 1 "2012-05-24" "Man Page" "Kyoto Cabinet"
+
+.SH NAME
+kcdirtest \- command line interface to test the directory hash database
+
+.SH DESCRIPTION
+.PP
+The command `\fBkcdirtest\fR' is a utility for facility test and performance test of the directory hash database.  This command is used in the following format.  `\fIpath\fR' specifies the path of a database file.  `\fIrnum\fR' specifies the number of iterations.
+.PP
+.RS
+.br
+\fBkcdirtest order \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-set\fR|\fB\-get\fR|\fB\-getw\fR|\fB\-rem\fR|\fB\-etc\fR]\fB \fR[\fB\-tran\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-tc\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs in\-order tests.
+.RE
+.br
+\fBkcdirtest queue \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-rnd\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-tc\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs queuing operations.
+.RE
+.br
+\fBkcdirtest wicked \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-tc\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs mixed operations selected at random.
+.RE
+.br
+\fBkcdirtest tran \fR[\fB\-th \fInum\fB\fR]\fB \fR[\fB\-it \fInum\fB\fR]\fB \fR[\fB\-hard\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fR[\fB\-tc\fR]\fB \fR[\fB\-lv\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs test of transaction.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-th \fInum\fR\fR : specifies the number of worker threads.
+.br
+\fB\-rnd\fR : performs random test.
+.br
+\fB\-set\fR : performs setting operation only.
+.br
+\fB\-get\fR : performs getting operation only.
+.br
+\fB\-getw\fR : performs getting with a buffer operation only.
+.br
+\fB\-rem\fR : performs removing operation only.
+.br
+\fB\-etc\fR : performs miscellaneous operations.
+.br
+\fB\-tran\fR : performs transaction.
+.br
+\fB\-oat\fR : opens the database with the auto transaction option.
+.br
+\fB\-oas\fR : opens the database with the auto synchronization option.
+.br
+\fB\-onl\fR : opens the database with the no locking option.
+.br
+\fB\-otl\fR : opens the database with the try locking option.
+.br
+\fB\-onr\fR : opens the database with the no auto repair option.
+.br
+\fB\-tc\fR : tunes the database with the compression option.
+.br
+\fB\-lv\fR : reports all errors.
+.br
+\fB\-it \fInum\fR\fR : specifies the number of repetition.
+.br
+\fB\-hard\fR : performs physical synchronization.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR kcdirmgr (1)

@@ -1,0 +1,45 @@
+#! /usr/bin/ruby
+# -*- coding: utf-8 -*-
+
+BASEDIR = ARGV.length > 0 ? ARGV[0] : "."
+
+if !File::directory?(BASEDIR)
+  printf("%s is not a directory\n", BASEDIR)
+  exit(1)
+end
+
+pattern = sprintf("%s/*.TXT", BASEDIR)
+Dir.glob(pattern) do |path|
+  dictname = path.sub(/.*\//, "")
+  dictname = dictname.sub(/[-_0-9]*\.TXT$/, "").downcase
+  File::open(path) do |infile|
+    outpath = sprintf("eijiro-%s.tsv", dictname)
+    File::open(outpath, "w") do |outfile|
+      seq = 0
+      infile.each do |line|
+        begin
+          line = line.encode('UTF-8', 'Windows-31J')
+        rescue => e
+          p e
+          next
+        end
+        line = line.gsub(/\s+/, " ")
+        line = line.strip
+        line = line.sub(/^■/, "")
+        face = line.sub(/ +:.*/, "")
+        text = line.sub(/[^:]* +: +/, "")
+        part = ""
+        if face.match(/ *{[^}]+}$/)
+          part = face.sub(/.*{([^}]+)}$/, '\1')
+          face = face.sub(/ *{[^}]+}$/, "")
+        end
+        key = face.downcase
+        text = text.gsub(/｛[^｝]+｝/, "")
+        text = text.sub(/ *◆([a-z]+:|【URL】|【出典】).*$/, "")
+        seq += 1
+        printf(outfile, "%s\t%d\t%s\t%s\t%s\n", key, seq, face, part, text)
+        printf("%s: %s: %d records done\n", $0, dictname, seq) if seq % 1000 == 0
+      end
+    end
+  end
+end

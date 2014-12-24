@@ -1,0 +1,1119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta name="author" content="FAL Labs" />
+<meta name="keywords" content="Kyoto Cabinet, kyotocabinet, database, DBM" />
+<meta name="description" content="Specifications of Kyoto Cabinet" />
+<link rel="contents" href="./" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:info@fallabs.com" />
+<title>Fundamental Specifications of Kyoto Cabinet Version 1</title>
+</head>
+
+<body>
+
+<h1 id="headline">Fundamental Specifications of Kyoto Cabinet Version 1</h1>
+
+<div class="note">Copyright (C) 2009-2012 FAL Labs</div>
+<div class="note">Last Update: Fri, 04 Mar 2011 23:07:26 -0800</div>
+
+<hr />
+
+<h2 id="contents">Table of Contents</h2>
+
+<ol>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#features">Features</a></li>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#tutorial">Tutorial</a></li>
+<li><a href="#tips">Tips and Hacks</a></li>
+<li><a href="#license">License</a></li>
+</ol>
+
+<hr />
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Kyoto Cabinet is a library of routines for managing a database.  The database is a simple data file containing records, each is a pair of a key and a value.  Every key and value is serial bytes with variable length.  Both binary data and character string can be used as a key and a value.  Each key must be unique within a database.  There is neither concept of data tables nor data types.  Records are organized in hash table or B+ tree.</p>
+
+<p>The following access methods are provided to the database: storing a record with a key and a value, deleting a record by a key, retrieving a record by a key.  Moreover, traversal access to every key are provided.  These access methods are similar to ones of the original DBM (and its followers: NDBM and GDBM) library defined in the UNIX standard.  Kyoto Cabinet is an alternative for the DBM because of its higher performance.</p>
+
+<p>Each operation of the hash database has the time complexity of "O(1)".  Therefore, in theory, the performance is constant regardless of the scale of the database.  In practice, the performance is determined by the speed of the main memory or the storage device.  If the size of the database is less than the capacity of the main memory, the performance will seem on-memory speed, which is faster than std::map of STL.  Of course, the database size can be greater than the capacity of the main memory and the upper limit is 8 exabytes.  Even in that case, each operation needs only one or two seeking of the storage device.</p>
+
+<p>Each operation of the B+ tree database has the time complexity of "O(log N)".  Therefore, in theory, the performance is logarithmic to the scale of the database.  Although the performance of random access of the B+ tree database is slower than that of the hash database, the B+ tree database supports sequential access in order of the keys, which realizes forward matching search for strings and range search for integers.  The performance of sequential access is much faster than that of random access.</p>
+
+<p>As the API is based on object-oriented design, the hash database and the the B+ tree database have same methods which inherited from the upper abstract class.  Beside them, seven kinds of databases are provided under the same base class.  The prototype hash database is powered by the standard container of std::unordered_map.  The prototype tree database is powered by the standard container of std::map.  The stash database is powered by the original implementation of naive hash map saving memory.  The cache hash database is powered by the original implementation of doubly-linked hash map with LRU deletion algorithm.  The cache tree database is powered by the cache hash database and provides B+ tree mechanism.  The directory hash database is powered by the directory mechanism of the file system and stores records as respective files in a directory.  The directory tree database is powered by the directory hash database and provides B+ tree mechanism.  All databases have practical utility methods related to transaction and cursor.  Programs for command line interface are also included in the package.</p>
+
+<p>Kyoto Cabinet runs very fast.  For example, elapsed time to store one million records is 0.9 seconds for the hash database, and 1.1 seconds for the B+ tree database.  Moreover, the size of database is very small.  For example, overhead for a record is 16 bytes for the hash database, and 4 bytes for the B+ tree database.  Furthermore, scalability of Kyoto Cabinet is great.  The database size can be up to 8EB (9.22e18 bytes).</p>
+
+<p>Kyoto Cabinet is written in the C++ language, and provided as API of C++, C, Java, Python, Ruby, Perl, and Lua.  Kyoto Cabinet is available on platforms which have API conforming to C++03 with the TR1 library extensions.  Kyoto Cabinet is a free software licensed under the GNU General Public License.  The FOSS License Exception is also provided in order to accommodate products under other free and open source licenses.  The Specific FOSS Library Linking Exception is also provided in order to be available in some specific FOSS libraries.  On the other hand, a commercial license is also provided.  If you use Kyoto Cabinet within a proprietary software, the commercial license is required.</p>
+
+<hr />
+
+<h2 id="features">Features</h2>
+
+<p>This section describes the features of Kyoto Cabinet.</p>
+
+<h3 id="features_genealogy">Genealogy</h3>
+
+<p>The original DBM was developed by Kenneth Thompson as a part of the original AT&amp;T UNIX.  After that, a lot of followers developed such DBM-like products as NDBM, SDBM, GDBM, TDB, and BerkeleyDB.  In 2003, I developed QDBM to replace GDBM for performance reason.</p>
+
+<p>In 2007, Tokyo Cabinet was developed as the successor to QDBM on the following purposes.  They were achieved and Tokyo Cabinet could replace conventional DBM products.</p>
+
+<ul>
+<li>improves <strong>space efficiency</strong> : smaller size of database file.</li>
+<li>improves <strong>time efficiency</strong> : faster processing speed.</li>
+<li>improves <strong>parallelism</strong> : higher performance in multi-thread environment.</li>
+<li>improves <strong>usability</strong> : simplified API.</li>
+<li>improves <strong>robustness</strong> : database file is not corrupted even under catastrophic situation.</li>
+<li>supports <strong>64-bit architecture</strong> : enormous memory space and database file are available.</li>
+</ul>
+
+<p>In 2009, Kyoto Cabinet was developed as another successor to QDBM.  Compared with the sibling product (Tokyo Cabinet), the following advantages were pursued.  However, the performance of Tokyo Cabinet is higher than Kyoto Cabinet, at least in single thread operations.</p>
+
+<ul>
+<li>improves <strong>space efficiency</strong> : smaller size of database file.</li>
+<li>improves <strong>parallelism</strong> : higher performance in multi-thread environment.</li>
+<li>improves <strong>portability</strong> : abstraction of the lower layer to support non-POSIX systems.</li>
+<li>improves <strong>usability</strong> : simplified API, object-oriented design.</li>
+<li>improves <strong>robustness</strong> : database file is not corrupted even under catastrophic situation.</li>
+</ul>
+
+<p>I'll maintain the both of Tokyo Cabinet and Kyoto Cabinet because their values are different.</p>
+
+<h3 id="features_hash">Effective Implementation of Hash Database</h3>
+
+<p>Kyoto Cabinet uses hash algorithm to retrieve records.  If a bucket array has sufficient number of elements, the time complexity of retrieval is "O(1)".  That is, the time required for retrieving a record is constant, regardless of the scale of a database.  It is also the same about storing and deleting.  Collision of hash values is managed by separate chaining.  Data structure of the chains is binary search tree.  Even if a bucket array has unusually scarce elements, the time complexity of retrieval is "O(log n)".</p>
+
+<p>Kyoto Cabinet attains performance improvement in retrieval by loading the whole of the bucket array onto the RAM.  If the bucket array is on RAM, it is possible to access a region of a target record by about one set of file operations such as `lseek', `read', and `write'.  The bucket array saved in a file is not read into RAM with the `read' call but directly mapped to RAM with the `mmap' call.  Therefore, preparation time on connecting to a database is very short, and two or more processes can share the same memory map.</p>
+
+<p>The hash function used for hash table is MurMurHash 2.0.  If the number of elements of the bucket array is about a half of records stored within a database, although it depends on characteristic of the input, the probability of collision of hash values is about 55.3% (35.5% if the same, 20.4% if twice, 11.0% if four times, 5.7% if eight times).  In that case, it is possible to retrieve a record by two or less sets of file operations.  If it is made into a performance index, in order to handle a database containing one million of records, a bucket array with half a million of elements is required.  The size of each element is 6 bytes.  That is, if 3M bytes of RAM is available, a database containing one million records can be handled.</p>
+
+<p>When overwriting a record with a value whose size is greater than the existing one, it is necessary to move the region to another position of the file.  Because the time complexity of the operation depends on the size of the region of a record, extending values successively is inefficient.  However, Kyoto Cabinet deals with this problem by alignment.  If the incremental data can be placed in the padding region trailing the records, it is not necessary to move the region of the record.</p>
+
+<p>Generally speaking, while succession of updating, fragmentation of available regions occurs, and the size of a database grows rapidly.  Kyoto Cabinet deals with this problem by the free block pool and the automatic defragmentation mechanism.  If a record is removed or shifted to another position, the region will be treated as a free block.  The free block pool manages free blocks and reuses the best fit region for a new record.  The automatic defragmentation is to shift records and free blocks separately.  Successive free blocks coalesce into one.</p>
+
+<h3 id="features_tree">Useful Implementation of B+ Tree Database</h3>
+
+<p>Although the B+ tree database is slower than the hash database, it features ordering access to each record.  The order can be assigned by users.  Records in the B+ tree database are sorted and arranged in logical pages.  Sparse index organized in B tree that is multiway balanced tree are maintained for each page.  Thus, the time complexity of retrieval and so on is "O(log n)".  Cursor is provided to access each record in order.  The cursor can jump to a position specified by a key and can step forward or backward from the current position.  Because each page is arranged as double linked list, the time complexity of stepping cursor is "O(1)".</p>
+
+<p>The B+ tree database is implemented based on the above the hash database.  Because each page of the B+ tree database is stored as each record in the hash database, the B+ tree database inherits efficiency of storage management of the hash database.  Because the header of each record is smaller and alignment of each page is adjusted according to the page size, in most cases, the size of database file is cut by half compared to one of the hash database.</p>
+
+<p>Although operations of many pages are required to update the B+ tree database, Kyoto Cabinet expedites the process by the page cache and reducing file operations.  The page cache is implemented with double layered LRU list, which realizes that frequently accessed pages are cached in the "hot" list and recently accessed pages are cached in the "warm" LRU list.  If the page cache works efficiently and the whole of the sparse index is cached on memory, it is possible to retrieve a record by one or less set of file operations.</p>
+
+<p>Each page of the B+ tree database can be stored with compressed.  The default compression method is "Deflate" by ZLIB.  Because records in a page has similar patterns, high efficiency of compression is expected due to the Lempel-Ziv algorithm.  In case of handling text data, the size of a database is reduced to about 50% or less.  If the scale of a database is large and disk I/O is the bottleneck, featuring compression makes the processing speed improved to a large extent.  Moreover, you can specify such external compression algorithms as LZO and LZMA.</p>
+
+<h3 id="features_practical">Practical Functionality</h3>
+
+<p>Kyoto Cabinet features transaction mechanisms.  It is possible to commit a series of operations between the beginning and the end of the transaction in a lump, or to abort the transaction and perform rollback to the state before the transaction.  Two isolation levels are supported: "serializable" and "read uncommitted".  Durability is secured by write ahead logging and shadow paging.</p>
+
+<p>Automatic transaction and automatic recovery mechanisms are also supported.  If the automatic transaction option is specified when opening the database, every updating operation is guarded by transaction which is committed implicitly.  Therefore, durability can be assured without explicit transaction operations.  The automatic recovery mechanism works after the database is crashed outside transaction.  If inconsistency of the database is detected when opening the database, all regions are scanned as with "fsck" and the database is reconstructed with surviving records implicitly.</p>
+
+<p>Kyoto Cabinet provides two modes to connect to a database: "reader" and "writer".  A reader can perform retrieving but neither storing nor deleting.  A writer can perform all access methods.  Exclusion control between processes is performed when connecting to a database by file locking.  While a writer is connected to a database, neither readers nor writers can be connected.  While a reader is connected to a database, other readers can be connect, but writers can not.  According to this mechanism, data consistency is guaranteed with simultaneous connections in multitasking environment.</p>
+
+<p>Functions of API are reentrant and available in multi-thread environment.  Different database objects can be operated in parallel entirely.  For simultaneous operations against the same database object, rwlock (reader-writer lock) is used for exclusion control.  That is, while a writing thread is operating an object, other reading threads and writing threads are blocked.  However, while a reading thread is operating an object, reading threads are not blocked.  Locking granularity depends on data structures.  The hash database uses record locking.  The B+ tree database uses page locking.</p>
+
+<p>In order to improve performance and concurrency, Kyoto Cabinet uses such atomic operations built in popular CPUs as atomic-increment and CAS (compare-and-swap).  Lock primitives provided by the native environment such as the POSIX thread package are alternated by own primitives using CAS.</p>
+
+<h3 id="features_simple">Simple but Flexible Interfaces</h3>
+
+<p>Kyoto Cabinet provides simple APIs based on object-oriented design.  Every operation for database is encapsulated and published as lucid methods as `open', `close', `set', `remove', `get', and so on.  The classes of the hash database and the B+ tree database are derived class of the common abstract class which defines the interface.  Porting an application from one database to another is easy.  Moreover, the polymorphic database API is provided to assign a database in run-time.</p>
+
+<p>Kyoto Cabinet supports the "visitor" pattern.  You can define arbitrary database operations with call back functions.  The visitor class encapsulates that call back functions and their state data.  The database class has the "accept" method, which accepts an instance of the visitor class and calls its functions with a record data.  The return value of the call back function is reflected as the new state of the record.</p>
+
+<p>In addition, a lot of useful utilities are provided such as "prefix search", "regex search", "logging", "hot backup", "pseudo-snapshot", and "merging".  A framework for "MapReduce" is also provided.  Although it is not distributed, it is useful for aggregate calculation with less CPU loading and less memory usage.  The plain text database is an interface to treat a plain text file as a database file.  It is useful to use a text file as input or output data for the MapReduce framework.  The index database is a wrapper of a polymorphic database in order to improve the efficiency of the `append' operation.  It is useful to construct inverted indices.</p>
+
+<p>While the core API is provided for C++, bindings for other languages such as C, Java, Python, Ruby, Perl, and Lua are also provided.  Command line interfaces are also provided corresponding to each API.  They are useful for prototyping, test, and debugging.</p>
+
+<hr />
+
+<h2 id="installation">Installation</h2>
+
+<p>This section describes how to install Kyoto Cabinet with the source package.  As for a binary package, see its installation manual.</p>
+
+<h3 id="installation_preparation">Preparation</h3>
+
+<p>Kyoto Cabinet is available on UNIX-like systems.  At least, the following environments are supported.</p>
+
+<ul>
+<li>Linux 2.6 and later (i386/x86-64/PowerPC/Alpha/SPARC)</li>
+<li>FreeBSD 7.1 and later (i386/x86-64)</li>
+<li>Solaris 10 and later (i386/x86-64/SPARC)</li>
+<li>Mac OS X 10.5 and later (x86-64)</li>
+<li>Windows XP and later (i386/x86-64)</li>
+</ul>
+
+<p><code>gcc</code> (GNU Compiler Collection) 4.2 or later and <code>make</code> (GNU Make) are required to install Kyoto Cabinet with the source package.  They are installed by default on Linux, FreeBSD and so on.</p>
+
+<p>As Kyoto Cabinet depends on the following libraries, install them beforehand.</p>
+
+<ul>
+<li><a href="http://www.zlib.net/">ZLIB</a> : for loss-less data compression.  1.2.3 or later is required.</li>
+</ul>
+
+<h3 id="installation_installation">Installation</h3>
+
+<p>When an archive file of Kyoto Cabinet is extracted, change the current working directory to the generated directory and perform installation.</p>
+
+<p>Run the configuration script.</p>
+
+<pre>$ ./configure
+</pre>
+
+<p>Build programs.</p>
+
+<pre>$ make
+</pre>
+
+<p>Perform self-diagnostic test.  This takes a while.</p>
+
+<pre>$ make check
+</pre>
+
+<p>Install programs.  This operation must be carried out by the <code>root</code> user.</p>
+
+<pre># make install
+</pre>
+
+<h3 id="installation_result">Result</h3>
+
+<p>When a series of work finishes, the following files will be installed.</p>
+
+<pre>/usr/local/include/kccommon.h
+/usr/local/include/kcutil.h
+/usr/local/include/kcthread.h
+/usr/local/include/kcfile.h
+/usr/local/include/kccompress.h
+/usr/local/include/kccompare.h
+/usr/local/include/kcmap.h
+/usr/local/include/kcregex.h
+/usr/local/include/kcdb.h
+/usr/local/include/kcplantdb.h
+/usr/local/include/kcprotodb.h
+/usr/local/include/kcstashdb.h
+/usr/local/include/kccachedb.h
+/usr/local/include/kchashdb.h
+/usr/local/include/kcdirdb.h
+/usr/local/include/kctextdb.h
+/usr/local/include/kcpolydb.h
+/usr/local/include/kcdbext.h
+/usr/local/include/kclangc.h
+/usr/local/lib/libkyotocabinet.a
+/usr/local/lib/libkyotocabinet.so.x.y.z
+/usr/local/lib/libkyotocabinet.so.x
+/usr/local/lib/libkyotocabinet.so
+/usr/local/lib/pkgconfig/kyotocabinet.pc
+/usr/local/bin/kcutiltest
+/usr/local/bin/kcutilmgr
+/usr/local/bin/kcprototest
+/usr/local/bin/kcstashtest
+/usr/local/bin/kccachetest
+/usr/local/bin/kcgrasstest
+/usr/local/bin/kchashtest
+/usr/local/bin/kchashmgr
+/usr/local/bin/kctreetest
+/usr/local/bin/kctreemgr
+/usr/local/bin/kcdirtest
+/usr/local/bin/kcdirmgr
+/usr/local/bin/kcforesttest
+/usr/local/bin/kcforestmgr
+/usr/local/bin/kcpolytest
+/usr/local/bin/kcpolymgr
+/usr/local/bin/kclanctest
+/usr/local/man/man1/...
+/usr/local/share/doc/kyotocabinet/...
+</pre>
+
+<h3 id="installation_option">Options of Configure</h3>
+
+<p>The following options can be specified with `<code>./configure</code>'.</p>
+
+<ul class="options">
+<li><code>--enable-debug</code> : build for debugging.  Enable debugging symbols, do not perform optimization, and perform static linking.</li>
+<li><code>--enable-devel</code> : build for development.  Enable debugging symbols, perform optimization, and perform dynamic linking.</li>
+<li><code>--enable-profile</code> : build for profiling.  Enable profiling symbols, perform optimization, and perform dynamic linking.</li>
+<li><code>--enable-static</code> : build by static linking.</li>
+<li><code>--disable-shared</code> : avoid to build shared libraries.</li>
+<li><code>--disable-atomic</code> : build without atomic operations.</li>
+<li><code>--disable-zlib</code> : build without ZLIB compression.</li>
+<li><code>--enable-lzo</code> : build with LZO compression.</li>
+<li><code>--enable-lzma</code> : build with LZMA compression.</li>
+</ul>
+
+<p>`<code>--prefix</code>' and other options are also available as with usual UNIX software packages.  If you want to install Kyoto Cabinet under `<code>/usr</code>' not `<code>/usr/local</code>', specify `<code>--prefix=/usr</code>'.  As well, the library search path does not include `<code>/usr/local/lib</code>', it is necessary to set the environment variable `<code>LD_LIBRARY_PATH</code>' to include `<code>/usr/local/lib</code>' before running applications of Kyoto Cabinet.</p>
+
+<p>ZLIB is enabled by default.  LZO and LZMA are disabled by default.  Note that the programs on which Kyoto Cabinet depends are under different licenses.  For example, ZLIB is under the zlib license, LZO is under the GPL, and LZMA is under the LGPL.  You must also comply with their license terms if you enable them.</p>
+
+<h3 id="installation_library">How to Use the Library</h3>
+
+<p>Kyoto Cabinet provides API of the C++ language and it is available by programs conforming to the C++03 standard.  As the header files of Kyoto Cabinet are provided as `<code>kcutil.h</code>', `<code>kchashdb.h</code>', and so on, applications should include one or more of them accordingly to use the API.  As the library is provided as `<code>libkyotocabinet.a</code>' and `<code>libkyotocabinet.so</code>' and they depends on `<code>libz.so</code>', `<code>libstdc++.so</code>', `<code>librt.so</code>', `<code>libpthread.so</code>', `<code>libm.so</code>', and `<code>libc.so</code>', linker options corresponding to them are required by the build command.  The typical build command is the following.</p>
+
+<pre>$ g++ -I/usr/local/include example.cc -o example \
+  -L/usr/local/lib -lkyotocabinet -lz -lstdc++ -lrt -lpthread -lm -lc
+</pre>
+
+<h3 id="installation_windows">For Windows</h3>
+
+<p>Microsoft Visual Studio (Visual C++) is required to build Kyoto Cabinet on Windows.  The building configuration is described in the file `<code>VCmakefile</code>', which should be edited according to your environment.  Then, perform the following command in a command prompt window.</p>
+
+<pre>&gt; nmake -f VCmakefile
+</pre>
+
+<p>If you want, perform self-diagnostic test.</p>
+
+<pre>&gt; nmake -f VCmakefile check
+</pre>
+
+<p>If all building processes finish successfully, the static library `<code>kyotocabinet.lib</code>' and some executable files are generated.  As for now, neither DLL nor installation tool is provided.  Please, install the header files, the library file, and the executable files by yourself.</p>
+
+<p>If the header files and the library file are in the current directory, you can build an application program by the following command.</p>
+
+<pre>&gt; cl /I. example.cc kyotocabinet.lib
+</pre>
+
+<p>By default, the library is built with linking to `<code>LIBCMT.LIB</code>' by the `<code>/MT</code>' option.  If you want to use `<code>MSVCRT.LIB</code>', which is required by the MFC, rebuild the library with the `<code>/MD</code>' option and set the same option when building applications.  If your environment is 64-bit version, add the `<code>/D_SYS_WIN64_</code>' option to compiler options to improve performance.</p>
+
+<p>Many people use virus checking softwares on Windows.  However, they are harmful for database softwares.  To avoid unexpected errors and performance overhead of database functions, set aside the data directory from virus checking.  If the above self-diagnostic test fails, please confirm the configuration of the virus checker first.</p>
+
+<hr />
+
+<h2 id="tutorial">Tutorial</h2>
+
+<p>This section describes how to use Kyoto Cabinet with the command line utilities and some sample application programs.</p>
+
+<h3 id="tutorial_kchashmgr">Command Line Utility for the File Hash Database</h3>
+
+<p>To begin with, let's build a file hash database with the command line utility `<code>kchashmgr</code>'.  The database stores a list of staffs of a company.  Each record is composed of the key and the value.  The key is the staff ID and the value is person's name.</p>
+
+<p>The database must be created just one time before any database operation.  Let's create a database file "casket.kch" with the default configuration.</p>
+
+<pre>$ kchashmgr create staffs.kch
+</pre>
+
+<p>Register some staffs into the database.</p>
+
+<pre>$ kchashmgr set staffs.kch 1001 "George Washington"
+$ kchashmgr set staffs.kch 1002 "John Adams"
+$ kchashmgr set staffs.kch 1003 "Thomas Jefferson"
+$ kchashmgr set staffs.kch 1004 "James Madison"
+</pre>
+
+<p>Check the current contents.</p>
+
+<pre>$ kchashmgr list -pv staffs.kch
+1001    George Washington
+1002    John Adams
+1003    Thomas Jefferson
+1004    James Madison
+</pre>
+
+<p>To retrieve the value of a record, search the database with the key.</p>
+
+<pre>$ kchashmgr get staffs.kch 1003
+Thomas Jefferson
+</pre>
+
+<p>Of course, you can remove a record with the key.</p>
+
+<pre>$ kchashmgr remove staffs.kch 1003
+</pre>
+
+<p>That's all for the fundamental operations.  The DBM family have been improving performance thanks to discarding the functionality.</p>
+
+<h3 id="tutorial_kchashex">Sample Application of the File Hash Database</h3>
+
+<p>Next, let's write a sample application program handling a file hash database.  See the following source code.</p>
+
+<pre>#include &lt;kchashdb.h&gt;
+
+using namespace std;
+using namespace kyotocabinet;
+
+// main routine
+int main(int argc, char** argv) {
+
+  // create the database object
+  HashDB db;
+
+  // open the database
+  if (!db.open("casket.kch", HashDB::OWRITER | HashDB::OCREATE)) {
+    cerr &lt;&lt; "open error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // store records
+  if (!db.set("foo", "hop") ||
+      !db.set("bar", "step") ||
+      !db.set("baz", "jump")) {
+    cerr &lt;&lt; "set error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // retrieve a record
+  string value;
+  if (db.get("foo", &amp;value)) {
+    cout &lt;&lt; value &lt;&lt; endl;
+  } else {
+    cerr &lt;&lt; "get error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // traverse records
+  DB::Cursor* cur = db.cursor();
+  cur-&gt;jump();
+  string ckey, cvalue;
+  while (cur-&gt;get(&amp;ckey, &amp;cvalue, true)) {
+    cout &lt;&lt; ckey &lt;&lt; ":" &lt;&lt; cvalue &lt;&lt; endl;
+  }
+  delete cur;
+
+  // close the database
+  if (!db.close()) {
+    cerr &lt;&lt; "close error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  return 0;
+}
+</pre>
+
+<p>Save the above code as a file "example.cc".  Then, perform the following command line.  The command `<code>kcutilmgr conf</code>' prints the building configuration.</p>
+
+<pre>$ g++ `kcutilmgr conf -i` -o example example.cc `kcutilmgr conf -l`
+</pre>
+
+<p>Execute the application program built by the above.</p>
+
+<pre>$ ./example
+hop
+foo:hop
+bar:step
+baz:jump
+</pre>
+
+<p>The API of the file hash database is defined in the header `<code>kchash.h</code>'.  So, include the header near the front of a source file.  All symbols of Kyoto Cabinet are packaged in the name space `<code>kyotocabinet</code>'.  You can use them without any prefix by importing the name space.</p>
+
+<pre>#include &lt;kchashdb.h&gt;
+using namespace kyotocabinet;
+</pre>
+
+<p>The class `<code>HashDB</code>' contains all functionality of the file hash database and each instance expresses a file hash database file.</p>
+
+<pre>HashDB db;
+</pre>
+
+<p>Each database file must be opened by the `<code>open</code>' method before any database operation.  The flag `<code>HashDB::OWRITER</code>' means the process will update the database.  The flag `<code>HashDB::OCREATE</code>' means a database file will be created if it does not exist yet.</p>
+
+<pre>db.open("casket.kch", HashDB::OWRITER | HashDB::OCREATE);
+</pre>
+
+<p>Every opened database must be closed by the `<code>close</code>' method when it is no longer in use.  Closing the database is very important to avoid data corruption and memory leak.</p>
+
+<pre>db.close();
+</pre>
+
+<p>To store a record, use the `<code>set</code>' method with the key and the value.</p>
+
+<pre>db.put("foo", "hop");
+</pre>
+
+<p>To retrieve the value of a record, use the `<code>get</code>' method with the key.  On success, the return value is true and the result is assigned into the string object pointed to by the second parameter.</p>
+
+<pre>string value;
+if (db.get("foo", &amp;value)) {
+  cout &lt;&lt; value &lt;&lt; endl;
+}
+</pre>
+
+<p>Except for `<code>set</code>' and `<code>get</code>', there are other methods; `<code>add</code>', `<code>replace</code>', `<code>append</code>', `<code>remove</code>', `<code>increment</code>', and `<code>cas</code>'.  Each method has two versions; for `<code>std::string</code>' parameters and for `<code>char*</code>' and `<code>size_t</code>' parameters.</p>
+
+<p>Traversing records is a bit complicated task.  It needs a cursor object, which expresses the current position in the sequence of all records in the database.  Each cursor is created by the `<code>cursor</code>' method of the database object.  Each cursor should be initialized by `<code>jump</code>' method before actual record operations.</p>
+
+<pre>DB::Cursor* cur = db.cursor();
+cur-&gt;jump();
+</pre>
+
+<p>The cursor class has such methods against the record at the current position as `<code>set_value</code>', `<code>remove</code>', `<code>get_key</code>', `<code>get_value</code>', and `<code>get</code>'.  Most methods have an optional stepping parameter to shift the current position to the next record atomically.  Therefore, iterating such methods with the stepping parameter results in that all records are visited.</p>
+
+<pre>string ckey, cvalue;
+while (cur-&gt;get(&amp;ckey, &amp;cvalue, true)) {
+  cout &lt;&lt; ckey &lt;&lt; ":" &lt;&lt; cvalue &lt;&lt; endl;
+}
+</pre>
+
+<h3 id="tutorial_kcvisex">More Complex Example Using the Visitor Pattern</h3>
+
+<p>Every operation against a record can be abstracted by the "visitor" pattern.  A visitor object specifies call back methods which receives the state of a record and returns the new state.  Let's see the next sample using the visitor pattern.</p>
+
+<pre>#include &lt;kchashdb.h&gt;
+
+using namespace std;
+using namespace kyotocabinet;
+
+// main routine
+int main(int argc, char** argv) {
+
+  // create the database object
+  HashDB db;
+
+  // open the database
+  if (!db.open("casket.kch", HashDB::OREADER)) {
+    cerr &lt;&lt; "open error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // define the visitor
+  class VisitorImpl : public DB::Visitor {
+    // call back function for an existing record
+    const char* visit_full(const char* kbuf, size_t ksiz,
+                           const char* vbuf, size_t vsiz, size_t *sp) {
+      cout &lt;&lt; string(kbuf, ksiz) &lt;&lt; ":" &lt;&lt; string(vbuf, vsiz) &lt;&lt; endl;
+      return NOP;
+    }
+    // call back function for an empty record space
+    const char* visit_empty(const char* kbuf, size_t ksiz, size_t *sp) {
+      cerr &lt;&lt; string(kbuf, ksiz) &lt;&lt; " is missing" &lt;&lt; endl;
+      return NOP;
+    }
+  } visitor;
+
+  // retrieve a record with visitor
+  if (!db.accept("foo", 3, &amp;visitor, false) ||
+      !db.accept("dummy", 5, &amp;visitor, false)) {
+    cerr &lt;&lt; "accept error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // traverse records with visitor
+  if (!db.iterate(&amp;visitor, false)) {
+    cerr &lt;&lt; "iterate error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  // close the database
+  if (!db.close()) {
+    cerr &lt;&lt; "close error: " &lt;&lt; db.error().name() &lt;&lt; endl;
+  }
+
+  return 0;
+}
+</pre>
+
+<p>The methods `<code>accept</code>' and `<code>iterate</code>' receive visitor objects.  Each visitor object must be implement the interface `<code>DB::Visitor</code>'.  The method `<code>visit_full</code>' is called for an existing record.  The parameters specify the pointer to key buffer, the length of the key buffer, the pointer to the value buffer, the length of the value buffer, and the pointer to the variable to notice the length of the return value.  The return value is `<code>NOP</code>' for no update, `<code>REMOVE</code>' to remove the record, or otherwise the pointer to the buffer contains arbitrary byte pattern to update the value.  The method `<code>visit_empty</code>' is called for an empty record space.  The specification is the same to `<code>visit_full</code>' except that it does not receive the record value.</p>
+
+<p>As it is, almost all built-in operations like `<code>set</code>', `<code>remove</code>', and `<code>get</code>' are implemented with the `<code>accept</code>' method.  The following code is to store a record.</p>
+
+<pre>class Setter : public DB::Visitor {
+public:
+  Setter(const char* vbuf, size_t vsiz) : vbuf_(vbuf), vsiz_(vsiz) {}
+private:
+  const char* visit_full(const char* kbuf, size_t ksiz,
+                         const char* vbuf, size_t vsiz, size_t* sp) {
+    *sp = vsiz_;
+    return vbuf_;
+  }
+  const char* visit_empty(const char* kbuf, size_t ksiz, size_t* sp) {
+    *sp = vsiz_;
+    return vbuf_;
+  }
+  const char* vbuf_;
+  size_t vsiz_;
+};
+Setter setter("foo", 3);
+accept(kbuf, ksiz, &amp;setter, true);
+</pre>
+
+<h3 id="tutorial_dbchart">Features of Various Database Classes</h3>
+
+<p>As Kyoto Cabinet provides various database classes, they have the common base class, which defines the common interface of all database classes.  That is, you can use the following classes in the same way.</p>
+
+<table summary="database types">
+<tr>
+<th abbr="class">class</th>
+<th abbr="file">file</th>
+<th abbr="description">description</th>
+</tr>
+<tr>
+<td><code>ProtoHashDB</code></td>
+<td>kcprotodb.h</td>
+<td>
+<div>prototype hash database.</div>
+<div>on-memory database implemented with std::unorderd_map.</div>
+</td>
+</tr>
+<tr>
+<td><code>ProtoTreeDB</code></td>
+<td>kcprotodb.h</td>
+<td>
+<div>prototype tree database.</div>
+<div>on-memory database implemented with std::map.</div>
+</td>
+</tr>
+<tr>
+<td><code>StashDB</code></td>
+<td>kcstashdb.h</td>
+<td>
+<div>stash database.</div>
+<div>on-memory database saving memory.</div>
+</td>
+</tr>
+<tr>
+<td><code>CacheDB</code></td>
+<td>kccachedb.h</td>
+<td>
+<div>cache hash database.</div>
+<div>on-memory database featuring LRU deletion.</div>
+</td>
+</tr>
+<tr>
+<td><code>GrassDB</code></td>
+<td>kccachedb.h</td>
+<td>
+<div>cache tree database.</div>
+<div>on-memory database of B+ tree: cache with order.</div>
+</td>
+</tr>
+<tr>
+<td><code>HashDB</code></td>
+<td>kchashdb.h</td>
+<td>
+<div>file hash database.</div>
+<div>file database of hash table: typical DBM.</div>
+</td>
+</tr>
+<tr>
+<td><code>TreeDB</code></td>
+<td>kchashdb.h</td>
+<td>
+<div>file tree database.</div>
+<div>file database of B+ tree: DBM with order.</div>
+</td>
+</tr>
+<tr>
+<td><code>DirDB</code></td>
+<td>kcdirdb.h</td>
+<td>
+<div>directory hash database.</div>
+<div>respective files in a directory of the file system.</div>
+</td>
+</tr>
+<tr>
+<td><code>ForestDB</code></td>
+<td>kcdirdb.h</td>
+<td>
+<div>directory tree database.</div>
+<div>directory database of B+ tree: huge DBM with order.</div>
+</td>
+</tr>
+<tr>
+<td><code>TextDB</code></td>
+<td>kctextdb.h</td>
+<td>
+<div>plain text database.</div>
+<div>emulation to handle a plain text file as a database.</div>
+</td>
+</tr>
+<tr>
+<td><code>PolyDB</code></td>
+<td>kcpolydb.h</td>
+<td>
+<div>polymorphic database.</div>
+<div>dynamic binding of the above databases.</div>
+</td>
+</tr>
+</table>
+
+<p>Each database has different features in persistence, algorithm, time complexity, record sequence, and lock model for concurrency.</p>
+
+<table summary="database features">
+<tr>
+<th abbr="class">class</th>
+<th abbr="persistence">persistence</th>
+<th abbr="algorithm">algorithm</th>
+<th abbr="complexity">complexity</th>
+<th abbr="sequence">sequence</th>
+<th abbr="lock">lock unit</th>
+</tr>
+<tr>
+<td><code>ProtoHashDB</code></td>
+<td>volatile</td>
+<td>hash table</td>
+<td>O(1)</td>
+<td>undefined</td>
+<td>whole (rwlock)</td>
+</tr>
+<tr>
+<td><code>ProtoTreeDB</code></td>
+<td>volatile</td>
+<td>red black tree</td>
+<td>O(log N)</td>
+<td>lexical order</td>
+<td>whole (rwlock)</td>
+</tr>
+<tr>
+<td><code>StashDB</code></td>
+<td>volatile</td>
+<td>hash table</td>
+<td>O(1)</td>
+<td>undefined</td>
+<td>record (rwlock)</td>
+</tr>
+<tr>
+<td><code>CacheDB</code></td>
+<td>volatile</td>
+<td>hash table</td>
+<td>O(1)</td>
+<td>undefined</td>
+<td>record (mutex)</td>
+</tr>
+<tr>
+<td><code>GrassDB</code></td>
+<td>volatile</td>
+<td>B+ tree</td>
+<td>O(log N)</td>
+<td>custom order</td>
+<td>page (rwlock)</td>
+</tr>
+<tr>
+<td><code>HashDB</code></td>
+<td>persistent</td>
+<td>hash table</td>
+<td>O(1)</td>
+<td>undefined</td>
+<td>record (rwlock)</td>
+</tr>
+<tr>
+<td><code>TreeDB</code></td>
+<td>persistent</td>
+<td>B+ tree</td>
+<td>O(log N)</td>
+<td>custom order</td>
+<td>page (rwlock)</td>
+</tr>
+<tr>
+<td><code>DirDB</code></td>
+<td>persistent</td>
+<td>undefined</td>
+<td>undefined</td>
+<td>undefined</td>
+<td>record (rwlock)</td>
+</tr>
+<tr>
+<td><code>ForestDB</code></td>
+<td>persistent</td>
+<td>B+ tree</td>
+<td>O(log N)</td>
+<td>custom order</td>
+<td>page (rwlock)</td>
+</tr>
+<tr>
+<td><code>TextDB</code></td>
+<td>persistent</td>
+<td>plain text</td>
+<td>undefined</td>
+<td>stored order</td>
+<td>record (rwlock)</td>
+</tr>
+</table>
+
+<p>The C language binding is also provided as a wrapper of the polymorphic database API.  Include the header file `<code>kclangc.h</code>' and use the pointer to `<code>KCDB</code>' as a database object.</p>
+
+<p>Please see the <a href="api/">the API documents</a> for details.  Writing your own sample application is the best way to learn this library.  <a href="command.html">The specifications of command line utilities</a> is also useful.</p>
+
+<hr />
+
+<h2 id="tips">Tips and Hacks</h2>
+
+<p>This section describes tips and hacks to use Kyoto Cabinet.</p>
+
+<h3 id="tips_tuningstash">Tuning the Stash Database</h3>
+
+<p>The stash database (StashDB) is on-memory database saving memory.  The following tuning methods are provided.</p>
+
+<ul>
+<li><code>tune_buckets</code> : sets the number of buckets of the hash table.</li>
+</ul>
+
+<p>The default tuning of the bucket number is about one million.  If you intend to store more records, call `<code>tune_buckets</code>' to set the bucket number.  The suggested ratio of the bucket number is the same to the total number of records and it is okay from 80% to 400%.  If the ratio decreases smaller than 100%, the time efficiency will decrease rapidly because the collision chain is linear linked list.</p>
+
+<h3 id="tips_tuningcache">Tuning the Cache Hash Database</h3>
+
+<p>The cache hash database (CacheDB) is on-memory database featuring LRU deletion.  The following tuning methods are provided.</p>
+
+<ul>
+<li><code>tune_options</code> : sets the optional features.</li>
+<li><code>tune_buckets</code> : sets the number of buckets of the hash table.</li>
+<li><code>tune_compressor</code> : set the data compressor.</li>
+<li><code>cap_count</code> : sets the capacity by record number.</li>
+<li><code>cap_size</code> : sets the capacity by memory usage.</li>
+</ul>
+
+<p>The optional features by `<code>tune_options</code>' is useful to reduce the memory usage at the expense of time efficiency.  If `<code>CacheDB::TCOMPRESS</code>' is specified, the key and the value of each record is compressed implicitly when stored in the file.  If the value is bigger than 1KB or more, compression is effective.</p>
+
+<p>The default tuning of the bucket number is about one million.  If you intend to store more records, call `<code>tune_buckets</code>' to set the bucket number.  The suggested ratio of the bucket number is the same to the total number of records and it is okay from 50% to 400%.  If the ratio decreases smaller than 100%, the time efficiency will decrease gradually because the collision chain is binary search tree.</p>
+
+<p>The default compression algorithm of the `<code>CacheDB::TCOMPRESS</code>' option is "Deflate" by ZLIB.  If you want to use another algorithm, call `<code>tune_compressor</code>' to set a functor which implements compression and decompression functions.</p>
+
+<p>By default, the cache hash database maintains all records on memory and no record is expired.  If you want to expire old records to keep the memory usage constant, call `<code>cap_count</code>' and/or `<code>cap_size</code>' to limit the capacity.</p>
+
+<p>If you want to cache ten millions of records and keep the memory usage less than 8GB, the following tuning is suggested for example.</p>
+
+<pre>db.tune_buckets(10LL * 1000 * 1000);
+db.cap_count(10LL * 1000 * 1000);
+db.cap_size(8LL &lt;&lt; 30);
+db.open(...);
+</pre>
+
+<p>All tuning methods must be called before the database is opened.</p>
+
+<h3 id="tips_tuninggrass">Tuning the Cache Tree Database</h3>
+
+<p>The cache tree database (GrassDB) is on-memory database of B+ tree.  Because each node of B+ tree is serialized as a page buffer and treated as a record in the cache hash database, all tuning methods of the cache hash database except for capacity limitation are inherited to the cache tree database.  Moreover, the following tuning methods are added.</p>
+
+<ul>
+<li><code>tune_page</code> : sets the size of each page.</li>
+<li><code>tune_page_cache</code> : sets the capacity size of the page cache.</li>
+<li><code>tune_comparator</code> : sets the record comparator.</li>
+</ul>
+
+<p>The tuning of the page size by `<code>tune_page</code>' does not have to be modified in most cases.  The default is 8192, which is the twice of the typical page size of popular environments.  If the size of each node exceeds the parameter, the node is divided into two.</p>
+
+<p>The default tuning of the capacity size of the page cache is 64MB.  If your want to reduce memory usage, call `<code>tune_page_cache</code>' to convert most pages into flat byte arrays which are serialized or compressed in order to improve space efficiency.</p>
+
+<p>The default record comparator is the lexical ordering function.  That is, records in the B+ tree database are placed in the lexical order of each key.  If you want to use another ordering, call `<code>tune_comparator</code>' to set a functor which implements the ordering function.</p>
+
+<p>If you want to cache ten millions of records and keep the memory usage as small as possible, the following tuning is suggested for example.</p>
+
+<pre>db.tune_options(GrassDB::TCCOMPESS);
+db.tune_buckets(500LL * 1000);
+db.tune_page(32768);
+db.tune_page_cache(1LL &lt;&lt; 20);
+db.open(...);
+</pre>
+
+<p>All tuning methods must be called before the database is opened.</p>
+
+<h3 id="tips_tuninghash">Tuning the File Hash Database</h3>
+
+<p>The file hash database (HashDB) is file database of hash table.  The following tuning methods are provided.</p>
+
+<ul>
+<li><code>tune_alignment</code> : sets the power of the alignment of record size.</li>
+<li><code>tune_fbp</code> : sets the power of the capacity of the free block pool.</li>
+<li><code>tune_options</code> : sets the optional features.</li>
+<li><code>tune_buckets</code> : sets the number of buckets of the hash table.</li>
+<li><code>tune_map</code> : sets the size of the internal memory-mapped region.</li>
+<li><code>tune_defrag</code> : sets the unit step number of auto defragmentation.</li>
+<li><code>tune_compressor</code> : set the data compressor.</li>
+</ul>
+
+<p>The default alignment power is 3, which means the address of each record is aligned to a multiple of 8 (1&lt;&lt;3) bytes.  If you trust that the database is constructed at a time and not updated often, call `<code>tune_alignment</code>' to set the alignment power 0, which means 1 (1&lt;&lt;0) byte.  If the typical size of each record is expected to be larger than 1KB, tune the alignment 8 or more.</p>
+
+<p>The tuning of the free block pool by `<code>tune_fbp</code>' does not have to be modified in most cases.  The default is 10, which means the capacity of the free block pool is 1024 (1&lt;&lt;10).</p>
+
+<p>The optional features by `<code>tune_options</code>' is useful to reduce the size of the database file at the expense of scalability or time efficiency.  If `<code>HashDB::TSMALL</code>' is specified, the width of record addressing is reduced from 6 bytes to 4 bytes.  As the result, the footprint for each record is reduced from 16 bytes to 12 bytes.  However, it limits the maximum size of the database file up to 16GB (2GB multiplied by the alignment).  If `<code>HashDB::TLINEAR</code>' is specified, the data structure of the collision chain of hash table is changed from binary tree to linear linked list.  In that case, the footprint of each record is reduced from 16 bytes to 10 bytes although the time efficiency becomes sensitive to the number of the hash buckets.  If `<code>HashDB::TCOMPRESS</code>' is specified, the value of each record is compressed implicitly when stored in the file.  If the value is bigger than 1KB or more, compression is effective.</p>
+
+<p>The default tuning of the bucket number is about one million.  If you intend to store more records, call `<code>tune_buckets</code>' to set the bucket number.  The suggested ratio of the bucket number is the twice of the total number of records and it is okay from 100% to 400%.  If the ratio decreases smaller than 100%, the time efficiency will decrease gradually.  If you set the bucket number, setting the `<code>HashDB::TLINEAR</code>' option is recommended to improve time and space efficiency.</p>
+
+<p>The default tuning of the size of the internal memory-mapped region is 64MB.  If the database size is expected to be larger than 64MB, call `<code>tune_map</code> to set the map size larger than the expected size of the database.  Although the capacity of the RAM on the machine limits the map size, increasing the map size is effective to improve performance.</p>
+
+<p>By default, auto defragmentation is disabled.  If the existing records in the database are modified (removed or modified with varying the size), fragmentation of available regions proceeds gradually.  In that case, call `<code>tune_defrag</code>' to enable auto defragmentation and set the unit step number.  The suggested unit step number is 8, which means that a set of defragmentation operations is performed each 8 updating operations.  The more the unit is, space efficiency becomes higher but time efficiency becomes lower.</p>
+
+<p>The default compression algorithm of the `<code>HashDB::TCOMPRESS</code>' option is "Deflate" by ZLIB.  If you want to use another algorithm, call `<code>tune_compressor</code>' to set a functor which implements compression and decompression functions.</p>
+
+<p>If you intend to store ten thousands of records and reduce the database size as possible, the following tuning is suggested for example.</p>
+
+<pre>db.tune_alignment(0);
+db.tune_options(HashDB::TSMALL | HashDB::TLINEAR);
+db.tune_buckets(10LL * 1000);
+db.tune_defrag(8);
+db.open(...);
+</pre>
+
+<p>If you have a monster machine with 512GB RAM and intend to store ten billion records and improve time efficiency as possible, the following tuning is suggested for example.</p>
+
+<pre>db.tune_options(HashDB::TLINEAR);
+db.tune_buckets(20LL * 1000 * 1000 * 1000);
+db.tune_map(300LL &lt;&lt; 30);
+db.open(...);
+</pre>
+
+<p>All tuning methods must be called before the database is opened.  Because the settings of `<code>tune_alignment</code>', `<code>tune_fbp</code>', `<code>tune_options</code>', and `<code>tune_buckets</code>' are recorded as the meta data of the database, the methods must be called before the database is created and they can not be modified afterward.  Because other tuning parameters are not recorded in the database, they should be specified before every time opening the database.</p>
+
+<h3 id="tips_tuningtree">Tuning the File Tree Database</h3>
+
+<p>The file tree database (TreeDB) is file database of B+ tree.  Because each node of B+ tree is serialized as a page buffer and stored as a record in the file hash database, all tuning methods of the file hash database are inherited to the file tree database.  Moreover, the following tuning methods are added.</p>
+
+<ul>
+<li><code>tune_page</code> : sets the size of each page.</li>
+<li><code>tune_page_cache</code> : sets the capacity size of the page cache.</li>
+<li><code>tune_comparator</code> : sets the record comparator.</li>
+</ul>
+
+<p>The tuning of the page size by `<code>tune_page</code>' does not have to be modified in most cases.  The default is 8192, which is the twice of the typical page size of popular environments.  If the size of each node exceeds the parameter, the node is divided into two.</p>
+
+<p>The default tuning of the capacity size of the page cache is 64MB.  If your machine has abundant RAM, call `<code>tune_page_cache</code>' to load all nodes on the page cache.  If the RAM is not abundant, it is better to keep the default page cache size and assign the RAM for the internal memory-mapped region by `<code>tune_map</code>'.</p>
+
+<p>The default record comparator is the lexical ordering function.  That is, records in the B+ tree database are placed in the lexical order of each key.  If you want to use another ordering, call `<code>tune_comparator</code>' to set a functor which implements the ordering function.</p>
+
+<p>The default alignment of the file tree database is 256 (1&lt;&lt;8).  The default bucket number of the file tree database is about 65536.  Other default tuning parameters are the same to the file hash database.  Note that the bucket number should be calculated by the number of pages.  The suggested ratio of the bucket number is about 10% of the number of records.  If the compression option is specified, all records in each page are compressed at once.  Therefore, compression is more effective for the file tree database rather than for the file hash database.</p>
+
+<p>If you intend to store ten thousands of records and reduce the database size as possible, the following tuning is suggested for example.</p>
+
+<pre>db.tune_options(TreeDB::TLINEAR | TreeDB::TCCOMPESS);
+db.tune_buckets(1LL * 1000);
+db.tune_defrag(8);
+db.tune_page(32768);
+db.open(...);
+</pre>
+
+<p>If you have a monster machine with 512GB RAM and intend to store ten billion records and improve time efficiency as possible, the following tuning is suggested for example.</p>
+
+<pre>db.tune_options(TreeDB::TLINEAR);
+db.tune_buckets(1LL * 1000 * 1000 * 1000);
+db.tune_map(300LL &lt;&lt; 30);
+db.tune_page_cache(8LL &lt;&lt; 30);
+db.open(...);
+</pre>
+
+<p>All tuning methods must be called before the database is opened.  Because the setting of `<code>tune_page</code>' is recorded as the meta data of the database, the methods must be called before the database is created and it can not be modified afterward.  Because other tuning parameters are not recorded in the database, they should be specified before every time opening the database.</p>
+
+<h3 id="tips_tuningdir">Tuning the Directory Hash Database</h3>
+
+<p>The directory hash database (DirDB) is powered by the directory mechanism of the file system and stores records as respective files in a directory.  The following tuning methods are provided.</p>
+
+<ul>
+<li><code>tune_options</code> : sets the optional features.</li>
+</ul>
+
+<p>The optional features by `<code>tune_options</code>' is useful to reduce the size of the database file at the expense of time efficiency.  If `<code>DirDB::TCOMPRESS</code>' is specified, the key and the value of each record is compressed implicitly when stored in the file.  If the value is bigger than 1KB or more, compression is effective.</p>
+
+<p>Performance of the directory hash database is strongly based on the file system implementation and its tuning.  Some file systems such as EXT2 are not good at storing a lot of files in a directory.  But, other file systems such as EXT3 and ReiserFS are relatively efficient in that situation.  In general, file systems featuring B tree or its variants are more suitable than linear search algorithms.</p>
+
+<p>All tuning methods must be called before the database is opened.  Because the settings of `<code>tune_options</code>' are recorded as the meta data of the database, the method must be called before the database is created and they can not be modified afterward.</p>
+
+<h3 id="tips_tuningforest">Tuning the Directory Tree Database</h3>
+
+<p>The directory tree database (ForestDB) is directory database of B+ tree.  As with that the file tree database is based on the file hash database, the directory tree database is based on the directory hash database.  So, all tuning methods of the directory hash database are inherited to the directory tree database.  Additional tuning methods are the same as ones of the file tree database.</p>
+
+<p>The performance characteristics of the directory tree database is similar to those of the directory hash database.  However, because records are organized in pages, frequency of I/O operations is less and performance is better in many cases.</p>
+
+<h3 id="tips_choosedb">Choosing Suitable Databases</h3>
+
+<p>In order to choose suitable database types for your application, it is important to clarify the requirement specification.  If it does not require persistency of records, on-memory databases are suggested.  There are the prototype hash database (ProtoHashDB), the prototype tree database (ProtoTreeDB), the stash database (StashDB), the cache hash database (CacheDB), and the cache tree database (GrassDB).  If the order of keys is important for your application logic, the cache tree database is suitable.  If not, the stash database is suitable.  The memory usage of the cache tree database is smaller than the others.  The cache hash database can delete old records implicitly and keep the memory usage constant.  The prototype databases have few cases to flourish.</p>
+
+<ul>
+<li>time efficiency: CacheDB &gt; StashDB &gt; ProtoHashDB &gt; ProtoTreeDB &gt; GrassDB</li>
+<li>space efficiency: GrassDB &gt; StashDB &gt; CacheDB &gt; ProtoHashDB &gt; ProtoTreeDB</li>
+</ul>
+
+<p>If your application requires persistency of records, persistent databases are suggested.  There are the file hash database (HashDB), the file tree database (TreeDB), the directory hash database (DirDB), and the directory tree database (ForestDB).  If the order of keys is important for your application logic, the file tree database is suitable.  If not, the file hash database is suitable.  In most cases, performance and concurrency of the file hash database is better than the others.  If the size of each record is large, the directory hash database is suitable.</p>
+
+<p>Most DBM implementations including Kyoto Cabinet and Tokyo Cabinet are optimized to store small records.  As it is, if you want to handle very large records, using the file system directly is better solution than using DBM.  If you store and retrieve large records, the processing time by the `write' and `read' system calls is dominant rather than the `open' and `lseek' system calls.  Although typical DBMs reduce the workload to locate the position of each record, they increase the workload to read/write the data of each record.  If you want to handle large records but don't want to use the file system directly, use the directory hash database.  It's a mere wrapper of the directory mechanism of the file system.  If you want to handle large records in order of keys, use the directory tree database.  The directory tree database is the final weapon of scalability.</p>
+
+<ul>
+<li>time efficiency: HashDB &gt; TreeDB &gt; DirDB &gt; ForestDB</li>
+<li>space efficiency: TreeDB &gt; HashDB &gt; ForestDB &gt; DirDB</li>
+</ul>
+
+<p>If you want to decide the database type doing performance test with the production code, use the polymorphic database.  It can specify the database type dinamically when opening the database.  In fact, the polymorphic database is suggested in most usecases though it involves a little bit of performance overhead in runtime.  That's why the official script language bindings support the polymorphic database only.</p>
+
+<h3 id="tips_transaction">Transaction</h3>
+
+<p>If an application process which opened a database terminated without closing the database, it involves risks that some records may be missing and the database may be broken.  By default, durability is settled when the database is closed properly and it is not settled for each updating operation.  Kyoto Cabinet deal with the problem by transaction mechanism based on WAL (write ahead logging).  Transaction is begun and committed by application explicitly.  Durability during transaction is settled for each updating operation.  Transaction can be aborted by application.  In that case, all update operations during transaction are voided and the content of the database is rollbacked.  Although transaction is very useful like this, throughput of updating operation decreases to about 50% of the default manner due to overhead of writing WAL data.</p>
+
+<pre>db.begin_transaction();
+db.set("japan", "tokyo");
+db.set("korea", "seoul");
+db.end_transaction();
+</pre>
+
+<p>If you can't be bothered to begin and commit transaction explicitly, use auto transaction mechanism by specifying the `<code>BasicDB::AUTOTRAN</code>' option when opening the database.  Auto transaction is begun and committed implicitly for each operation.  Overhead of auto transaction is lighter than explicit transaction.</p>
+
+<pre>db.open("casket.kch", HashDB::OWRITER | HashDB::OCREATE | HashDB::OAUTOTRAN);
+db.set("japan", "tokyo");
+db.set("china", "beijing");
+</pre>
+
+<p>After all, it is important to choose the usage according to the requirements of your application.</p>
+
+<dl>
+<dt><strong>default</strong></dt>
+<dd>risk on process crash: Some records may be missing.</dd>
+<dd>risk on system crash: Some records may be missing.</dd>
+<dd>performance penalty: none</dd>
+<dd>remark: Auto recovery after crash will take time in proportion of the database size.</dd>
+</dl>
+
+<dl>
+<dt><strong>transaction</strong></dt>
+<dd>implicit usage: open(..., BasicDB::OAUTOTRAN);</dd>
+<dd>explicit usage: begin_transaction(false); ...; end_transaction(true);</dd>
+<dd>risk on process crash: none</dd>
+<dd>risk on system crash: Some records may be missing.</dd>
+<dd>performance penalty: Throughput will be down to about 30% or less.</dd>
+</dl>
+
+<dl>
+<dt><strong>transaction + synchronize</strong></dt>
+<dd>implicit usage: open(..., BasicDB::OAUTOTRAN | BasicDB::OAUTOSYNC);</dd>
+<dd>explicit usage: begin_transaction(true); ...; end_transaction(true);</dd>
+<dd>risk on process crash: none</dd>
+<dd>risk on system crash: none</dd>
+<dd>performance penalty: Throughput will be down to about 1% or less.</dd>
+</dl>
+
+<h3 id="tips_iterator">Various Iterators</h3>
+
+<p>Kyoto Cabinet supports four kinds of iterators: cursor, atomic iterator, parallel iterator, and MapReduce.  Each of them has its particular feature and it is important to choose the best suited one for your task.</p>
+
+<p>Cursor is called "external iterator" as well.  You can create multiple cursors of a database object simultaneously and each cursor can located at different places.</p>
+
+<pre>DB::Cursor cur(&amp;db);
+cur.jump("foo");
+cur1.get_value(&amp;key, &amp;value);
+</pre>
+
+<p>Atomic iterator is useful to retrieve or update records in a database atomically.  Only one thread can use the atomic iterator at the same time and other threads accessing any record are blocked dualing its iteration.</p>
+
+<pre>class VisitorImpl : public DB::Visitor { /* implement visit_full */ };
+VisitorImpl visitor;
+db.iterate(&amp;visitor, false);
+</pre>
+
+<p>Parallel iterator is useful to retrieve records in parallel.  Although it cannot update any record, concurrent processing improves throughput.  Multiple threads generated implicitly scan records simultaneously.</p>
+
+<pre>class VisitorImpl : public DB::Visitor { /* implement visit_full */ };
+VisitorImpl visitor;
+db.scan_parallel(&amp;visitor, 8);
+</pre>
+
+<p>MapReduce is useful to compute all records and organize extracted data chunks by arbitrary keys.  MapReduce is composed of three phases: "map", "shuffle", and "reduce".  "map" or "mapper" is a user-defined function to scan all records and extract data, which are emitted as key-value records by the built-in "emit" function.  "shuffle" is an implicit procedure to organize the extracted data by keys.  And, "reduce" or "reducer" is a user-defined function to process a set of values organized by the same key.</p>
+
+<pre>class MapReduceImpl : public MapReduce {
+  bool map(const char* kbuf, size_t ksiz, const char* vbuf, size_t vsiz) {
+    emit(...);
+    return true;
+  }
+  bool reduce(const char* kbuf, size_t ksiz, ValueIterator* iter) {
+    const char* vbuf; size_t vsiz;
+    while ((vbuf = iter-&gt;next(&amp;vsiz)) != NULL) { ... }
+    return true;
+  }
+};
+MapReduceImpl mr;
+mr.execute(&amp;db, "/tmp", MapReduce::XPARAMAP | MapReduce::XPARARED);
+</pre>
+
+<p>The default behavior of MapReduce is based on atomic iterator.  The `<code>MapReduce::XNOLOCK</code>' option make the mapper based on cursor.  The `<code>MapReduce::XPARAMAP</code>' option make the mapper based on parallel iterator.  The `<code>MapReduce::XPARARED</code>' option make the reducer based on a parallel processing model by a thread-pooling.</p>
+
+<p>The plain text database (TextDB) allows you to use a plain text file as the input database or the output database of the MapReduce framework.  When you store a record into a plain text database, the key is ignored and the value is appended at the end of the plain text, separating each record with a line feed character.  When you use iterator or cursor, each line is retrieved as a record and the key is generated automatically from the offset of the line.  The parallel iterator is also supported and you can process a text file in parallel easily.</p>
+
+<h3 id="tips_backup">Backup</h3>
+
+<p>Any hardware will break down suddenly.  Especially such storage devices as HDD and SSD are fragile.  Therefore, making backup files of your database file periodically is very important even if you use transaction.  You can copy a database file by such popular commands as `<code>cp</code>' and `<code>tar</code>' when the database is not being updated by another process.</p>
+
+<p>If an application uses multi threads and you want to make a backup file of the database in safety, use the `<code>BasicDB::copy</code>' method, which synchronizes the database status with the database file and makes a copy file.  During the copying operation, it is assured that the database file is not updated.</p>
+
+<pre>db.copy("backup.kch");
+</pre>
+
+<p>You may want "hot backup", which means that other threads are not blocked while a thread is creating a backup file.  In that case, use the `<code>File::synchronize</code>' method which synchronizes the database file and calls a function defined arbitrary.  The call back function can execute a "snapshot" command provided by the operating system.</p>
+
+<pre>class BackupImpl : public FileProcessor {
+  bool process(const std::string&amp; path, int64_t size, int64_t count) {
+    char cmd[1024];
+    sprintf(cmd, "snapshot.sh %s", path.c_str());
+    return system(cmd) == 0;
+  }
+} proc;
+db.synchronize(&amp;proc);
+</pre>
+
+<h3 id="tips_snapshot">Pseudo-snapshot</h3>
+
+<p>Chiefly for the cache hash database and the cache tree database, the "pseudo-snapshot" mechanism is provided.  The `<code>BasicDB::dump_snapshot</code>' dumps all records into a stream or a file.  The `<code>BasicDB::load_snapshot</code>' method loads records from a stream or a file.  Although the operations are performed atomically, they don't finish momentarily but take time in proportion of the database size with blocking the other threads.  Because the format of pseudo-snapshot data is common among the all database classes, it is useful to migrate records for each other.</p>
+
+<pre>db.dump_snapshot("backup.kcss");
+db.load_snapshot("backup.kcss");
+</pre>
+
+<p>If you don't want to let the other threads be blocked.  Use the cursor mechanism and save/load records by yourself.</p>
+
+<h3 id="tips_encrypted">Encrypted Database</h3>
+
+<p>The `<code>tune_compressor</code>' method of the file tree database and so on can set an arbitrary data compression functor.  In fact, the functor can perform not only data compression but also data encryption.  The class `<code>ArcfourCompressor</code>' implements a lightweight cipher algorithm based on Arcfour (aka. RC4).  It is useful to improve security of your database casually without high overhead.</p>
+
+<pre>ArcfourCompressor comp;
+comp.set_key("foobarbaz", 9);
+TreeDB db;
+db.tune_options(kc::TreeDB::TCOMPRESS);
+db.tune_compressor(&amp;comp);
+db.open(...);
+comp.begin_cycle((uint64_t)getpid() &lt;&lt; 32 + (uint64_t)time());
+</pre>
+
+<p>If you use the polymorphic database, it is very easy to enable encryption.  The naming option "zcomp" specifies the compression algorithm and the naming option "zkey" specifies the encryption key.</p>
+
+<pre>PolyDB db;
+db.open("casket.kct#zcomp=arc#zkey=foobarbaz", ...);
+</pre>
+
+<p>"zcomp" supports "zlib" for the raw format of ZLIB, "def" for the Deflate format, "gz" for the gzip format, "arc" for Arcfour encryption, and "arcz" for Arcfour encryption compressed by ZLIB.</p>
+
+<p>Note that the hash database types (CacheDB, HashDB, DirDB) compress the value of each record only.  That is, the key of each record is not compressed there.  However, the tree database types (GrassDB, TreeDB, ForestDB) compress all data in database.  So, if you want to use the compressor for encryption, choose one of tree database types.</p>
+
+<h3 id="tips_spaceefficiency">Space Efficiency of On-memory Databases</h3>
+
+<p>The stash database (StashDB), the cache hash database (CacheDB), and the cache tree database (GrassDB) are useful to save memory usage of associative array of strings.  They can be substituted for std::map in C++, java.lang.Map in Java, and built-in associative array mechanisms of many scripting languages.  The stash database and the cache hash database improve space efficiency by serializing the key and the value of each record into a byte array.  The cache tree database improves space efficiency by serializing records in each page into a byte array.</p>
+
+<p>For example, if you store ten million records and each is composed of a 8-byte key and a 8-byte value, `std::map&lt;std::string, std::string&gt;' (ProtoTreeDB) uses about 1.2GB memory.  In the same situation, the stash database uses 465MB memory; the cache hash database uses 618MB memory; and the cache tree database uses 318MB memory.  The cache tree database provides the best space efficiency in this use case.  However, as for time efficiency, the stash database and the cache hash database are superior to the cache tree database, due to the difference of hash table and B+ tree.  Note that B+ tree is very good at sequeitial access but not suitable for random access.  To improve time efficency of B+ tree, set the page size 1024 or less.</p>
+
+<p>If you want to reduce the memory usage extremely, use the cache tree database with the compression option.  Moreover, set the bucket number around 5% of the record number, set the page size 32768 or more, and set the capacity of the page cache less than 5% of the total record size.  For example, for the above situation of ten million records, the bucket number should be 500 thousand, the page size should be 32768, and the page cache should be 8MB.  Those are expressed as "%#opts=c#bnum=500k#psiz=32768#pccap=8m" for the polymorphic database.  Consequently, ten million records take 60MB memory only.</p>
+
+<h3 id="tips_multiprocess">Sharing One database by Multiple Processes</h3>
+
+<p>Multiple processes cannot access one database file at the same time.  A database file is locked by reader-writer lock while a process is connected to it.  Note that the `<code>BasicDB::ONOLOCK</code>' option should not be used in order to escape the file locking mechanism.  This option is for workaround against some file systems such as NFS, which does not support file locking mechanisms.</p>
+
+<p>If you want to get multiple processes to share one database, use <a href="http://fallabs.com/kyototycoon/">Kyoto Tycoon</a> instead.  It is a lightweight database server as network interface to Kyoto Cabinet.</p>
+
+<hr />
+
+<h2 id="license">License</h2>
+
+<p>To use Kyoto Cabinet, you can choose either GNU GPL or a commercial license.  If you choose GPL, the source code of application programs have to be licensed under a license compatible with GPL.  If you choose the commercial license, you will be exempted from such duty imposed by GPL.</p>
+
+<h3 id="license_gpl">GNU General Public License</h3>
+
+<p>Kyoto Cabinet is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.</p>
+
+<p>Kyoto Cabinet is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.</p>
+
+<p>You should have received a copy of the GNU General Public License along with this program.  If not, see `<code>http://www.gnu.org/licenses/</code>'.</p>
+
+<h3 id="license_fossexception">FOSS License Exception</h3>
+
+<p>The FOSS License Exception is also provided in order to accommodate products under other free and open source licenses.  See <a href="http://fallabs.com/license/fossexception.txt">the body text</a> for details.</p>
+
+<h3 id="license_linkexception">Specific FOSS Library Linking Exception</h3>
+
+<p>The Specific FOSS Library Linking Exception is also provided in order to be available in some specific FOSS libraries.  See <a href="http://fallabs.com/license/linkexception.txt">the body text</a> for details.</p>
+
+<h3 id="license_commercial">Commercial License</h3>
+
+<p>If you use Kyoto Cabinet within a proprietary software, a commercial license is required.</p>
+
+<p>The commercial license allows you to utilize Kyoto Cabinet by including it in your applications for purpose of developing and producing your applications and to utilize Kyoto Cabinet in order to transfer, sale, rent, lease, distribute or sublicense your applications to any third parties.  See <a href="http://fallabs.com/license/">the license guide</a> for details.</p>
+
+<h3 id="license_author">Author</h3>
+
+<p>Kyoto Cabinet was written and is maintained by <a href="http://fallabs.com/">FAL Labs</a>.  You can contact the author by e-mail to `<code>info@fallabs.com</code>'.</p>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

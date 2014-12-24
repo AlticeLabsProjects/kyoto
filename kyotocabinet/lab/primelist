@@ -1,0 +1,40 @@
+#! /usr/bin/ruby
+
+#================================================================
+# primelist
+# Print a sparse list of prime numbers
+#================================================================
+
+
+MINNUM = 1
+MAXNUM = 2 ** 52
+MULNUM = Math.sqrt(Math.sqrt(2))
+
+uniq = {}
+base = MINNUM
+while base <= MAXNUM
+  num = base
+  while num < base * 1.99 - 1
+    cand = num
+    while true
+      cmd = sprintf('factor %d', cand)
+      res = `#{cmd}`
+      res = res.gsub(/ *\n/, '')
+      res = res.gsub(/.*: */, '')
+      if res !~ / / && !uniq[res]
+        printf("%s\n", res);
+        uniq[res] = true
+        break
+      end
+      cand += 1
+    end
+    num *= MULNUM
+  end
+  base *= 2
+end
+
+exit(0)
+
+
+
+# END OF FILE

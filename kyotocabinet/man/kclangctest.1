@@ -1,0 +1,61 @@
+.TH "KCLANGCTEST" 1 "2012-05-24" "Man Page" "Kyoto Cabinet"
+
+.SH NAME
+kclangctest \- command line interface to test the C language binding
+
+.SH DESCRIPTION
+.PP
+The command `\fBkclangctest\fR' is a utility for facility test and performance test of the C language binding.  This command is used in the following format.  `\fIpath\fR' specifies the path of a database file.  `\fIrnum\fR' specifies the number of iterations.
+.PP
+.RS
+.br
+\fBkclangctest order \fR[\fB\-rnd\fR]\fB \fR[\fB\-etc\fR]\fB \fR[\fB\-tran\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs in\-order tests.
+.RE
+.br
+\fBkclangctest index \fR[\fB\-rnd\fR]\fB \fR[\fB\-etc\fR]\fB \fR[\fB\-oat\fR|\fB\-onl\fR|\fB\-onl\fR|\fB\-otl\fR|\fB\-onr\fR]\fB \fIpath\fB \fIrnum\fB\fR
+.RS
+Performs indexing operations.
+.RE
+.br
+\fBkclangctest map \fR[\fB\-rnd\fR]\fB \fR[\fB\-etc\fR]\fB \fR[\fB\-bnum \fInum\fB\fR]\fB \fIrnum\fB\fR
+.RS
+Performs test of memory\-saving hash map.
+.RE
+.br
+\fBkclangctest list \fR[\fB\-rnd\fR]\fB \fR[\fB\-etc\fR]\fB \fIrnum\fB\fR
+.RS
+Performs test of memory\-saving array list.
+.RE
+.RE
+.PP
+Options feature the following.
+.PP
+.RS
+\fB\-rnd\fR : performs random test.
+.br
+\fB\-etc\fR : performs miscellaneous operations.
+.br
+\fB\-tran\fR : performs transaction.
+.br
+\fB\-oat\fR : opens the database with the auto transaction option.
+.br
+\fB\-oas\fR : opens the database with the auto synchronization option.
+.br
+\fB\-onl\fR : opens the database with the no locking option.
+.br
+\fB\-otl\fR : opens the database with the try locking option.
+.br
+\fB\-onr\fR : opens the database with the no auto repair option.
+.br
+\fB\-bnum \fInum\fR\fR : specifies the number of buckets of the hash table.
+.br
+.RE
+.PP
+This command returns 0 on success, another on failure.
+
+.SH SEE ALSO
+.PP
+.BR kcpolymgr (1),
+.BR kcpolytest (1)

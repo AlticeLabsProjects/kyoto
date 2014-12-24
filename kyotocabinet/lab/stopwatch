@@ -1,0 +1,80 @@
+#! /usr/bin/perl
+
+#================================================================
+# stopwatch
+# Measure elapsed time of some test commands.
+#================================================================
+
+use strict;
+use warnings;
+use Time::HiRes qw(gettimeofday);
+
+use constant {
+    RECORDNUM => 1000000,
+    THREADNUM => 4,
+    TESTCOUNT => 20,
+    REMOVETOP => 2,
+    REMOVEBOTTOM => 8,
+};
+
+my $file = "casket";
+my $rnum = RECORDNUM;
+my $bnum = $rnum * 2;
+my $tbnum = $rnum / 8;
+my $msiz = $rnum * 50;
+my $tnum = THREADNUM;
+my $rtnum = $rnum / $tnum;
+my @commands = (
+                "./kcstashtest order -bnum $bnum $rnum",
+                "./kcstashtest order -th $tnum -bnum $tbnum $rtnum",
+                "./kccachetest order -bnum $bnum $rnum",
+                "./kccachetest order -th $tnum -bnum $tbnum $rtnum",
+                "./kchashtest order -set -bnum $bnum -msiz $msiz $file $rnum",
+#                "./kchashtest order -set -oat -bnum $bnum -msiz $msiz $file $rnum",
+                "./kchashtest order -get -msiz $msiz $file $rnum",
+                "./kchashtest order -th $tnum -set -bnum $bnum -msiz $msiz $file $rtnum",
+#                "./kchashtest order -th $tnum -set -oat -bnum $bnum -msiz $msiz $file $rtnum",
+                "./kchashtest order -th $tnum -get -msiz $msiz $file $rtnum",
+                "./kctreetest order -set -bnum $tbnum -msiz $msiz $file $rnum",
+#                "./kctreetest order -set -oat -bnum $tbnum -msiz $msiz $file $rnum",
+                "./kctreetest order -get -msiz $msiz $file $rnum",
+                "./kctreetest order -th $tnum -set -bnum $tbnum -msiz $msiz $file $rtnum",
+#                "./kctreetest order -th $tnum -set -oat -bnum $tbnum -msiz $msiz $file $rtnum",
+                "./kctreetest order -th $tnum -get -msiz $msiz $file $rtnum",
+                );
+
+my @table;
+foreach my $command (@commands){
+    system("sync ; sync");
+    my @result;
+    for(my $i = 0; $i < TESTCOUNT; $i++){
+        my $stime = gettimeofday();
+        system("$command >/dev/null 2>&1");
+        $stime = gettimeofday() - $stime;
+        printf("%s\t%d\t%0.5f\n", $command, $i + 1, $stime);
+        push(@result, $stime);
+    }
+    @result = sort { $a <=> $b } @result;
+    for(my $i = 0; $i < REMOVETOP; $i++){
+        shift(@result);
+    }
+    for(my $i = 0; $i < REMOVEBOTTOM; $i++){
+        pop(@result);
+    }
+    my $sum = 0;
+    foreach my $result (@result){
+        $sum += $result;
+    }
+    my $avg = $sum / scalar(@result);
+    push(@table, [$command, $avg]);
+}
+
+printf("\n\nRESULT\n");
+foreach my $row (@table){
+    printf("%s\t%0.5f\n", $$row[0], $$row[1]);
+}
+printf("\n");
+
+
+
+# END OF FILE

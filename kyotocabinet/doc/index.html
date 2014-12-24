@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta name="author" content="FAL Labs" />
+<meta name="keywords" content="Kyoto Cabinet, kyotocabinet, database, DBM" />
+<meta name="description" content="homepage of Kyoto Cabinet" />
+<link rel="contents" href="./" />
+<link rel="stylesheet" href="common.css" />
+<link rel="icon" href="icon16.png" />
+<link rev="made" href="mailto:info@fallabs.com" />
+<link rel="alternate" href="index.ja.html" lang="ja" xml:lang="ja" title="the Japanese version" />
+<title>Kyoto Cabinet: a straightforward implementation of DBM</title>
+<script type="text/javascript">function startup() {
+  if (!navigator) return;
+  var elem = document.getElementById("headline");
+  if (!elem) return;
+  var now = new Date();
+  if ((now.getFullYear() + now.getMonth() + now.getDate() + now.getHours()) % 5 == 0) {
+    var labels = [ "Marutamachi", "Takeyamachi", "Ebisugawa", "Nijo", "Oshikoji", "Oike",
+      "Anekoji", "Sanjo", "Rokkaku", "Takoyakushi", "Nishikikoji", "Shijo", "Ayanokoji",
+      "Bukkoji", "Takatsuji", "Matsubara", "Manjuji", "Gojo", "Settayacho", "Kagiyamachi",
+      "Uonotana", "Rokujo", "Santetsu", "Hiccho", "Haccho", "Kujo", "Jujo" ];
+    var label = labels[Math.floor(now.getTime()/3000)%labels.length] + " Cabinet";
+    var text = "a straightforward implementation of DBM";
+    if (now.getDate() % 3 == 0) {
+      label = "Kyoto Cabinet";
+      var texts = [ "Maru Take Ebisu Ni Oshi Oike", "Ane San Rokkaku Tako Nishiki",
+        "Shi Aya Bu tTaka Matsu Man Gojo", "Setta Charachara Uonotana",
+        "Rokujo Santetsu torisugi", "Hiccho koereba Hachi Kujo", "Jujo tojidetodomesasu" ];
+      text = texts[Math.floor(now.getTime()/10000)%texts.length];
+    }
+    elem.firstChild.nodeValue = label + ": " + text;
+  }
+}
+</script>
+</head>
+
+<body onload="startup();">
+
+<h1 id="headline">Kyoto Cabinet: a straightforward implementation of DBM</h1>
+
+<div class="note">Copyright (C) 2009-2012 FAL Labs</div>
+<div class="note">Last Update: Fri, 04 Mar 2011 23:07:26 -0800</div>
+
+<div class="logo"><img src="logo.png" id="logo" alt="Kyoto Cabinet" width="300" height="110" /></div>
+
+<hr />
+
+<h2 id="overview">Overview</h2>
+
+<p>Kyoto Cabinet is a library of routines for managing a database.  The database is a simple data file containing records, each is a pair of a key and a value.  Every key and value is serial bytes with variable length.  Both binary data and character string can be used as a key and a value.  Each key must be unique within a database.  There is neither concept of data tables nor data types.  Records are organized in hash table or B+ tree.</p>
+
+<p>Kyoto Cabinet runs very fast.  For example, elapsed time to store one million records is 0.9 seconds for hash database, and 1.1 seconds for B+ tree database.  Moreover, the size of database is very small.  For example, overhead for a record is 16 bytes for hash database, and 4 bytes for B+ tree database.  Furthermore, scalability of Kyoto Cabinet is great.  The database size can be up to 8EB (9.22e18 bytes).</p>
+
+<p>Kyoto Cabinet is written in the C++ language, and provided as API of C++, C, Java, Python, Ruby, Perl, and Lua.  Kyoto Cabinet is available on platforms which have API conforming to C++03 with the TR1 library extensions.  Kyoto Cabinet is a free software licensed under the GNU General Public License.  On the other hand, a commercial license is also provided.  If you use Kyoto Cabinet within a proprietary software, the commercial license is required.</p>
+
+<hr />
+
+<h2 id="documents">Documents</h2>
+
+<p>The following are documents of Kyoto Cabinet.  They are contained also in the source package.</p>
+
+<ul>
+<li><a href="spex.html">Fundamental Specifications</a></li>
+<li><a href="command.html">Specifications of Command Line Utilities</a></li>
+<li><a href="kyotoproducts.pdf">Presentation</a></li>
+<li><a href="api/">API Documents of the core library (C/C++)</a></li>
+</ul>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/javadoc/">API Documents for Java</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythondoc/">API Documents for Python 3.x</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythonlegacydoc/">API Documents for Python 2.x</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/rubydoc/">API Documents for Ruby</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/perldoc/">API Documents for Perl</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/luadoc/">API Documents for Lua</a></li>
+</ul>
+
+<hr />
+
+<h2 id="packages">Packages</h2>
+
+<p>The following are the source packages of Kyoto Cabinet.  As for binary packages, see the site of each distributor.</p>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/pkg/">Source Packages of the core library (C/C++)</a></li>
+</ul>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/javapkg/">Source Packages for Java</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythonpkg/">Source Packages for Python 3.x</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/pythonlegacypkg/">Source Packages for Python 2.x</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/rubypkg/">Source Packages for Ruby</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/perlpkg/">Source Packages for Perl</a></li>
+<li><a href="http://fallabs.com/kyotocabinet/luapkg/">Source Packages for Lua</a></li>
+</ul>
+
+<ul>
+<li><a href="http://fallabs.com/kyotocabinet/winpkg/">Binary Packages for Windows (C/C++/Java)</a></li>
+</ul>
+
+<hr />
+
+<h2 id="information">Information</h2>
+
+<p>Kyoto Cabinet was written and is maintained by <a href="http://fallabs.com/">FAL Labs</a>.  You can contact the author by e-mail to `info@fallabs.com'.  If you want the commercial license, please see <a href="http://fallabs.com/license/">the license guide</a>.</p>
+
+<p>The following are sibling projects of Kyoto Cabinet.</p>
+
+<ul>
+<li><a href="http://fallabs.com/kyototycoon/">Remote Service (Kyoto Tycoon)</a></li>
+</ul>
+
+<hr />
+
+</body>
+
+</html>
+
+<!-- END OF FILE -->

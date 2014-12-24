@@ -1,0 +1,48 @@
+#! /bin/sh
+
+#================================================================
+# makevcdef
+# Generator of module definition file for Visual C++
+#================================================================
+
+
+# check arguments
+file="$1"
+if [ -f "$file" ]
+then
+  true
+else
+  printf 'usage: makevcdef library\n' 1>&2
+  exit 1
+fi
+
+
+# show headers
+name=`echo $file | sed -e 's/^lib//' -e 's/\..*//'`
+printf 'EXPORTS\r\n'
+
+
+# show variables
+nm -g "$file" | grep ' [BDR] '  | sed 's/.* [BDR] //' | grep -v '^_' | sort | uniq |
+while read name
+do
+  num=$((num + 1))
+  printf '  %s = %s CONSTANT\r\n' "$name" "$name"
+done
+
+
+# show functions
+nm -g "$file" | grep ' T '  | sed 's/.* T //' | grep -v '^_' | sort | uniq |
+while read name
+do
+  num=$((num + 1))
+  printf '  %s = %s\r\n' "$name" "$name"
+done
+
+
+# exit normally
+exit 0
+
+
+
+# END OF FILE
