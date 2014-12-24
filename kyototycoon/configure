@@ -2248,7 +2248,7 @@ fi
 
 if test "$enable_lua" = "yes"
 then
-  luaver=`lua -e 'v = string.gsub(_VERSION, ".* ", ""); print(v)'`
+  luaver=`lua5.1 -e 'v = string.gsub(_VERSION, ".* ", ""); print(v)'`
   MYCPPFLAGS="$MYCPPFLAGS -D_MYLUA"
   MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua$luaver -I/usr/local/include/lua$luaver"
   MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua -I/usr/local/include/lua"
