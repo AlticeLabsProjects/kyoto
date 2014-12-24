@@ -18,13 +18,13 @@ This repository isn't mean as a divergent fork for any of these packages, but as
 What's included?
 ================
 
-This repository contains the latest upstream releases with additional changes, and are intended to be used together. These changes include patches sourced from Linux distribution packages and some custom patches. Check the commit history for more information.
+Here you can find the latest upstream releases with additional modifications, intended to be used together. The changes include patches sourced from Linux distribution packages and some custom patches. Check the commit history for more information.
 
 Installing
 ==========
 
-This repository contains a convenience script to build everything in one go. Just run:
+To build and install everything in one go, just run:
 
     ./install.sh /custom/install/root
     
-Specifying the installation root is optional. By default it installs into `/usr/local`.
+Specifying the installation root directory is optional. By default it installs into `/usr/local`.
