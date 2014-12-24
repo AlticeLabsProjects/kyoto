@@ -19,9 +19,3 @@ What's included?
 ================
 
 This repository contains the latest upstream releases with additional changes, and are intended to be used together. These changes include patches sourced from Linux distribution packages and some custom patches. Check the commit history for more information.
-
-Current status
-==============
-
-  * Kyoto Tycoon 0.9.56 + patches
-  * Kyoto Cabinet 1.2.76 + patches
