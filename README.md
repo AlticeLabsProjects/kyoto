@@ -52,6 +52,6 @@ Another example, this time for an in-memory hash database using the default sett
 References
 ----------
 
-[1] If you happen to be using Python, we're maintaining a production-ready library for it here: https://github.com/sapo/python-kyototycoon
+[1] We're maintaining a python library for it here: https://github.com/sapo/python-kyototycoon
 
 [2] http://www.guguncube.com/1935/kyoto-tycoon-installation-with-lua-and-memcached-protocol
