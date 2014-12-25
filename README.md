@@ -7,7 +7,7 @@ Some of its features include _master-slave_ and _master-master_ replication, in-
 
 It has its own fully-featured protocol based on HTTP and a simpler binary protocol for even better performance. The HTTP protocol isn't hard to use directly, but you can also find client libraries for multiple programming languages in the wild[1].
 
-It also supports the [memcached](http://www.memcached.org/) protocol an can be used as a drop-in replacement for _memcached_ in scenarios where you need replication or persistent/larger-than-memory storing capabilities[2].
+It also supports the [memcached](http://www.memcached.org/) protocol and can be used as a drop-in replacement for _memcached_ in scenarios where you need replication or persistent/larger-than-memory storing capabilities[2].
 
   * http://fallabs.com/kyototycoon/
   * http://fallabs.com/kyotocabinet/
@@ -22,7 +22,7 @@ This repository isn't meant as a divergent fork for any of these packages, but a
 What's included?
 ----------------
 
-Here you can find the latest upstream releases with additional modifications, intended to be used together. The changes include patches sourced from Linux distribution packages and some custom patches and have been tested in real-world production environments. Check the commit history for more information.
+Here you can find the latest upstream releases with additional modifications, intended to be used together. The changes include patches sourced from Linux distribution packages and some custom patches which have been tested in real-world production environments. Check the commit history for more information.
 
 Installing
 ----------
@@ -36,11 +36,12 @@ Specifying the installation root directory is optional. By default it installs i
 Running
 -------
 
-If there's a place in need of improvement it's the documentation for the available server options in Kyoto Tycoon. Try this as a quick start for a realistic use:
+If there's a place in need of improvement it's the documentation for the available server options in Kyoto Tycoon. Try this as a quick start for realistic use:
 
     $ mkdir -p /data/kyoto/db
-    $ /usr/local/bin/ktserver -ls -th 16 -port 1978 -pid /data/kyoto/kyoto.pid -log /data/kyoto/ktserver.log \
-                              -sid 1001 -ulog /data/kyoto/db -ulim 104857600 -oat -uasi 10 -asi 10 -ash \
+    $ /usr/local/bin/ktserver -ls -th 16 -port 1978 -pid /data/kyoto/kyoto.pid \
+                              -log /data/kyoto/ktserver.log -oat -uasi 10 -asi 10 -ash \
+                              -sid 1001 -ulog /data/kyoto/db -ulim 104857600 \
                               /data/kyoto/db/db.kct#opts=l#bnum=100000#msiz=256m#dfunit=8
 
 This will start a standalone server using a persistent B-tree database with binary logging enabled. Make sure to check the [command-line reference](http://fallabs.com/kyototycoon/command.html#ktserver) to understand what each option means and how it affects performance vs. data protection. The immediately tweakable bits are `bnum=100000`, which roughly optimizes for an expected 100 thousand stored keys, and `msiz=256m`, which limits memory usage to around 256MB.
