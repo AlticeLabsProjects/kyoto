@@ -877,10 +877,10 @@ class RemoteDB {
       size_t idx = it->second.find(':');
       if (idx != std::string::npos) {
         const std::string& tsstr = it->second.substr(idx + 1);
-        uint64_t fsiz = kc::atoi(it->second.c_str());
-        uint64_t fts = kc::atoi(tsstr.c_str());
+        int64_t fsiz = kc::atoi(it->second.c_str());
+        int64_t fts = kc::atoi(tsstr.c_str());
         if (!it->first.empty() && fsiz >= 0 && fts >= 0) {
-          UpdateLogger::FileStatus fs = { it->first, fsiz, fts };
+          UpdateLogger::FileStatus fs = { it->first, (uint64_t)fsiz, (uint64_t)fts };
           fstvec->push_back(fs);
         }
       }
