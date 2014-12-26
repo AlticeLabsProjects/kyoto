@@ -27,11 +27,12 @@ Here you can find the latest upstream releases with additional modifications, in
 Installing
 ----------
 
-To build and install everything in one go, just run:
+To build and install everything in one go, run:
 
-    $ ./install.sh /custom/install/root
-    
-Specifying the installation root directory is optional. By default it installs into `/usr/local`.
+    $ make DESTDIR=/custom/install/root
+    $ sudo make install
+
+Specifying the installation root directory (`DESTDIR`) is optional. By default it installs into `/usr/local`.
 
 Running
 -------
