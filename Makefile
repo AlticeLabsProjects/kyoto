@@ -3,7 +3,8 @@
 #
 
 
-DESTDIR ?= /usr/local
+PREFIX ?= /usr/local
+DESTDIR =
 OS := $(shell uname -s)
 
 # Parallelize the build on Linux...
@@ -26,7 +27,7 @@ ifneq ("","$(wildcard kyototycoon/Makefile)")
 endif
 
 kyotocabinet/Makefile:
-	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="${DESTDIR}"
+	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)"
 
 cabinet: kyotocabinet/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet
@@ -38,17 +39,23 @@ kyototycoon/Makefile: kyotocabinet/libkyotocabinet.a kyotocabinet/libkyotocabine
 	$(eval CABINET_ROOT := $(shell awk '/^prefix *=/ {print $$3}' kyotocabinet/Makefile))
 	test -x kyototycoon/configure && cd kyototycoon && \
 	PKG_CONFIG_PATH="../kyotocabinet" CPPFLAGS="-I../kyotocabinet" LDFLAGS="-L../kyotocabinet" \
-	./configure --prefix="${DESTDIR}" --with-kc="${CABINET_ROOT}" --enable-lua
+	./configure --prefix="$(PREFIX)" --with-kc="$(CABINET_ROOT)" --enable-lua
 
 tycoon: kyototycoon/Makefile
 	$(MAKE) -j$(NPROCS) -C kyototycoon
 
 install: all kyotocabinet/Makefile kyototycoon/Makefile
-	$(MAKE) -j$(NPROCS) -C kyotocabinet install
-	$(MAKE) -j$(NPROCS) -C kyototycoon install
-	echo "$(shell awk '/^prefix *=/ {print $$3}' kyotocabinet/Makefile)/lib" > /etc/ld.so.conf.d/kyoto-cabinet.conf
-	echo "$(shell awk '/^prefix *=/ {print $$3}' kyototycoon/Makefile)/lib" > /etc/ld.so.conf.d/kyoto-tycoon.conf
+	$(MAKE) -j$(NPROCS) -C kyotocabinet install DESTDIR="$(DESTDIR)"
+	$(MAKE) -j$(NPROCS) -C kyototycoon install DESTDIR="$(DESTDIR)"
+
+# Update the system linker search path if allowed...
+ifeq ("yes","$(shell test -w /etc/ld.so.conf.d && echo yes)")
+	$(eval CABINET_LIBDIR := $(shell awk '/^prefix *=/ {print $$3}' kyotocabinet/Makefile)/lib)
+	test -n "$(shell /sbin/ldconfig -vN 2>&1 | grep -o '^$(CABINET_LIBDIR):')" || echo "$(CABINET_LIBDIR)" > /etc/ld.so.conf.d/kyoto-cabinet.conf
+	$(eval TYCOON_LIBDIR := $(shell awk '/^prefix *=/ {print $$3}' kyototycoon/Makefile)/lib)
+	test -n "$(shell /sbin/ldconfig -vN 2>&1 | grep -o '^$(TYCOON_LIBDIR):')" || echo "$(TYCOON_LIBDIR)" > /etc/ld.so.conf.d/kyoto-tycoon.conf
 	/sbin/ldconfig
+endif
 
 
 # EOF - Makefile

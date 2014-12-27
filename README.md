@@ -29,10 +29,10 @@ Installing
 
 To build and install everything in one go, run:
 
-    $ make DESTDIR=/custom/install/root
+    $ make PREFIX=/custom/install/root
     $ sudo make install
 
-Specifying the installation root directory (`DESTDIR`) is optional. By default it installs into `/usr/local`.
+Specifying the installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`.
 
 Running
 -------
