@@ -58,7 +58,7 @@ To enable the _memcached_ protocol, use the `-plsv` and `-plex` parameters. The 
                               -plex 'port=11211#opts=f' \
                               '*#bnum=100000#capsiz=256m'
 
-Automatic object removal in databases using the `capsiz` option is LRU-based. Based on our experience, we don't recommend using this option with persistent (on-disk) databases as the server will temporarily stop responding to free up space when the maximum capacity is reached. In this case, try to keep the database size under control using key expiration instead.
+Forced object removal when the maximum database size is reached in databases using the `capsiz` option is LRU-based. Based on our experience, we don't recommend using this option with persistent (on-disk) databases as the server will temporarily stop responding to free up space when the maximum capacity is reached. In this case, try to keep the database size under control using keys with expiration times instead.
 
 References
 ----------
