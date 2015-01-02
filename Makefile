@@ -48,8 +48,9 @@ install: all kyotocabinet/Makefile kyototycoon/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet install DESTDIR="$(DESTDIR)"
 	$(MAKE) -j$(NPROCS) -C kyototycoon install DESTDIR="$(DESTDIR)"
 
-# Update the system linker search path if allowed...
-ifeq ("yes","$(shell test -w /etc/ld.so.conf.d && echo yes)")
+# Update the system linker search path if allowed (and not installing into a packaging root).
+# For packages (eg. ".deb", ".rpm"), this should be done in the packaging configuration/scripts...
+ifeq ("yes","$(shell test -z '$(DESTDIR)' && test -w /etc/ld.so.conf.d && echo yes)")
 	$(eval CABINET_LIBDIR := $(shell awk '/^prefix *=/ {print $$3}' kyotocabinet/Makefile)/lib)
 	test -n "$(shell /sbin/ldconfig -vN 2>&1 | grep -o '^$(CABINET_LIBDIR):')" || echo "$(CABINET_LIBDIR)" > /etc/ld.so.conf.d/kyoto-cabinet.conf
 	$(eval TYCOON_LIBDIR := $(shell awk '/^prefix *=/ {print $$3}' kyototycoon/Makefile)/lib)
