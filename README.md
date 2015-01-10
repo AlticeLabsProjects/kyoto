@@ -15,9 +15,9 @@ It also supports the [memcached](http://www.memcached.org/) protocol with some [
 What's this fork?
 -----------------
 
-The development of Kyoto Tycoon and Kyoto Cabinet by the original authors seem to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the upstream sources fail to build in recent operating system releases (with recent compilers).
+The development of [Kyoto Tycoon](http://fallabs.com/kyototycoon/) and [Kyoto Cabinet](http://fallabs.com/kyotocabinet/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
 
-This repository isn't really meant as an "hostile" fork for any of these packages, but as a place to keep readily usable versions for modern machines. Nevertheless, pull requests are welcome.
+We at [SAPO](http://www.sapo.pt/) don't really mean this repository as an "hostile" fork for any of these packages, but as a place to keep readily usable versions for modern machines. Nevertheless, pull requests are welcome.
 
 What's included?
 ----------------
@@ -27,7 +27,7 @@ Here you can find the latest upstream releases with additional modifications, in
 Installing
 ----------
 
-To build and install everything in one go, run:
+Download the [latest source release](https://github.com/sapo/kyoto/releases/latest) or clone the [repository](https://github.com/sapo/kyoto) from GitHub. Then, to build and install everything in one go, run:
 
     $ make PREFIX=/custom/install/root
     $ sudo make install
@@ -59,9 +59,3 @@ To enable the _memcached_ protocol, use the `-plsv` and `-plex` parameters. The 
                               '*#bnum=100000#capsiz=256m'
 
 Forced object removal when the maximum database size is reached in databases using the `capsiz` option is LRU-based. Based on our experience, we don't recommend using this option with persistent (on-disk) databases as the server will temporarily stop responding to free up space when the maximum capacity is reached. In this case, try to keep the database size under control using keys with expiration times instead.
-
-References
-----------
-
-  * http://fallabs.com/kyototycoon/
-  * http://fallabs.com/kyotocabinet/
