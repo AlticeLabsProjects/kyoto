@@ -41,6 +41,8 @@ static int32_t runslave(int argc, char** argv);
 static int32_t runsetbulk(int argc, char** argv);
 static int32_t runremovebulk(int argc, char** argv);
 static int32_t rungetbulk(int argc, char** argv);
+static int32_t runmatch(int argc, char** argv);
+static int32_t runregex(int argc, char** argv);
 static int32_t procreport(const char* host, int32_t port, double tout);
 static int32_t procscript(const char* proc, const char* host, int32_t port, double tout,
                           bool bin, const char* swname, double swtime,
@@ -93,6 +95,14 @@ static int32_t procgetbulk(const std::vector<std::string>& keys,
                            const char* host, int32_t port, double tout, bool bin,
                            const char* swname, double swtime, const char* ssname, bool ssbrd,
                            const char* dbexpr, bool px);
+static int32_t procmatch(const std::vector<std::string>& keys,
+                         const char* host, int32_t port, double tout,
+                         const char* swname, double swtime, const char* ssname, bool ssbrd,
+                         const char* dbexpr, bool px);
+static int32_t procregex(const std::vector<std::string>& regexes,
+                         const char* host, int32_t port, double tout,
+                         const char* swname, double swtime, const char* ssname, bool ssbrd,
+                         const char* dbexpr, bool px);
 
 
 // print the usage and exit
@@ -133,6 +143,10 @@ int main(int argc, char** argv) {
     rv = runremovebulk(argc, argv);
   } else if (!std::strcmp(argv[1], "getbulk")) {
     rv = rungetbulk(argc, argv);
+  } else if (!std::strcmp(argv[1], "match")) {
+    rv = runmatch(argc, argv);
+  } else if (!std::strcmp(argv[1], "regex")) {
+    rv = runregex(argc, argv);
   } else if (!std::strcmp(argv[1], "version") || !std::strcmp(argv[1], "--version")) {
     printversion();
   } else {
@@ -187,6 +201,12 @@ static void usage() {
   eprintf("  %s getbulk [-host str] [-port num] [-tout num] [-bin]"
           " [-swname str] [-swtime num] [-ssname str] [-ssbrd] [-db str] [-sx] [-px]"
           " key ...\n", g_progname);
+  eprintf("  %s match [-host str] [-port num] [-tout num]"
+          " [-swname str] [-swtime num] [-ssname str] [-ssbrd] [-db str] [-sx] [-px]"
+          " prefix ...\n", g_progname);
+  eprintf("  %s regex [-host str] [-port num] [-tout num]"
+          " [-swname str] [-swtime num] [-ssname str] [-ssbrd] [-db str] [-sx] [-px]"
+          " regex ...\n", g_progname);
   eprintf("\n");
   std::exit(1);
 }
@@ -1248,6 +1268,148 @@ static int32_t rungetbulk(int argc, char** argv) {
 }
 
 
+// parse arguments of match command
+static int32_t runmatch(int argc, char** argv) {
+  bool argbrk = false;
+  std::vector<std::string> keys;
+  const char* host = "";
+  int32_t port = kt::DEFPORT;
+  double tout = 0;
+  const char* swname = NULL;
+  double swtime = 0;
+  const char* ssname = NULL;
+  bool ssbrd = false;
+  const char* dbexpr = NULL;
+  bool sx = false;
+  bool px = false;
+  for (int32_t i = 2; i < argc; i++) {
+    if (!argbrk && argv[i][0] == '-') {
+      if (!std::strcmp(argv[i], "--")) {
+        argbrk = true;
+      } else if (!std::strcmp(argv[i], "-host")) {
+        if (++i >= argc) usage();
+        host = argv[i];
+      } else if (!std::strcmp(argv[i], "-port")) {
+        if (++i >= argc) usage();
+        port = kc::atoix(argv[i]);
+      } else if (!std::strcmp(argv[i], "-tout")) {
+        if (++i >= argc) usage();
+        tout = kc::atof(argv[i]);
+      } else if (!std::strcmp(argv[i], "-swname")) {
+        if (++i >= argc) usage();
+        swname = argv[i];
+      } else if (!std::strcmp(argv[i], "-swtime")) {
+        if (++i >= argc) usage();
+        swtime = kc::atof(argv[i]);
+      } else if (!std::strcmp(argv[i], "-ssname")) {
+        if (++i >= argc) usage();
+        ssname = argv[i];
+      } else if (!std::strcmp(argv[i], "-ssbrd")) {
+        ssbrd = false;
+      } else if (!std::strcmp(argv[i], "-db")) {
+        if (++i >= argc) usage();
+        dbexpr = argv[i];
+      } else if (!std::strcmp(argv[i], "-sx")) {
+        sx = true;
+      } else if (!std::strcmp(argv[i], "-px")) {
+        px = true;
+      } else {
+        usage();
+      }
+    } else {
+      argbrk = true;
+      const char* kstr = argv[i];
+      char* kbuf;
+      size_t ksiz;
+      if (sx) {
+        kbuf = kc::hexdecode(kstr, &ksiz);
+        kstr = kbuf;
+      } else {
+        ksiz = std::strlen(kstr);
+        kbuf = NULL;
+      }
+      std::string key(kstr, ksiz);
+      keys.push_back(key);
+      delete[] kbuf;
+    }
+  }
+  int32_t rv = procmatch(keys, host, port, tout, swname, swtime, ssname, ssbrd,
+                         dbexpr, px);
+  return rv;
+}
+
+
+// parse arguments of regex command
+static int32_t runregex(int argc, char** argv) {
+  bool argbrk = false;
+  std::vector<std::string> regexes;
+  const char* host = "";
+  int32_t port = kt::DEFPORT;
+  double tout = 0;
+  const char* swname = NULL;
+  double swtime = 0;
+  const char* ssname = NULL;
+  bool ssbrd = false;
+  const char* dbexpr = NULL;
+  bool sx = false;
+  bool px = false;
+  for (int32_t i = 2; i < argc; i++) {
+    if (!argbrk && argv[i][0] == '-') {
+      if (!std::strcmp(argv[i], "--")) {
+        argbrk = true;
+      } else if (!std::strcmp(argv[i], "-host")) {
+        if (++i >= argc) usage();
+        host = argv[i];
+      } else if (!std::strcmp(argv[i], "-port")) {
+        if (++i >= argc) usage();
+        port = kc::atoix(argv[i]);
+      } else if (!std::strcmp(argv[i], "-tout")) {
+        if (++i >= argc) usage();
+        tout = kc::atof(argv[i]);
+      } else if (!std::strcmp(argv[i], "-swname")) {
+        if (++i >= argc) usage();
+        swname = argv[i];
+      } else if (!std::strcmp(argv[i], "-swtime")) {
+        if (++i >= argc) usage();
+        swtime = kc::atof(argv[i]);
+      } else if (!std::strcmp(argv[i], "-ssname")) {
+        if (++i >= argc) usage();
+        ssname = argv[i];
+      } else if (!std::strcmp(argv[i], "-ssbrd")) {
+        ssbrd = false;
+      } else if (!std::strcmp(argv[i], "-db")) {
+        if (++i >= argc) usage();
+        dbexpr = argv[i];
+      } else if (!std::strcmp(argv[i], "-sx")) {
+        sx = true;
+      } else if (!std::strcmp(argv[i], "-px")) {
+        px = true;
+      } else {
+        usage();
+      }
+    } else {
+      argbrk = true;
+      const char* rstr = argv[i];
+      char* rbuf;
+      size_t rsiz;
+      if (sx) {
+        rbuf = kc::hexdecode(rstr, &rsiz);
+        rstr = rbuf;
+      } else {
+        rsiz = std::strlen(rstr);
+        rbuf = NULL;
+      }
+      std::string regex(rstr, rsiz);
+      regexes.push_back(regex);
+      delete[] rbuf;
+    }
+  }
+  int32_t rv = procregex(regexes, host, port, tout, swname, swtime, ssname, ssbrd,
+                         dbexpr, px);
+  return rv;
+}
+
+
 // perform report command
 static int32_t procreport(const char* host, int32_t port, double tout) {
   kt::RemoteDB db;
@@ -2002,5 +2164,87 @@ static int32_t procgetbulk(const std::vector<std::string>& keys,
 }
 
 
+// perform match command
+static int32_t procmatch(const std::vector<std::string>& keys,
+                         const char* host, int32_t port, double tout,
+                         const char* swname, double swtime, const char* ssname, bool ssbrd,
+                         const char* dbexpr, bool px) {
+  kt::RemoteDB db;
+  if (!db.open(host, port, tout)) {
+    dberrprint(&db, "DB::open failed");
+    return 1;
+  }
+  if (swname) db.set_signal_waiting(swname, swtime);
+  if (ssname) db.set_signal_sending(ssname, ssbrd);
+  bool err = false;
+  if (dbexpr) db.set_target(dbexpr);
+  std::vector<std::string>::const_iterator keys_it = keys.begin();
+  std::vector<std::string>::const_iterator keys_end = keys.end();
+  while (keys_it != keys_end) {
+    std::vector<std::string> found;
+    int64_t rc = db.match_prefix(keys_it->c_str(), &found, -1); // -1 == unlimited
+    if (rc == -1) {
+      dberrprint(&db, "DB::match_prefix failed");
+      err = true;
+      break;
+    }
+    if (rc > 0) {
+      std::vector<std::string>::iterator found_it = found.begin();
+      std::vector<std::string>::iterator found_end = found.end();
+      while (found_it != found_end) {
+        printf("%s\n", found_it->c_str());
+        ++found_it;
+      }
+    }
+    ++keys_it;
+  }
+  if (!db.close()) {
+    dberrprint(&db, "DB::close failed");
+    err = true;
+  }
+  return err ? 1 : 0;
+}
+
+
+// perform regex command
+static int32_t procregex(const std::vector<std::string>& regexes,
+                         const char* host, int32_t port, double tout,
+                         const char* swname, double swtime, const char* ssname, bool ssbrd,
+                         const char* dbexpr, bool px) {
+  kt::RemoteDB db;
+  if (!db.open(host, port, tout)) {
+    dberrprint(&db, "DB::open failed");
+    return 1;
+  }
+  if (swname) db.set_signal_waiting(swname, swtime);
+  if (ssname) db.set_signal_sending(ssname, ssbrd);
+  bool err = false;
+  if (dbexpr) db.set_target(dbexpr);
+  std::vector<std::string>::const_iterator regexes_it = regexes.begin();
+  std::vector<std::string>::const_iterator regexes_end = regexes.end();
+  while (regexes_it != regexes_end) {
+    std::vector<std::string> found;
+    int64_t rc = db.match_regex(regexes_it->c_str(), &found, -1); // -1 == unlimited
+    if (rc == -1) {
+      dberrprint(&db, "DB::match_regex failed");
+      err = true;
+      break;
+    }
+    if (rc > 0) {
+      std::vector<std::string>::iterator found_it = found.begin();
+      std::vector<std::string>::iterator found_end = found.end();
+      while (found_it != found_end) {
+        printf("%s\n", found_it->c_str());
+        ++found_it;
+      }
+    }
+    ++regexes_it;
+  }
+  if (!db.close()) {
+    dberrprint(&db, "DB::close failed");
+    err = true;
+  }
+  return err ? 1 : 0;
+}
 
 // END OF FILE
