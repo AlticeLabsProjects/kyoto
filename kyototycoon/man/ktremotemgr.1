@@ -89,12 +89,12 @@ Remove records at once.
 Retrieve records at once.
 .RE
 .br
-\fBktremotemgr match \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fIprefix\fB ...\fR
+\fBktremotemgr match \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fR[\fB\-limit \fInum\fB\fR]\fB \fIprefix\fB ...\fR
 .RS
 Prints keys starting with "prefix", separated by line feeds.
 .RE
 .br
-\fBktremotemgr regex \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fIregex\fB ...\fR
+\fBktremotemgr regex \fR[\fB\-host \fIstr\fB\fR]\fB \fR[\fB\-port \fInum\fB\fR]\fB \fR[\fB\-tout \fInum\fB\fR]\fB \fR[\fB\-bin\fR]\fB \fR[\fB\-swname \fIstr\fB\fR]\fB \fR[\fB\-swtime \fInum\fB\fR]\fB \fR[\fB\-ssname \fIstr\fB\fR]\fB \fR[\fB\-ssbrd\fR]\fB \fR[\fB\-db \fIstr\fB\fR]\fB \fR[\fB\-sx\fR]\fB \fR[\fB\-px\fR]\fB \fR[\fB\-limit \fInum\fB\fR]\fB \fIregex\fB ...\fR
 .RS
 Prints keys matching "regex", separated by line feeds.
 .RE
@@ -172,6 +172,8 @@ Options feature the following.
 \fB\-uf\fR : prints status of each update log file.
 .br
 \fB\-ur\fR : remove old update log files.
+.br
+\fB\-limit \fInum\fR\fR : specifies the maximum number of records to return.
 .br
 .RE
 .PP

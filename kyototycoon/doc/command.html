@@ -430,9 +430,9 @@
 <dd>Remove records at once.</dd>
 <dt><code>ktremotemgr getbulk [-host <var>str</var>] [-port <var>num</var>] [-tout <var>num</var>] [-bin] [-swname <var>str</var>] [-swtime <var>num</var>] [-ssname <var>str</var>] [-ssbrd] [-db <var>str</var>] [-sx] [-px] <var>key</var> ...</code></dt>
 <dd>Retrieve records at once.</dd>
-<dt><code>ktremotemgr match [-host <var>str</var>] [-port <var>num</var>] [-tout <var>num</var>] [-bin] [-swname <var>str</var>] [-swtime <var>num</var>] [-ssname <var>str</var>] [-ssbrd] [-db <var>str</var>] [-sx] [-px] <var>prefix</var> ...</code></dt>
+<dt><code>ktremotemgr match [-host <var>str</var>] [-port <var>num</var>] [-tout <var>num</var>] [-bin] [-swname <var>str</var>] [-swtime <var>num</var>] [-ssname <var>str</var>] [-ssbrd] [-db <var>str</var>] [-sx] [-px] [-limit <var>num</var>] <var>prefix</var> ...</code></dt>
 <dd>Prints keys starting with "prefix", separated by line feeds.</dd>
-<dt><code>ktremotemgr regex [-host <var>str</var>] [-port <var>num</var>] [-tout <var>num</var>] [-bin] [-swname <var>str</var>] [-swtime <var>num</var>] [-ssname <var>str</var>] [-ssbrd] [-db <var>str</var>] [-sx] [-px] <var>regex</var> ...</code></dt>
+<dt><code>ktremotemgr regex [-host <var>str</var>] [-port <var>num</var>] [-tout <var>num</var>] [-bin] [-swname <var>str</var>] [-swtime <var>num</var>] [-ssname <var>str</var>] [-ssbrd] [-db <var>str</var>] [-sx] [-px] [-limit <var>num</var>] <var>regex</var> ...</code></dt>
 <dd>Prints keys matching "regex", separated by line feeds.</dd>
 </dl>
 
@@ -474,6 +474,7 @@
 <li><code>-uw</code> : waits for update forever.</li>
 <li><code>-uf</code> : prints status of each update log file.</li>
 <li><code>-ur</code> : remove old update log files.</li>
+<li><code>-limit <var>num</var></code> : specifies the maximum number of records to return.</li>
 </ul>
 
 <p>This command returns 0 on success, another on failure.</p>

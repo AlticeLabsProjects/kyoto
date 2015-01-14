@@ -98,11 +98,11 @@ static int32_t procgetbulk(const std::vector<std::string>& keys,
 static int32_t procmatch(const std::vector<std::string>& keys,
                          const char* host, int32_t port, double tout,
                          const char* swname, double swtime, const char* ssname, bool ssbrd,
-                         const char* dbexpr, bool px);
+                         const char* dbexpr, bool px, int32_t limit);
 static int32_t procregex(const std::vector<std::string>& regexes,
                          const char* host, int32_t port, double tout,
                          const char* swname, double swtime, const char* ssname, bool ssbrd,
-                         const char* dbexpr, bool px);
+                         const char* dbexpr, bool px, int32_t limit);
 
 
 // print the usage and exit
@@ -203,10 +203,10 @@ static void usage() {
           " key ...\n", g_progname);
   eprintf("  %s match [-host str] [-port num] [-tout num]"
           " [-swname str] [-swtime num] [-ssname str] [-ssbrd] [-db str] [-sx] [-px]"
-          " prefix ...\n", g_progname);
+          " [-limit num] prefix ...\n", g_progname);
   eprintf("  %s regex [-host str] [-port num] [-tout num]"
           " [-swname str] [-swtime num] [-ssname str] [-ssbrd] [-db str] [-sx] [-px]"
-          " regex ...\n", g_progname);
+          " [-limit num] regex ...\n", g_progname);
   eprintf("\n");
   std::exit(1);
 }
@@ -1282,6 +1282,7 @@ static int32_t runmatch(int argc, char** argv) {
   const char* dbexpr = NULL;
   bool sx = false;
   bool px = false;
+  int32_t limit = -1;  // unlimited
   for (int32_t i = 2; i < argc; i++) {
     if (!argbrk && argv[i][0] == '-') {
       if (!std::strcmp(argv[i], "--")) {
@@ -1313,6 +1314,9 @@ static int32_t runmatch(int argc, char** argv) {
         sx = true;
       } else if (!std::strcmp(argv[i], "-px")) {
         px = true;
+      } else if (!std::strcmp(argv[i], "-limit")) {
+        if (++i >= argc) usage();
+        limit = kc::atoix(argv[i]);
       } else {
         usage();
       }
@@ -1334,7 +1338,7 @@ static int32_t runmatch(int argc, char** argv) {
     }
   }
   int32_t rv = procmatch(keys, host, port, tout, swname, swtime, ssname, ssbrd,
-                         dbexpr, px);
+                         dbexpr, px, limit);
   return rv;
 }
 
@@ -1353,6 +1357,7 @@ static int32_t runregex(int argc, char** argv) {
   const char* dbexpr = NULL;
   bool sx = false;
   bool px = false;
+  int32_t limit = -1;  // unlimited
   for (int32_t i = 2; i < argc; i++) {
     if (!argbrk && argv[i][0] == '-') {
       if (!std::strcmp(argv[i], "--")) {
@@ -1384,6 +1389,9 @@ static int32_t runregex(int argc, char** argv) {
         sx = true;
       } else if (!std::strcmp(argv[i], "-px")) {
         px = true;
+      } else if (!std::strcmp(argv[i], "-limit")) {
+        if (++i >= argc) usage();
+        limit = kc::atoix(argv[i]);
       } else {
         usage();
       }
@@ -1405,7 +1413,7 @@ static int32_t runregex(int argc, char** argv) {
     }
   }
   int32_t rv = procregex(regexes, host, port, tout, swname, swtime, ssname, ssbrd,
-                         dbexpr, px);
+                         dbexpr, px, limit);
   return rv;
 }
 
@@ -2168,7 +2176,7 @@ static int32_t procgetbulk(const std::vector<std::string>& keys,
 static int32_t procmatch(const std::vector<std::string>& keys,
                          const char* host, int32_t port, double tout,
                          const char* swname, double swtime, const char* ssname, bool ssbrd,
-                         const char* dbexpr, bool px) {
+                         const char* dbexpr, bool px, int32_t limit) {
   kt::RemoteDB db;
   if (!db.open(host, port, tout)) {
     dberrprint(&db, "DB::open failed");
@@ -2182,7 +2190,7 @@ static int32_t procmatch(const std::vector<std::string>& keys,
   std::vector<std::string>::const_iterator keys_end = keys.end();
   while (keys_it != keys_end) {
     std::vector<std::string> found;
-    int64_t rc = db.match_prefix(keys_it->c_str(), &found, -1); // -1 == unlimited
+    int64_t rc = db.match_prefix(keys_it->c_str(), &found, limit);
     if (rc == -1) {
       dberrprint(&db, "DB::match_prefix failed");
       err = true;
@@ -2210,7 +2218,7 @@ static int32_t procmatch(const std::vector<std::string>& keys,
 static int32_t procregex(const std::vector<std::string>& regexes,
                          const char* host, int32_t port, double tout,
                          const char* swname, double swtime, const char* ssname, bool ssbrd,
-                         const char* dbexpr, bool px) {
+                         const char* dbexpr, bool px, int32_t limit) {
   kt::RemoteDB db;
   if (!db.open(host, port, tout)) {
     dberrprint(&db, "DB::open failed");
@@ -2224,7 +2232,7 @@ static int32_t procregex(const std::vector<std::string>& regexes,
   std::vector<std::string>::const_iterator regexes_end = regexes.end();
   while (regexes_it != regexes_end) {
     std::vector<std::string> found;
-    int64_t rc = db.match_regex(regexes_it->c_str(), &found, -1); // -1 == unlimited
+    int64_t rc = db.match_regex(regexes_it->c_str(), &found, limit);
     if (rc == -1) {
       dberrprint(&db, "DB::match_regex failed");
       err = true;
