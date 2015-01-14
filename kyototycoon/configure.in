@@ -7,7 +7,7 @@
 #================================================================
 
 # Package name
-AC_INIT(kyototycoon, 0.9.56)
+AC_INIT(kyototycoon, 0.9.56a)
 
 # Package information
 MYLIBVER=2
