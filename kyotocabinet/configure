@@ -3994,11 +3994,17 @@ $as_echo "#define AC_APPLE_UNIVERSAL_BUILD 1" >>confdefs.h
 
 
 printf 'checking for useless warnings... '
-if printf 'main() {}' | $CC -xc \
+if printf 'int main() {}' | $CC -xc -Werror \
   -Wno-unused-but-set-variable -Wno-unused-but-set-parameter -o config.tmp - >config.tmp 2>&1
 then
   MYCFLAGS="$MYCFLAGS -Wno-unused-but-set-variable -Wno-unused-but-set-parameter"
   MYCXXFLAGS="$MYCXXFLAGS -Wno-unused-but-set-variable -Wno-unused-but-set-parameter"
+  printf 'yes\n'
+elif printf 'int main() {}' | $CC -xc -Werror \
+  -Wno-unused-private-field -Wno-gnu-static-float-init -Wno-unused-const-variable -o config.tmp - >config.tmp 2>&1
+then
+  MYCFLAGS="$MYCFLAGS -Wno-unused-private-field -Wno-gnu-static-float-init -Wno-unused-const-variable"
+  MYCXXFLAGS="$MYCXXFLAGS -Wno-unused-private-field -Wno-gnu-static-float-init -Wno-unused-const-variable"
   printf 'yes\n'
 else
   printf 'no\n'
