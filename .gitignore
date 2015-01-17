@@ -1,5 +1,6 @@
 *.o
 *.so
+*.dylib
 *.tmp
 *.pc
 config.log

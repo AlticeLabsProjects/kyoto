@@ -14,6 +14,13 @@ else
 	NPROCS = 1
 endif
 
+# For dependencies below...
+ifeq ($(OS),Darwin)
+	SO_EXTENSION = dylib
+else
+	SO_EXTENSION = so
+endif
+
 all: cabinet tycoon
 
 # Bring both packages back to their pristine state...
@@ -33,9 +40,9 @@ cabinet: kyotocabinet/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet
 
 kyotocabinet/libkyotocabinet.a: cabinet
-kyotocabinet/libkyotocabinet.so: cabinet
+kyotocabinet/libkyotocabinet.$(SO_EXTENSION): cabinet
 
-kyototycoon/Makefile: kyotocabinet/libkyotocabinet.a kyotocabinet/libkyotocabinet.so
+kyototycoon/Makefile: kyotocabinet/libkyotocabinet.a kyotocabinet/libkyotocabinet.$(SO_EXTENSION)
 	$(eval CABINET_ROOT := $(shell awk '/^prefix *=/ {print $$3}' kyotocabinet/Makefile))
 	test -x kyototycoon/configure && cd kyototycoon && \
 	PKG_CONFIG_PATH="../kyotocabinet" CPPFLAGS="-I../kyotocabinet" LDFLAGS="-L../kyotocabinet" \
