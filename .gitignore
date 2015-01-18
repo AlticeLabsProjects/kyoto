@@ -5,6 +5,7 @@
 *.pc
 config.log
 config.status
+autom4te.cache
 kyotocabinet/Makefile
 kyotocabinet/libkyotocabinet.*
 kyotocabinet/kccachetest

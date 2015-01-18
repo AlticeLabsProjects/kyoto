@@ -4016,48 +4016,16 @@ fi
 
 if test "$enable_lua" = "yes"
 then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua" >&5
-$as_echo_n "checking for main in -llua... " >&6; }
-if ${ac_cv_lib_lua_main+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-llua  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-
-int
-main ()
-{
-return main ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_cxx_try_link "$LINENO"; then :
-  ac_cv_lib_lua_main=yes
-else
-  ac_cv_lib_lua_main=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_lua_main" >&5
-$as_echo "$ac_cv_lib_lua_main" >&6; }
-if test "x$ac_cv_lib_lua_main" = xyes; then :
-  MYCMDLIBS="$MYCMDLIBS -llua"
-fi
-
-  as_ac_Lib=`$as_echo "ac_cv_lib_lua$luaver''_main" | $as_tr_sh`
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -llua$luaver" >&5
-$as_echo_n "checking for main in -llua$luaver... " >&6; }
+  for lualib in lua$luaver lua
+  do
+    as_ac_Lib=`$as_echo "ac_cv_lib_$lualib''_main" | $as_tr_sh`
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -l$lualib" >&5
+$as_echo_n "checking for main in -l$lualib... " >&6; }
 if eval \${$as_ac_Lib+:} false; then :
   $as_echo_n "(cached) " >&6
 else
   ac_check_lib_save_LIBS=$LIBS
-LIBS="-llua$luaver  $LIBS"
+LIBS="-l$lualib  $LIBS"
 cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
@@ -4083,9 +4051,11 @@ eval ac_res=\$$as_ac_Lib
 	       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_res" >&5
 $as_echo "$ac_res" >&6; }
 if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
-  MYCMDLIBS="$MYCMDLIBS -llua$luaver"
+  MYCMDLIBS="$MYCMDLIBS -l$lualib"
 fi
 
+    break
+  done
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lkyototycoon" >&5
 $as_echo_n "checking for main in -lkyototycoon... " >&6; }
