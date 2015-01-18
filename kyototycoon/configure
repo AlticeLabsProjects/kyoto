@@ -4016,7 +4016,7 @@ fi
 
 if test "$enable_lua" = "yes"
 then
-  for lualib in lua$luaver lua
+  for lualib in lua$luaver lua-$luaver lua
   do
     as_ac_Lib=`$as_echo "ac_cv_lib_$lualib''_main" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -l$lualib" >&5
@@ -4054,7 +4054,10 @@ if eval test \"x\$"$as_ac_Lib"\" = x"yes"; then :
   MYCMDLIBS="$MYCMDLIBS -l$lualib"
 fi
 
-    break
+    if echo $MYCMDLIBS | grep -q lua
+    then
+      break
+    fi
   done
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -lkyototycoon" >&5

@@ -268,10 +268,13 @@ AC_CHECK_LIB(kyotocabinet, main)
 AC_CHECK_LIB(kyotocabinet, main, MYCMDLIBS="$MYCMDLIBS -lkyotocabinet")
 if test "$enable_lua" = "yes"
 then
-  for lualib in lua$luaver lua
+  for lualib in lua$luaver lua-$luaver lua
   do
     AC_CHECK_LIB($lualib, main, MYCMDLIBS="$MYCMDLIBS -l$lualib")
-    break
+    if echo $MYCMDLIBS | grep -q lua
+    then
+      break
+    fi
   done
 fi
 AC_CHECK_LIB(kyototycoon, main, AC_MSG_WARN([old version of Kyoto Tycoon was detected]))
