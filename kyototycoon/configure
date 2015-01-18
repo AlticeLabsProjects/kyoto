@@ -2268,16 +2268,38 @@ if test "$enable_lua" = "yes"
 then
   luaver="5.1"
   MYCPPFLAGS="$MYCPPFLAGS -D_MYLUA"
-  MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua$luaver -I/usr/local/include/lua$luaver"
-  MYCPPFLAGS="$MYCPPFLAGS -I/usr/include/lua -I/usr/local/include/lua"
-  MYLDFLAGS="$MYLDFLAGS -L/usr/lib/lua$luaver -L/usr/local/lib/lua$luaver"
-  MYLDFLAGS="$MYLDFLAGS -L/usr/lib/lua -L/usr/local/lib/lua"
-  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/lua$luaver:/usr/local/lib/lua$luaver"
-  LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib/lua:/usr/local/lib/lua"
-  LIBRARY_PATH="$LIBRARY_PATH:/usr/lib/lua$luaver:/usr/local/lib/lua$luaver"
-  LIBRARY_PATH="$LIBRARY_PATH:/usr/lib/lua:/usr/local/lib/lua"
-  CPATH="$CPATH:/usr/include/lua$luaver:/usr/local/include/lua$luaver"
-  CPATH="$CPATH:/usr/include/lua:/usr/local/include/lua"
+
+  for luaincpath in /usr/include/lua$luaver \
+                    /usr/local/include/lua$luaver \
+                    /usr/include/lua-$luaver \
+                    /usr/local/include/lua-$luaver \
+                    /usr/include/lua \
+                    /usr/local/include/lua
+  do
+    if test -e $luaincpath
+    then
+      MYCPPFLAGS="$MYCPPFLAGS -I$luaincpath"
+      CPATH="$CPATH:$luaincpath"
+      break
+    fi
+  done
+
+  for lualibpath in /usr/lib/lua$luaver \
+                    /usr/local/lib/lua$luaver \
+                    /usr/lib/lua-$luaver \
+                    /usr/local/lib/lua-$luaver \
+                    /usr/lib/lua \
+                    /usr/local/lib/lua
+  do
+    if test -e $lualibpath
+    then
+      MYLDFLAGS="$MYLDFLAGS -L$lualibpath"
+      LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$lualibpath"
+      LIBRARY_PATH="$LIBRARY_PATH:$lualibpath"
+      break
+    fi
+  done
+
   enables="$enables (lua)"
 fi
 
