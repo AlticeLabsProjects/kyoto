@@ -27,7 +27,8 @@ Here you can find the latest upstream releases with additional modifications, in
 Supported Platforms
 -------------------
 
-The primary target platform for these packages is 64-bit Linux. Debian 7.x first and foremost, but we've also did a bit of testing on CentOS 6.x and 7.x. Beyond Linux, they are known to build and work on FreeBSD 10.1 and MacOS X 10.8 and 10.9.
+Our primary target platform for these packages is Linux (64-bit). Mostly Debian, but we've also did a bit of testing on CentOS and some non-Linux platforms such as FreeBSD and MacOS X.
+The upstream sources claim to support additional platforms, but we haven't tested them (yet).
 
 Installing
 ----------
