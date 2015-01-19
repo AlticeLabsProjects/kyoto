@@ -2270,9 +2270,11 @@ then
   MYCPPFLAGS="$MYCPPFLAGS -D_MYLUA"
 
   for luaincpath in /usr/include/lua$luaver \
-                    /usr/local/include/lua$luaver \
                     /usr/include/lua-$luaver \
+                    /usr/include/lua`echo $luaver | sed s/\.//g` \
+                    /usr/local/include/lua$luaver \
                     /usr/local/include/lua-$luaver \
+                    /usr/local/include/lua`echo $luaver | sed s/\.//g` \
                     /usr/include/lua \
                     /usr/local/include/lua
   do
