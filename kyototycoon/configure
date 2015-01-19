@@ -4019,7 +4019,7 @@ fi
 
 if test "$enable_lua" = "yes"
 then
-  for lualib in lua51 lua-5.1 lua
+  for lualib in lua5.1 lua-5.1 lua51 lua
   do
     as_ac_Lib=`$as_echo "ac_cv_lib_$lualib''_main" | $as_tr_sh`
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for main in -l$lualib" >&5
