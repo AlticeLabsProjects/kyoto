@@ -24,6 +24,11 @@ What's included?
 
 Here you can find the latest upstream releases with additional modifications, intended to be used together. The changes include patches sourced from Linux distribution packages and some custom patches which have been tested in real-world production environments. Check the commit history for more information.
 
+Supported Platforms
+-------------------
+
+The primary target platform for these packages is 64-bit Linux. Debian 7.x first and foremost, but we've also did a bit of testing on CentOS 6.x and 7.x. Beyond Linux, they are known to build and work on FreeBSD 10.1 and MacOS X 10.8 and 10.9.
+
 Installing
 ----------
 
@@ -32,7 +37,11 @@ Download the [latest source release](https://github.com/sapo/kyoto/releases/late
     $ make PREFIX=/custom/install/root
     $ sudo make install
 
-Specifying the installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`.
+Notes:
+
+  * Make sure you have [Lua 5.1](http://www.lua.org/versions.html#5.1) already installed (later versions are not supported);
+  * Specifying the installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`;
+  * If you're building on FreeBSD, use `gmake` (GNU Make).
 
 Running
 -------
