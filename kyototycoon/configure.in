@@ -142,15 +142,14 @@ AC_ARG_ENABLE(lua,
   AC_HELP_STRING([--enable-lua], [build with Lua extension]))
 if test "$enable_lua" = "yes"
 then
-  luaver="5.1"
   MYCPPFLAGS="$MYCPPFLAGS -D_MYLUA"
 
-  for luaincpath in /usr/include/lua$luaver \
-                    /usr/include/lua-$luaver \
-                    /usr/include/lua`echo $luaver | sed s/\.//g` \
-                    /usr/local/include/lua$luaver \
-                    /usr/local/include/lua-$luaver \
-                    /usr/local/include/lua`echo $luaver | sed s/\.//g` \
+  for luaincpath in /usr/include/lua5.1 \
+                    /usr/include/lua-5.1 \
+                    /usr/include/lua51 \
+                    /usr/local/include/lua5.1 \
+                    /usr/local/include/lua-5.1 \
+                    /usr/local/include/lua51 \
                     /usr/include/lua \
                     /usr/local/include/lua
   do
@@ -162,10 +161,12 @@ then
     fi
   done
 
-  for lualibpath in /usr/lib/lua$luaver \
-                    /usr/local/lib/lua$luaver \
-                    /usr/lib/lua-$luaver \
-                    /usr/local/lib/lua-$luaver \
+  for lualibpath in /usr/lib/lua5.1 \
+                    /usr/lib/lua-5.1 \
+                    /usr/lib/lua51 \
+                    /usr/local/lib/lua5.1 \
+                    /usr/local/lib/lua-5.1 \
+                    /usr/local/lib/lua51 \
                     /usr/lib/lua \
                     /usr/local/lib/lua
   do
@@ -270,7 +271,7 @@ AC_CHECK_LIB(kyotocabinet, main)
 AC_CHECK_LIB(kyotocabinet, main, MYCMDLIBS="$MYCMDLIBS -lkyotocabinet")
 if test "$enable_lua" = "yes"
 then
-  for lualib in lua$luaver lua-$luaver lua
+  for lualib in lua51 lua-5.1 lua
   do
     AC_CHECK_LIB($lualib, main, MYCMDLIBS="$MYCMDLIBS -l$lualib")
     if echo $MYCMDLIBS | grep -q lua
