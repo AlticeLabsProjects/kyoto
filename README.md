@@ -6,11 +6,11 @@ Kyoto Tycoon is a lightweight network server on top of the Kyoto Cabinet key-val
   * _master-slave_ and _master-master_ replication
   * in-memory and persistent databases (with optional binary logging)
   * hash and tree-based database formats
-  * server-side scripting in [Lua](http://www.lua.org/) 5.1
+  * server-side scripting in [Lua](http://www.lua.org/)
 
 It has its own fully-featured [protocol](http://fallabs.com/kyototycoon/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon)).
 
-It also supports the [memcached](http://www.memcached.org/) protocol with some [limitations](http://fallabs.com/kyototycoon/spex.html#tips_pluggableserver) (eg. "prepend", "append" and "cas" are missing). This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
+It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://fallabs.com/kyototycoon/spex.html#tips_pluggableserver). This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
 
 What's this fork?
 -----------------
@@ -27,7 +27,8 @@ Here you can find the latest upstream releases with additional modifications, in
 Supported Platforms
 -------------------
 
-Our primary target platform for these packages is Linux (64-bit). Mostly Debian, but we've also did a bit of testing on CentOS and some non-Linux platforms such as FreeBSD and MacOS X.
+Our primary target platform for these packages is Linux (64-bit). Mostly Debian, but we've also done some testing on CentOS and some non-Linux platforms such as FreeBSD and MacOS X.
+
 The upstream sources claim to support additional platforms, but we haven't tested them (yet).
 
 Installing
@@ -38,11 +39,11 @@ Download the [latest source release](https://github.com/sapo/kyoto/releases/late
     $ make PREFIX=/custom/install/root
     $ sudo make install
 
-Notes:
+**Notes:**
 
   * Make sure you have [Lua 5.1](http://www.lua.org/versions.html#5.1) already installed (later versions are not supported);
-  * Specifying the installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`;
-  * If you're building on FreeBSD, use `gmake` (GNU Make).
+  * The installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`;
+  * If you're building on FreeBSD, use `gmake` instead of `make`.
 
 Running
 -------
@@ -61,11 +62,13 @@ Another example, this time for an in-memory cache hash database limited to 256MB
 
     $ /usr/local/bin/ktserver -log /var/log/ktserver.log -ls '*#bnum=100000#capsiz=256m'
 
-To enable the _memcached_ protocol, use the `-plsv` and `-plex` parameters. The previous example would then become:
+Forced object removal when the maximum database size is reached in databases using the `capsiz` option is LRU-based. Based on our experience, we don't recommend using this option with persistent (on-disk) databases as the server will temporarily stop responding to free up space when the maximum capacity is reached. In this case, try to keep the database size under control using auto-expiring keys instead.
+
+To enable simultaneous support for the _memcached_ protocol, use the `-plsv` and `-plex` parameters. The previous example would then become:
 
     $ /usr/local/bin/ktserver -log /var/log/ktserver.log -ls \
                               -plsv /usr/local/libexec/ktplugservmemc.so \
                               -plex 'port=11211#opts=f' \
                               '*#bnum=100000#capsiz=256m'
 
-Forced object removal when the maximum database size is reached in databases using the `capsiz` option is LRU-based. Based on our experience, we don't recommend using this option with persistent (on-disk) databases as the server will temporarily stop responding to free up space when the maximum capacity is reached. In this case, try to keep the database size under control using keys with expiration times instead.
+The `opts=f` parameter enables _flags_ support for the _memcached_ protocol. These are stored by Kyoto Tycoon as the last 4 bytes of the value, which means some care must be taken when mixing protocols (our [python library](https://github.com/sapo/python-kyototycoon#memcache-enabled-servers) can handle this for you, for example).
