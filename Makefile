@@ -1,17 +1,22 @@
 #
-# Makefile
+# Makefile (for GNU Make)
 #
 
 
 PREFIX ?= /usr/local
 DESTDIR =
 OS := $(shell uname -s)
+NPROCS = 1
 
 # Parallelize the build on Linux...
 ifeq ($(OS),Linux)
 	NPROCS := $(shell grep -c ^processor /proc/cpuinfo)
-else
-	NPROCS = 1
+endif
+ifeq ($(OS),Darwin)
+	NPROCS := $(shell sysctl -a | grep "hw.ncpu " | cut -d" " -f3)
+endif
+ifeq ($(OS),FreeBSD)
+	NPROCS := $(shell sysctl -a | grep "hw.ncpu " | cut -d" " -f3)
 endif
 
 # For dependencies below...
