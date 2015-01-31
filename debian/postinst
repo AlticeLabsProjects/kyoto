@@ -13,5 +13,7 @@ if [ -z "$2" ]; then
     update-rc.d kyoto defaults
 fi
 
+/etc/init.d/kyoto start
+
 
 # vim: set expandtab ts=4 sw=4:

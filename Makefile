@@ -73,6 +73,7 @@ endif
 
 deb:
 	rm -rf build
+	test -x /usr/bin/dpkg-deb && test -x /usr/bin/fakeroot
 
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g')-$(shell date +%Y%m%d)~$(shell lsb_release -c | awk '{print $$2}' | tr '[A-Z]' '[a-z]'))
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
@@ -91,7 +92,7 @@ deb:
 	cp -dr debian "build/$(PACKAGE_NAME)/DEBIAN"
 	printf "Version: $(PACKAGE_VERSION)\nArchitecture: $(PACKAGE_ARCH)\n" >> "build/$(PACKAGE_NAME)/DEBIAN/control"
 
-	find "build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto --ignore-missing-info -Tbuild/dependencies
+	find "build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto-tycoon --ignore-missing-info -Tbuild/dependencies
 	sed -i 's/^shlibs:Depends=//' build/dependencies
 	sed -i "s/\(Depends:.*\)$$/\1, $$(cat build/dependencies)/" "build/$(PACKAGE_NAME)/DEBIAN/control"
 
