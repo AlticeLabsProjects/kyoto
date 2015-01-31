@@ -1,5 +1,5 @@
-Source: kyoto
-Package: kyoto
+Source: kyoto-tycoon
+Package: kyoto-tycoon
 Maintainer: Carlos Rodrigues <cefrodrigues@gmail.com>
 Homepage: https://github.com/sapo/kyoto
 Priority: optional
