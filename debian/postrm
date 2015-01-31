@@ -1,0 +1,21 @@
+#!/bin/bash -e
+
+
+if [ "$1" == "purge" ]; then
+    # Cleanup the startup sequence...
+    update-rc.d kyoto remove
+
+    # Remove the service user for KT...
+    if grep -q "kyoto" /etc/passwd; then
+        pkill -KILL -U "kyoto" || true
+        userdel "kyoto"
+    fi
+
+    # Also remove the service group if it wasn't removed automatically...
+    if grep -q "kyoto" /etc/group; then
+        groupdel "kyoto"
+    fi
+fi
+
+
+# vim: set expandtab ts=4 sw=4:

@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+
+# Create the service user for KT...
+if ! grep -q "kyoto" /etc/passwd; then
+    useradd -r -M "kyoto"
+fi
+
+chown kyoto:kyoto /var/lib/kyoto
+
+# Set startup runlevels only on first install...
+if [ -z "$2" ]; then
+    update-rc.d kyoto defaults
+fi
+
+
+# vim: set expandtab ts=4 sw=4:

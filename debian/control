@@ -1,0 +1,19 @@
+Source: kyoto
+Package: kyoto
+Maintainer: Carlos Rodrigues <cefrodrigues@gmail.com>
+Homepage: https://github.com/sapo/kyoto
+Priority: optional
+Section: misc
+Depends: adduser, lsb-base (>= 3.2-13)
+Description: Kyoto Tycoon key-value server (and Kyoto Cabinet library)
+ .
+ Kyoto Tycoon is a lightweight server on top of the Kyoto Cabinet
+ key-value database, built for high-performance and concurrency.
+ .
+ Some of its features include:
+ .
+   - master-slave and master-master replication
+   - in-memory and persistent databases
+   - hash and tree-based database formats
+   - server-side scripting in Lua
+   - support for the memcached protocol

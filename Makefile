@@ -37,6 +37,7 @@ endif
 ifneq ("","$(wildcard kyototycoon/Makefile)")
 	$(MAKE) -C kyototycoon distclean
 endif
+	rm -rf build
 
 kyotocabinet/Makefile:
 	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)"
@@ -69,6 +70,34 @@ ifeq ("yes","$(shell test -z '$(DESTDIR)' && test -w /etc/ld.so.conf.d && echo y
 	test -n "$(shell /sbin/ldconfig -vN 2>&1 | grep -o '^$(TYCOON_LIBDIR):')" || echo "$(TYCOON_LIBDIR)" > /etc/ld.so.conf.d/kyoto-tycoon.conf
 	/sbin/ldconfig
 endif
+
+deb:
+	rm -rf build
+
+	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
+	$(eval PACKAGE_DIST := $(shell dpkg-vendor --query vendor | tr '[A-Z]' '[a-z]'))
+	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
+	$(eval PACKAGE_NAME := kyoto-$(PACKAGE_VERSION)-1~$(PACKAGE_DIST))
+
+	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
+
+	mkdir -p "build/$(PACKAGE_NAME)/etc/init.d"
+	cp scripts/lsb-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
+	chmod 755 "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
+
+	mkdir -p "build/$(PACKAGE_NAME)/etc/default"
+	cp scripts/kyoto.conf "build/$(PACKAGE_NAME)/etc/default/kyoto"
+	mkdir -p "build/$(PACKAGE_NAME)/var/lib/kyoto"
+
+	cp -dr debian "build/$(PACKAGE_NAME)/DEBIAN"
+	printf "Version: $(PACKAGE_VERSION)\nArchitecture: $(PACKAGE_ARCH)\n" >> "build/$(PACKAGE_NAME)/DEBIAN/control"
+
+	find "build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto --ignore-missing-info -Tbuild/dependencies
+	$(eval SHLIB_DEPENDS := $(shell sed 's/^shlibs:Depends=//' build/dependencies))
+	sed -i "s/\(Depends:.*\)$$/\1, $(SHLIB_DEPENDS)/" "build/$(PACKAGE_NAME)/DEBIAN/control"
+
+	chmod -R u+w,go-w "build/$(PACKAGE_NAME)"
+	fakeroot dpkg-deb --build "build/$(PACKAGE_NAME)"
 
 
 # EOF - Makefile
