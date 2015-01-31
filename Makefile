@@ -74,10 +74,9 @@ endif
 deb:
 	rm -rf build
 
-	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
-	$(eval PACKAGE_DIST := $(shell dpkg-vendor --query vendor | tr '[A-Z]' '[a-z]'))
+	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g')-$(shell date +%Y%m%d)~$(shell lsb_release -c | awk '{print $$2}' | tr '[A-Z]' '[a-z]'))
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
-	$(eval PACKAGE_NAME := kyoto-tycoon-$(PACKAGE_VERSION)-1.$(shell date +%Y%m%d)~$(PACKAGE_DIST))
+	$(eval PACKAGE_NAME := kyoto-tycoon-$(PACKAGE_VERSION))
 
 	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
 
