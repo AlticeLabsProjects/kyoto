@@ -39,17 +39,17 @@ Download the [latest source release](https://github.com/sapo/kyoto/releases/late
     $ make PREFIX=/custom/install/root
     $ sudo make install
 
-If you're using Debian, create a package by running:
-
-    # make deb
-
-You can find the resulting `.deb` in the `build` directory.
-
 **Notes:**
 
   * Make sure you have [Lua 5.1](http://www.lua.org/versions.html#5.1) already installed (later versions are not supported);
   * The installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`;
   * If you're building on FreeBSD, use `gmake` instead of `make`.
+
+If you're using Debian, instead of the above you can create a package by running:
+
+    $ make deb
+
+The resulting `.deb` can be found in the `./build` directory.
 
 Running
 -------
