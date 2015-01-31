@@ -93,8 +93,8 @@ deb:
 	printf "Version: $(PACKAGE_VERSION)\nArchitecture: $(PACKAGE_ARCH)\n" >> "build/$(PACKAGE_NAME)/DEBIAN/control"
 
 	find "build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto --ignore-missing-info -Tbuild/dependencies
-	$(eval SHLIB_DEPENDS := $(shell sed 's/^shlibs:Depends=//' build/dependencies))
-	sed -i "s/\(Depends:.*\)$$/\1, $(SHLIB_DEPENDS)/" "build/$(PACKAGE_NAME)/DEBIAN/control"
+	sed -i 's/^shlibs:Depends=//' build/dependencies
+	sed -i "s/\(Depends:.*\)$$/\1, $$(cat build/dependencies)/" "build/$(PACKAGE_NAME)/DEBIAN/control"
 
 	chmod -R u+w,go-w "build/$(PACKAGE_NAME)"
 	fakeroot dpkg-deb --build "build/$(PACKAGE_NAME)"
