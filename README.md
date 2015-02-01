@@ -45,11 +45,11 @@ Download the [latest source release](https://github.com/sapo/kyoto/releases/late
   * The installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`;
   * If you're building on FreeBSD, use `gmake` instead of `make`.
 
-If you're using Debian, create a `.deb` (in the `./build` directory) by running:
+On Debian, create a `.deb` package (into the `./build` directory) by running:
 
     $ make deb
 
-If you're using RHEL/CentOS, create a `.rpm` (in the `$HOME/rpmbuild/RPMS` directory) by running:
+On RHEL/CentOS, create a `.rpm` package (into the `$HOME/rpmbuild/RPMS` directory) by running:
 
     $ make rpm
 

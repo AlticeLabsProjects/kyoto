@@ -12,7 +12,7 @@ URL: https://github.com/sapo/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
 BuildRequires: lua-devel
-Requires(pre): /usr/sbin/useradd, /usr/bin/getent
+Requires(pre): /usr/sbin/useradd
 Requires(post): chkconfig
 Requires(preun): chkconfig, initscripts
 Requires(postun): /usr/sbin/userdel
@@ -50,15 +50,20 @@ fi
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sharedstatedir}/kyoto
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d
-%{__install} -m0755 scripts/lsb-init.sh ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d/kyoto
+%{__install} -m0755 scripts/redhat-init.sh ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d/kyoto
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/default
 %{__install} -m0644 scripts/kyoto.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/default/kyoto
 
 
 %pre
-/usr/bin/getent group kyoto || /usr/sbin/groupadd -r kyoto
-/usr/bin/getent passwd kyoto || /usr/sbin/useradd -r -M -d %{_sharedstatedir}/kyoto -g kyoto -s /bin/false kyoto
+if ! grep -q kyoto /etc/group; then
+	/usr/sbin/groupadd -r kyoto
+fi
+
+if ! grep -q kyoto /etc/passwd; then
+	/usr/sbin/useradd -r -M -d /var/lib/kyoto -g kyoto -s /bin/false kyoto
+fi
 
 
 %post
@@ -85,6 +90,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE README.md
 %{kt_installdir}/*
+%{_sharedstatedir}/kyoto
 %{_sysconfdir}/init.d/kyoto
 %config(noreplace) %{_sysconfdir}/default/kyoto
 
