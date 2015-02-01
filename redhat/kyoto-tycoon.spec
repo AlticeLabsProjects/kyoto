@@ -12,6 +12,7 @@ URL: https://github.com/sapo/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
 BuildRequires: lua-devel, zlib-devel
+Requires: redhat-lsb-core
 Requires(pre): /usr/sbin/useradd
 Requires(post): chkconfig
 Requires(preun): chkconfig, initscripts
