@@ -11,7 +11,7 @@ License: GPL
 URL: https://github.com/sapo/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
-BuildRequires: lua-devel
+BuildRequires: lua-devel, zlib-devel
 Requires(pre): /usr/sbin/useradd
 Requires(post): chkconfig
 Requires(preun): chkconfig, initscripts
