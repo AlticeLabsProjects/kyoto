@@ -2,8 +2,8 @@
 
 
 # Create the service user for KT...
-if ! grep -q "kyoto" /etc/passwd; then
-    useradd -r -M "kyoto"
+if ! grep -q kyoto /etc/passwd; then
+    useradd -r -M -d /var/lib/kyoto -s /bin/false kyoto
 fi
 
 chown kyoto:kyoto /var/lib/kyoto
