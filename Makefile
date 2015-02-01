@@ -106,10 +106,14 @@ rpm:
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
 	$(eval PACKAGE_DATE := $(shell date +%Y%m%d))
 
+	rm -f "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 	cp redhat/kyoto-tycoon.spec "$(HOME)/rpmbuild/SPECS/"
 	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
+
+	rm -f "$(HOME)/rpmbuild/SOURCES/kyoto-$(PACKAGE_DATE).tar.gz"
 	tar zcf "$(HOME)/rpmbuild/SOURCES/kyoto-$(PACKAGE_DATE).tar.gz" .
 	rpmbuild -bb "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
+	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 
 
 # EOF - Makefile
