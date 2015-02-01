@@ -82,7 +82,7 @@ deb:
 	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/init.d"
-	cp scripts/lsb-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
+	cp scripts/debian-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
 	chmod 755 "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/default"
