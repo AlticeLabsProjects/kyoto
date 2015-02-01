@@ -2,6 +2,9 @@
 %define kt_timestamp %(date +"%Y%m%d")
 %define kt_installdir /usr
 
+# Needed to avoid unresolvable dependencies on RHEL7...
+%define debug_package %{nil}
+
 Name: kyoto-tycoon
 Version: %{kt_version}
 Release: %{kt_timestamp}%{?dist}
@@ -48,7 +51,7 @@ if echo %{_libdir} | grep -q 64; then
 	mv %{buildroot}/usr/lib %{buildroot}/usr/lib64
 fi
 
-%{__mkdir_p} ${RPM_BUILD_ROOT}%{_sharedstatedir}/kyoto
+%{__mkdir_p} ${RPM_BUILD_ROOT}/var/lib/kyoto
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d
 %{__install} -m0755 scripts/redhat-init.sh ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d/kyoto
@@ -69,7 +72,6 @@ fi
 
 %post
 /sbin/chkconfig --add kyoto
-chown kyoto:kyoto %{_sharedstatedir}/kyoto
 
 
 %preun
@@ -90,10 +92,14 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root,-)
 %doc LICENSE README.md
-%{kt_installdir}/*
-%{_sharedstatedir}/kyoto
-%{_sysconfdir}/init.d/kyoto
+%dir %attr(-,kyoto,kyoto) /var/lib/kyoto
 %config(noreplace) %{_sysconfdir}/default/kyoto
+%{_sysconfdir}/init.d/kyoto
+%{kt_installdir}/bin/*
+%{kt_installdir}/include/*
+%{kt_installdir}/lib*/*
+%{kt_installdir}/share/doc/*
+%{kt_installdir}/share/man/man1/*
 
 
 %changelog
