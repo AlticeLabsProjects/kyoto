@@ -45,6 +45,9 @@ Download the [latest source release](https://github.com/sapo/kyoto/releases/late
   * The installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`;
   * If you're building on FreeBSD, use `gmake` instead of `make`.
 
+Packaging
+---------
+
 On Debian, create a `.deb` package (into the `./build` directory) by running:
 
     $ make deb
@@ -52,6 +55,8 @@ On Debian, create a `.deb` package (into the `./build` directory) by running:
 On RHEL/CentOS, create a `.rpm` package (into the `$HOME/rpmbuild/RPMS` directory) by running:
 
     $ make rpm
+
+Besides being cleaner than installing directly from source, both of these packages provide an `/etc/init.d/kyoto` init script to run the server with minimal privileges and an `/etc/default/kyoto` configuration file with some examples.
 
 
 Running
