@@ -115,5 +115,23 @@ rpm:
 	rpmbuild -bb "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 
+pac:
+	rm -rf $(HOME)/archbuild
+	mkdir $(HOME)/archbuild
+	test -d "$(HOME)/archbuild" && test -x /usr/bin/makepkg
+	cp "$(PWD)/arch/PKGBUILD" "$(HOME)/archbuild/PKGBUILD"
+	cp "$(PWD)/arch/service" "$(HOME)/archbuild/"
+	cp "$(PWD)/arch/kyoto.install" "$(HOME)/archbuild/"
+	cp "$(PWD)/arch/kyoto.conf" "$(HOME)/archbuild/"
+
+	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
+	$(eval PACKAGE_DATE := $(shell date +%Y%m%d))
+
+	rm -f "$(HOME)/archbuild/kyoto-$(PACKAGE_VERSION).tar.gz"
+	tar zcf "$(HOME)/archbuild/kyoto-$(PACKAGE_VERSION).tar.gz" .
+
+	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/archbuild/PKGBUILD"
+
+	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck
 
 # EOF - Makefile

@@ -1,0 +1,36 @@
+# Maintainer: Dani Bento <danibento@overdestiny.com>
+
+pkgname=kyoto
+pkgver=__KT_VERSION_PLACEHOLDER__
+pkgrel=1
+pkgdesc="Kyoto Tycoon key-value server (and Kyoto Cabinet library)"
+arch=('i686' 'x86_64')
+url="http://github.com/sapo/kyoto"
+license=('GPL')
+depends=('lua' 'lua51')
+install=kyoto.install
+backup=('etc/conf.d/kyoto')
+
+kt_installdir=/usr
+
+build() {
+  tar -xvzf ../kyoto-__KT_VERSION_PLACEHOLDER__.tar.gz -C .
+  make PREFIX=/usr DESTDIR="${pkgdir}/"
+}
+
+package() {
+
+  make install DESTDIR="$pkgdir/"
+
+  mkdir -p $pkgdir/var/lib/kyoto
+  mkdir -p $pkgdir/etc/default
+	
+  install -d -m755 "${pkgdir}/etc/conf.d"
+  install -D -m644 "$srcdir/scripts/kyoto.conf" "${pkgdir}/etc/conf.d/kyoto"
+  install -D -m644 "$srcdir/arch/kyoto.conf" "${pkgdir}/usr/lib/tmpfiles.d/kyoto.conf"
+  install -D -m644 "$srcdir/arch/service" "${pkgdir}/usr/lib/systemd/system/kyoto.service"
+  install -D -m644 "$srcdir/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+}
+
+sha512sums=('278db7b327eb4c21bf0137d9aa14fb67d74d5ce7ed1cb29fc9120d157a60de165ec0cf842903eb7952e8f998045ae585b958977fa973ba0e0773381de71d9f6a')
