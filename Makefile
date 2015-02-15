@@ -120,7 +120,7 @@ pac:
 	mkdir $(HOME)/archbuild
 	test -d "$(HOME)/archbuild" && test -x /usr/bin/makepkg
 	cp "$(PWD)/arch/PKGBUILD" "$(HOME)/archbuild/PKGBUILD"
-	cp "$(PWD)/arch/service" "$(HOME)/archbuild/"
+	cp "$(PWD)/arch/kyoto.service" "$(HOME)/archbuild/"
 	cp "$(PWD)/arch/kyoto.install" "$(HOME)/archbuild/"
 	cp "$(PWD)/arch/kyoto.conf" "$(HOME)/archbuild/"
 
