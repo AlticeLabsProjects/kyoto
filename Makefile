@@ -116,8 +116,8 @@ rpm:
 	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 
 pac:
-	rm -rf $(HOME)/archbuild
-	mkdir $(HOME)/archbuild
+	rm -rf "$(HOME)/archbuild"
+	mkdir "$(HOME)/archbuild"
 	test -d "$(HOME)/archbuild" && test -x /usr/bin/makepkg
 	cp "$(PWD)/arch/PKGBUILD" "$(HOME)/archbuild/PKGBUILD"
 	cp "$(PWD)/arch/kyoto.service" "$(HOME)/archbuild/"
@@ -133,5 +133,6 @@ pac:
 	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/archbuild/PKGBUILD"
 
 	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck
+
 
 # EOF - Makefile
