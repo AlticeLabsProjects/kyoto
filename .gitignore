@@ -3,6 +3,7 @@
 *.dylib
 *.tmp
 *.pc
+*.un~
 config.log
 config.status
 autom4te.cache
