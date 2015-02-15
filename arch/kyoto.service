@@ -1,0 +1,21 @@
+[Unit]
+Description=Kyoto Tycoon key-value server (and Kyoto Cabinet library)
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=/run/kyoto/kyoto.pid
+PrivateDevices=yes
+SyslogLevel=err
+Restart=on-abort	
+User=kyoto
+Group=kyoto
+
+EnvironmentFile=/etc/conf.d/kyoto
+ExecStart=/usr/bin/ktserver -dmn -pid /run/kyoto/kyoto.pid -log /var/log/kyoto.log $KTSERVER_OPTS
+ExecStop=/usr/bin/kill -TERM /run/kyoto/kyoto.pid
+ExecReload=/usr/bin/kill -HUP /run/kyoto/kyoto.pid
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

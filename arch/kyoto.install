@@ -1,0 +1,44 @@
+#!/bin/sh
+post_install() {
+	echo "Creating user/group kyoto for KT"
+
+	# Create the service user for KT...
+	if ! grep -q "kyoto" /etc/group; then
+		groupadd -r kyoto
+	fi
+
+	# Create the service user for KT...
+	if ! grep -q "kyoto" /etc/passwd; then
+		useradd -r -M -d /var/lib/kyoto -g kyoto -s /bin/false kyoto
+	fi
+
+	chown kyoto:kyoto /var/lib/kyoto
+	
+	systemd-tmpfiles --create kyoto.conf	
+	systemctl daemon-reload
+
+	exit 0
+}
+
+post_upgrade() {
+	
+	systemctl daemon-reload
+
+	exit 0
+}
+
+post_remove() {
+	# Remove the service user for KT...
+	if grep -q "kyoto" /etc/passwd; then
+		pkill -KILL -U "kyoto" || true
+		userdel "kyoto"
+	fi
+
+	# Also remove the service group if it wasn't removed automatically...
+	if grep -q "kyoto" /etc/group; then
+		groupdel "kyoto"
+	fi
+
+	exit 0
+}
+# vim:set ts=2 sw=2 et:

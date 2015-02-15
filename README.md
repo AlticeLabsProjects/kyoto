@@ -58,6 +58,11 @@ On RHEL/CentOS, create a `.rpm` package (into the `$HOME/rpmbuild/RPMS` director
 
 Besides being cleaner than installing directly from source, both of these packages provide an `/etc/init.d/kyoto` init script to run the server with minimal privileges and an `/etc/default/kyoto` configuration file with some examples.
 
+On Arch, create a `.pkg.tar.xz` package (into the `$HOME/archbuild/` directory) by running:
+
+    $ make pac
+
+This package provides a `systemd service` to run the server with minimal privileges and an `/etc/conf.d/kyoto` configuration file with some examples.
 
 Running
 -------
