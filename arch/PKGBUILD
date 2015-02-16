@@ -32,5 +32,3 @@ package() {
   install -D -m644 "$srcdir/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 
 }
-
-sha512sums=('278db7b327eb4c21bf0137d9aa14fb67d74d5ce7ed1cb29fc9120d157a60de165ec0cf842903eb7952e8f998045ae585b958977fa973ba0e0773381de71d9f6a')
