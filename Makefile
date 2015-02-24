@@ -113,7 +113,7 @@ rpm:
 
 	rm -f "$(HOME)/rpmbuild/SOURCES/kyoto-$(PACKAGE_DATE).tar.gz"
 	tar zcf "$(HOME)/rpmbuild/SOURCES/kyoto-$(PACKAGE_DATE).tar.gz" .
-	rpmbuild -bb "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
+	rpmbuild -ba "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 
 pac:

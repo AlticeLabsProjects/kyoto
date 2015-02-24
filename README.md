@@ -91,3 +91,5 @@ To enable simultaneous support for the _memcached_ protocol, use the `-plsv` and
                               '*#bnum=100000#capsiz=256m'
 
 The `opts=f` parameter enables _flags_ support for the _memcached_ protocol. These are stored by Kyoto Tycoon as the last 4 bytes of the value, which means some care must be taken when mixing protocols (our [python library](https://github.com/sapo/python-kyototycoon#memcache-enabled-servers) can handle this for you, for example).
+
+[![Build Status](https://travis-ci.org/sapo/kyoto.svg?branch=master)](https://travis-ci.org/sapo/kyoto)
