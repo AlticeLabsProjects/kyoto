@@ -82,15 +82,15 @@ deb:
 	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/init.d"
-	cp debian/kyoto-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
+	cp packaging/debian/kyoto-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
 	chmod 755 "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/default"
-	cp scripts/kyoto.conf "build/$(PACKAGE_NAME)/etc/default/kyoto"
+	cp packaging/scripts/kyoto.conf "build/$(PACKAGE_NAME)/etc/default/kyoto"
 	mkdir -p "build/$(PACKAGE_NAME)/var/lib/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/DEBIAN"
-	cd debian && cp compat conffiles control postinst postrm prerm "../build/$(PACKAGE_NAME)/DEBIAN"
+	cd packaging/debian && cp compat conffiles control postinst postrm prerm "../../build/$(PACKAGE_NAME)/DEBIAN"
 	printf "Version: $(PACKAGE_VERSION)\nArchitecture: $(PACKAGE_ARCH)\n" >> "build/$(PACKAGE_NAME)/DEBIAN/control"
 
 	find "build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto-tycoon --ignore-missing-info -Tbuild/dependencies
@@ -108,7 +108,7 @@ rpm:
 	$(eval PACKAGE_DATE := $(shell date +%Y%m%d))
 
 	rm -f "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
-	cp redhat/kyoto-tycoon.spec "$(HOME)/rpmbuild/SPECS/"
+	cp packaging/redhat/kyoto-tycoon.spec "$(HOME)/rpmbuild/SPECS/"
 	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 
 	rm -f "$(HOME)/rpmbuild/SOURCES/kyoto-$(PACKAGE_DATE).tar.gz"
@@ -120,10 +120,10 @@ pac:
 	rm -rf "$(HOME)/archbuild"
 	mkdir "$(HOME)/archbuild"
 	test -d "$(HOME)/archbuild" && test -x /usr/bin/makepkg
-	cp "$(PWD)/arch/PKGBUILD" "$(HOME)/archbuild/PKGBUILD"
-	cp "$(PWD)/arch/kyoto.service" "$(HOME)/archbuild/"
-	cp "$(PWD)/arch/kyoto.install" "$(HOME)/archbuild/"
-	cp "$(PWD)/arch/kyoto.conf" "$(HOME)/archbuild/"
+	cp packaging/arch/PKGBUILD "$(HOME)/archbuild/PKGBUILD"
+	cp packaging/arch/kyoto.service" "$(HOME)/archbuild/"
+	cp packaging/arch/kyoto.install" "$(HOME)/archbuild/"
+	cp packaging/arch/kyoto.conf" "$(HOME)/archbuild/"
 
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
 	$(eval PACKAGE_DATE := $(shell date +%Y%m%d))

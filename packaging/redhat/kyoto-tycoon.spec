@@ -54,10 +54,10 @@ fi
 %{__mkdir_p} ${RPM_BUILD_ROOT}/var/lib/kyoto
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d
-%{__install} -m0755 redhat/kyoto-init.sh ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d/kyoto
+%{__install} -m0755 packaging/redhat/kyoto-init.sh ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d/kyoto
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/default
-%{__install} -m0644 scripts/kyoto.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/default/kyoto
+%{__install} -m0644 packaging/scripts/kyoto.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/default/kyoto
 
 
 %pre

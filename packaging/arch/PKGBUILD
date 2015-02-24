@@ -26,9 +26,9 @@ package() {
   mkdir -p $pkgdir/etc/default
 	
   install -d -m755 "${pkgdir}/etc/conf.d"
-  install -D -m644 "$srcdir/scripts/kyoto.conf" "${pkgdir}/etc/conf.d/kyoto"
-  install -D -m644 "$srcdir/arch/kyoto.conf" "${pkgdir}/usr/lib/tmpfiles.d/kyoto.conf"
-  install -D -m644 "$srcdir/arch/kyoto.service" "${pkgdir}/usr/lib/systemd/system/kyoto.service"
+  install -D -m644 "$srcdir/packaging/scripts/kyoto.conf" "${pkgdir}/etc/conf.d/kyoto"
+  install -D -m644 "$srcdir/packaging/arch/kyoto.conf" "${pkgdir}/usr/lib/tmpfiles.d/kyoto.conf"
+  install -D -m644 "$srcdir/packaging/arch/kyoto.service" "${pkgdir}/usr/lib/systemd/system/kyoto.service"
   install -D -m644 "$srcdir/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 
 }
