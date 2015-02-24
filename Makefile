@@ -82,14 +82,15 @@ deb:
 	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/init.d"
-	cp scripts/debian-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
+	cp debian/kyoto-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
 	chmod 755 "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/default"
 	cp scripts/kyoto.conf "build/$(PACKAGE_NAME)/etc/default/kyoto"
 	mkdir -p "build/$(PACKAGE_NAME)/var/lib/kyoto"
 
-	cp -dr debian "build/$(PACKAGE_NAME)/DEBIAN"
+	mkdir -p "build/$(PACKAGE_NAME)/DEBIAN"
+	cd debian && cp compat conffiles control postinst postrm prerm "../build/$(PACKAGE_NAME)/DEBIAN"
 	printf "Version: $(PACKAGE_VERSION)\nArchitecture: $(PACKAGE_ARCH)\n" >> "build/$(PACKAGE_NAME)/DEBIAN/control"
 
 	find "build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto-tycoon --ignore-missing-info -Tbuild/dependencies
