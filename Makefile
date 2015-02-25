@@ -120,10 +120,10 @@ pac:
 	rm -rf "$(HOME)/archbuild"
 	mkdir "$(HOME)/archbuild"
 	test -d "$(HOME)/archbuild" && test -x /usr/bin/makepkg
-	cp packaging/arch/PKGBUILD "$(HOME)/archbuild/PKGBUILD"
-	cp packaging/arch/kyoto.service" "$(HOME)/archbuild/"
-	cp packaging/arch/kyoto.install" "$(HOME)/archbuild/"
-	cp packaging/arch/kyoto.conf" "$(HOME)/archbuild/"
+	cp "packaging/arch/PKGBUILD" "$(HOME)/archbuild/PKGBUILD"
+	cp "packaging/arch/kyoto.service" "$(HOME)/archbuild/"
+	cp "packaging/arch/kyoto.install" "$(HOME)/archbuild/"
+	cp "packaging/arch/kyoto.conf" "$(HOME)/archbuild/"
 
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
 	$(eval PACKAGE_DATE := $(shell date +%Y%m%d))
