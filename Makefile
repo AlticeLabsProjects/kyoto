@@ -93,7 +93,7 @@ deb:
 	cd packaging/debian && cp compat conffiles control postinst postrm prerm "../../build/$(PACKAGE_NAME)/DEBIAN"
 	printf "Version: $(PACKAGE_VERSION)\nArchitecture: $(PACKAGE_ARCH)\n" >> "build/$(PACKAGE_NAME)/DEBIAN/control"
 
-	find "build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto-tycoon --ignore-missing-info -Tbuild/dependencies
+	cd packaging && find "../build/$(PACKAGE_NAME)/usr" -perm /ugo+x -type f ! -name '*.sh' | xargs dpkg-shlibdeps -xkyoto-tycoon --ignore-missing-info -T../build/dependencies
 	sed -i 's/^shlibs:Depends=//' build/dependencies
 	sed -i "s/\(Depends:.*\)$$/\1, $$(cat build/dependencies)/" "build/$(PACKAGE_NAME)/DEBIAN/control"
 
