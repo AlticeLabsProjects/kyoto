@@ -112,6 +112,10 @@ untabify :
 	  done
 
 
+strip :
+	strip $(COMMANDFILES)
+
+
 install :
 	mkdir -p $(DESTDIR)$(INCLUDEDIR)
 	cp -Rf $(HEADERFILES) $(DESTDIR)$(INCLUDEDIR)

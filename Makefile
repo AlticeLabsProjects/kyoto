@@ -44,6 +44,7 @@ kyotocabinet/Makefile:
 
 cabinet: kyotocabinet/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet
+	$(MAKE) -j$(NPROCS) -C kyotocabinet strip
 
 kyotocabinet/libkyotocabinet.a: cabinet
 kyotocabinet/libkyotocabinet.$(SO_EXTENSION): cabinet
@@ -56,6 +57,7 @@ kyototycoon/Makefile: kyotocabinet/libkyotocabinet.a kyotocabinet/libkyotocabine
 
 tycoon: kyototycoon/Makefile
 	$(MAKE) -j$(NPROCS) -C kyototycoon
+	$(MAKE) -j$(NPROCS) -C kyototycoon strip
 
 install: all kyotocabinet/Makefile kyototycoon/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet install DESTDIR="$(DESTDIR)"
