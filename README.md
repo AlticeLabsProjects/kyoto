@@ -24,6 +24,8 @@ What's included?
 
 Here you can find improved versions of the latest available upstream releases, intended to be used together and tested in real-world production environments. The changes include bug fixes, minor new features and packaging for a few Linux distributions.
 
+Check our _stable_ [release history](https://github.com/sapo/kyoto/releases) to see what's new.
+
 Supported Platforms
 -------------------
 
