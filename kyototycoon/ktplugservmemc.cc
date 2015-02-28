@@ -80,6 +80,7 @@ class MemcacheServer : public kt::PluggableServer {
         } else if (!std::strcmp(key, "opts") || !std::strcmp(key, "options")) {
           if (std::strchr(value, 'f')) opts_ |= TFLAGS;
           if (std::strchr(value, 'q')) opts_ |= TQUEUE;
+          if (std::strchr(value, 'r')) opts_ |= TRONLY;
         } else if (!std::strcmp(key, "qtout") || !std::strcmp(key, "qtimeout")) {
           qtout_ = kc::atof(value);
         }
@@ -95,6 +96,10 @@ class MemcacheServer : public kt::PluggableServer {
   // start the server
   bool start() {
     _assert_(true);
+    if (opts_ & TQUEUE && opts_ & TRONLY) {
+        serv_.log(kt::ThreadedServer::Logger::ERROR, "message queue cannot be read-only");
+        return false;
+    }
     std::string addr;
     if (!host_.empty()) {
       addr = kt::Socket::get_host_address(host_);
@@ -128,7 +133,8 @@ class MemcacheServer : public kt::PluggableServer {
   // tuning options
   enum Option {
     TFLAGS = 1 << 1,
-    TQUEUE = 1 << 2
+    TQUEUE = 1 << 2,
+    TRONLY = 1 << 3
   };
   // worker implementation
   class Worker : public kt::ThreadedServer::Worker {
@@ -174,15 +180,25 @@ class MemcacheServer : public kt::PluggableServer {
         kt::strtokenize(line, &tokens);
         const std::string& cmd = tokens.empty() ? "" : tokens.front();
         if (cmd == "set") {
-          if (serv_->opts_ & TQUEUE) {
+          if (serv_->opts_ & TRONLY) {
+            sess->printf("SERVER_ERROR server is read-only\r\n");
+          } else if (serv_->opts_ & TQUEUE) {
             keep = do_queue_set(serv, sess, tokens, db);
           } else {
             keep = do_set(serv, sess, tokens, db);
           }
         } else if (cmd == "add") {
-          keep = do_add(serv, sess, tokens, db);
+          if (serv_->opts_ & TRONLY) {
+            sess->printf("SERVER_ERROR server is read-only\r\n");
+          } else {
+            keep = do_add(serv, sess, tokens, db);
+          }
         } else if (cmd == "replace") {
-          keep = do_replace(serv, sess, tokens, db);
+          if (serv_->opts_ & TRONLY) {
+            sess->printf("SERVER_ERROR server is read-only\r\n");
+          } else {
+            keep = do_replace(serv, sess, tokens, db);
+          }
         } else if (cmd == "get" || cmd == "gets") {
           if (serv_->opts_ & TQUEUE) {
             keep = do_queue_get(serv, sess, tokens, db);
@@ -190,19 +206,33 @@ class MemcacheServer : public kt::PluggableServer {
             keep = do_get(serv, sess, tokens, db);
           }
         } else if (cmd == "delete") {
-          if (serv_->opts_ & TQUEUE) {
+          if (serv_->opts_ & TRONLY) {
+            sess->printf("SERVER_ERROR server is read-only\r\n");
+          } else if (serv_->opts_ & TQUEUE) {
             keep = do_queue_delete(serv, sess, tokens, db);
           } else {
             keep = do_delete(serv, sess, tokens, db);
           }
         } else if (cmd == "incr") {
-          keep = do_incr(serv, sess, tokens, db);
+          if (serv_->opts_ & TRONLY) {
+            sess->printf("SERVER_ERROR server is read-only\r\n");
+          } else {
+            keep = do_incr(serv, sess, tokens, db);
+          }
         } else if (cmd == "decr") {
-          keep = do_decr(serv, sess, tokens, db);
+          if (serv_->opts_ & TRONLY) {
+            sess->printf("SERVER_ERROR server is read-only\r\n");
+          } else {
+            keep = do_decr(serv, sess, tokens, db);
+          }
         } else if (cmd == "stats") {
           keep = do_stats(serv, sess, tokens, db);
         } else if (cmd == "flush_all") {
-          keep = do_flush_all(serv, sess, tokens, db);
+          if (serv_->opts_ & TRONLY) {
+            sess->printf("SERVER_ERROR server is read-only\r\n");
+          } else {
+            keep = do_flush_all(serv, sess, tokens, db);
+          }
         } else if (cmd == "version") {
           keep = do_version(serv, sess, tokens, db);
         } else if (cmd == "quit") {
