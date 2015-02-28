@@ -5,6 +5,7 @@
 *.pc
 *.un~
 *.swp
+*.bak
 check.out
 config.log
 config.status
