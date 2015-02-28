@@ -23,7 +23,7 @@
 <h1 id="headline">Fundamental Specifications of Kyoto Tycoon Version 1</h1>
 
 <div class="note">Copyright (C) 2009-2012 FAL Labs</div>
-<div class="note">Last Update: Fri, 25 May 2012 02:44:22 +0900</div>
+<div class="note">Last Update: Sat, 28 February 2015 13:00:00 +0000</div>
 
 <hr />
 
@@ -853,7 +853,7 @@ Connection closed by foreign host.
 
 <p>This implementation supports a portion of commands supported by the original memcached server.  As for now, "set", "add", "replace", "get", "delete", "incr", "decr", "stats", "flush_all", and "quit" are available.  For the sake of interoperability with HTTP, the "flags" option of some update commands are ignored by default.  If you want to handle the flags, enable the mechanism by adding "#opts=f" in the argument of the "-plex" option.  The mechanism of "cas unique" is not implemented.</p>
 
-<p>The configuration expression by the "-plex" option is composed of named parameters separated by "#".  Each parameter is composed of the name and the value separated by "=".  The supported parameter names are "host", "port", "tout", "th", and "opts".  The default port is 11211, which is the same as the original memcached server.  Don't forget "#opts=f" if your client library uses "flags" to determine the data type of each record.  By default, "flags" are disabled for compatibility of the record format to HTTP.</p>
+<p>The configuration expression by the "-plex" option is composed of named parameters separated by "#".  Each parameter is composed of the name and the value separated by "=".  The supported parameter names are "host", "port", "tout", "th", and "opts".  The default port is 11211, which is the same as the original memcached server.  Don't forget "#opts=f" if your client library uses "flags" to determine the data type of each record.  By default, "flags" are disabled for compatibility of the record format to HTTP.  Use "#opts=r" (read-only) if memcached clients aren't allowed to change data.</p>
 
 <p>The most important advantage of the pluggable server mechanism is to share database objects with the main server.  Update operations by a pluggable server is reflected to the main server immediately and vice versa.  Moreover, update operations are written as update logs and picked up by slave servers of replication.  You can implement your own pluggable server.  See the source code in "ktplugservmemc.cc" for details.</p>
 

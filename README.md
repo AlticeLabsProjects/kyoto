@@ -10,59 +10,59 @@ Kyoto Tycoon is a lightweight network server on top of the Kyoto Cabinet key-val
 
 It has its own fully-featured [protocol](http://fallabs.com/kyototycoon/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon)).
 
-It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://fallabs.com/kyototycoon/spex.html#tips_pluggableserver). This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
+It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://fallabs.com/kyototycoon/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
 
 What's this fork?
 -----------------
 
 The development of [Kyoto Tycoon](http://fallabs.com/kyototycoon/) and [Kyoto Cabinet](http://fallabs.com/kyotocabinet/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
 
-We at [SAPO](http://www.sapo.pt/) don't really mean this repository as an "hostile" fork for any of these packages, but as a place to keep readily usable versions for modern machines. Nevertheless, pull requests are welcome.
+We at [SAPO](http://www.sapo.pt/) intend this repository to be a place to keep readily usable (but conservative) versions for modern machines. Nevertheless, pull requests containing bug fixes or new features are welcome.
 
 What's included?
 ----------------
 
-Here you can find the latest upstream releases with additional modifications, intended to be used together. The changes include patches sourced from Linux distribution packages and some custom patches which have been tested in real-world production environments. Check the commit history for more information.
+Here you can find improved versions of the latest available upstream releases, intended to be used together and tested in real-world production environments. The changes include bug fixes, minor new features and packaging for a few Linux distributions.
 
 Supported Platforms
 -------------------
 
 Our primary target platform for these packages is Linux (64-bit). Mostly Debian, but we've also done some testing on CentOS and some non-Linux platforms such as FreeBSD and MacOS X.
 
-The upstream sources claim to support additional platforms, but we haven't tested them (yet).
+The upstream sources claim to support additional platforms, but we haven't got around to test them for ourselves (yet). If you do, let us know.
 
 Installing
 ----------
 
-Download the [latest source release](https://github.com/sapo/kyoto/releases/latest) or clone the [repository](https://github.com/sapo/kyoto) from GitHub. Then, to build and install everything in one go, run:
+Download our latest _stable_ [source release](https://github.com/sapo/kyoto/releases/latest) or clone the [repository](https://github.com/sapo/kyoto) from GitHub. Then, to build and install the Kyoto Cabinet library and the Kyoto Tycoon server in one go, run:
 
-    $ make PREFIX=/custom/install/root
+    $ make PREFIX=/usr/local
     $ sudo make install
 
 **Notes:**
 
-  * Make sure you have [Lua 5.1](http://www.lua.org/versions.html#5.1) already installed (later versions are not supported);
-  * The installation root directory (`PREFIX`) is optional. By default it installs into `/usr/local`;
-  * If you're building on FreeBSD, use `gmake` instead of `make`.
+  * Make sure you have [zlib](http://www.zlib.net/) and [Lua 5.1](http://www.lua.org/versions.html#5.1) already installed (later versions of Lua are not supported);
+  * The installation root directory (`PREFIX`) is optional. By default it already installs into `/usr/local`;
+  * If you're building on FreeBSD, use `gmake` from the ports collection instead of standard `make`.
 
 Packaging
 ---------
 
-On Debian, create a `.deb` package (into the `./build` directory) by running:
+Instead of installing directly from source, you can optionally build packages for one of the Linux distributions listed below. If you distribution of choice doesn't happen to be supported, patches are always welcome.
+
+On Debian, build a binary `.deb` package (into the `./build` directory) by running:
 
     $ make deb
 
-On RHEL/CentOS, create a `.rpm` package (into the `$HOME/rpmbuild/RPMS` directory) by running:
+On Red Hat Linux (or a derivative such as CentOS), build both source and binary `.rpm` packages (into the `$HOME/rpmbuild` directory) by running:
 
     $ make rpm
 
-Besides being cleaner than installing directly from source, both of these packages provide an `/etc/init.d/kyoto` init script to run the server with minimal privileges and an `/etc/default/kyoto` configuration file with some examples.
-
-On Arch, create a `.pkg.tar.xz` package (into the `$HOME/archbuild/` directory) by running:
+On Arch Linux, build a binary `.pkg.tar.xz` package (into the `$HOME/archbuild` directory) by running:
 
     $ make pac
 
-This package provides a `systemd service` to run the server with minimal privileges and an `/etc/conf.d/kyoto` configuration file with some examples.
+Besides being cleaner and more maintainable than installing directly from source, these packages also register init scripts to run the server with minimal privileges and install configuration files pre-filled with some examples.
 
 Running
 -------
