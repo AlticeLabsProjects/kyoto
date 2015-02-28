@@ -312,10 +312,10 @@ check-timed :
 	$(RUNENV) $(RUNCMD) ./kttimedtest misc "casket#type=%#zcomp=gz"
 	rm -rf casket*
 	$(RUNENV) $(RUNCMD) ./kttimedtest misc \
-	  "casket#type=kch#log=-#logkinds=debug#zcomp=lzocrc"
+	  "casket#type=kch#log=-#logkinds=warn#zcomp=lzocrc"
 	rm -rf casket*
 	$(RUNENV) $(RUNCMD) ./kttimedtest misc \
-	  "casket#type=kct#log=-#logkinds=debug#zcomp=lzmacrc"
+	  "casket#type=kct#log=-#logkinds=warn#zcomp=lzmacrc"
 	rm -rf casket*
 	$(RUNENV) $(RUNCMD) ./kttimedtest misc \
 	  "casket#type=kcd#zcomp=arc#zkey=mikio"
