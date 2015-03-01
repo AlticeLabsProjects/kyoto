@@ -7,6 +7,8 @@ PREFIX ?= /usr/local
 DESTDIR =
 OS := $(shell uname -s)
 NPROCS = 1
+CONFIG_FLAGS =
+
 
 # Parallelize the build on Linux...
 ifeq ($(OS),Linux)
@@ -40,11 +42,11 @@ endif
 	rm -rf build
 
 kyotocabinet/Makefile:
-	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)"
+	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)" $(CONFIG_FLAGS)
 
 cabinet: kyotocabinet/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet
-	$(MAKE) -j$(NPROCS) -C kyotocabinet strip
+	grep -q '^CPPFLAGS.*-D_KCDEBUG' kyotocabinet/Makefile || $(MAKE) -j$(NPROCS) -C kyotocabinet strip
 
 kyotocabinet/libkyotocabinet.a: cabinet
 kyotocabinet/libkyotocabinet.$(SO_EXTENSION): cabinet
@@ -53,11 +55,11 @@ kyototycoon/Makefile: kyotocabinet/libkyotocabinet.a kyotocabinet/libkyotocabine
 	$(eval CABINET_ROOT := $(shell awk '/^prefix *=/ {print $$3}' kyotocabinet/Makefile))
 	test -x kyototycoon/configure && cd kyototycoon && \
 	PKG_CONFIG_PATH="../kyotocabinet" CPPFLAGS="-I../kyotocabinet" LDFLAGS="-L../kyotocabinet" \
-	./configure --prefix="$(PREFIX)" --with-kc="$(CABINET_ROOT)" --enable-lua
+	./configure --prefix="$(PREFIX)" --with-kc="$(CABINET_ROOT)" --enable-lua $(CONFIG_FLAGS)
 
 tycoon: kyototycoon/Makefile
 	$(MAKE) -j$(NPROCS) -C kyototycoon
-	$(MAKE) -j$(NPROCS) -C kyototycoon strip
+	grep -q '^CPPFLAGS.*-D_KCDEBUG' kyotocabinet/Makefile || $(MAKE) -j$(NPROCS) -C kyototycoon strip
 
 install: all kyotocabinet/Makefile kyototycoon/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet install DESTDIR="$(DESTDIR)"
