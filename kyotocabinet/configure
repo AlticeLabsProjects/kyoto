@@ -4530,7 +4530,7 @@ fi
 if test "$is_static" = "yes"
 then
   printf "checking whether $CC accepts -static... "
-  if printf 'int main() { return 0; }' | $CC -xc -o config.tmp - >/dev/null 2>&1
+  if printf 'int main() { return 0; }' | $CC -xc -o config.tmp -static ->/dev/null 2>&1
   then
     MYCMDLDFLAGS="$MYCMDLDFLAGS -static"
     MYCMDLIBS="$MYCMDLIBS $LIBS"
