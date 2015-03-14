@@ -4529,8 +4529,15 @@ fi
 # Static linking
 if test "$is_static" = "yes"
 then
-  MYCMDLDFLAGS="$MYCMDLDFLAGS -static"
-  MYCMDLIBS="$MYCMDLIBS $LIBS"
+  printf "checking whether $CC accepts -static... "
+  if printf 'int main() { return 0; }' | $CC -xc -o config.tmp - >/dev/null 2>&1
+  then
+    MYCMDLDFLAGS="$MYCMDLDFLAGS -static"
+    MYCMDLIBS="$MYCMDLIBS $LIBS"
+    printf 'yes\n'
+  else
+    printf 'no\n'
+  fi
 fi
 
 # As-needed linking
