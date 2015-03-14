@@ -4566,7 +4566,7 @@ then
 fi
 
 # Work around of bugs of some environments
-if uname | grep Darwin >config.tmp
+if test "$enable_opt" != "no" && test "$enable_debug" != "yes" && uname | grep Darwin >config.tmp
 then
   MYCFLAGS="$MYCFLAGS -Os"
   MYCXXFLAGS="$MYCXXFLAGS -Os"
