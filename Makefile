@@ -79,6 +79,10 @@ deb:
 	rm -rf build
 	test -x /usr/bin/dpkg-deb && test -x /usr/bin/fakeroot
 
+        # Check for build dependencies...
+	dpkg -l zlib1g-dev | grep -q ^ii
+	dpkg -l liblua5.1-0-dev | grep -q ^ii
+
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g')-$(shell date +%Y%m%d)~$(shell lsb_release -c | awk '{print $$2}' | tr '[A-Z]' '[a-z]'))
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
 	$(eval PACKAGE_NAME := kyoto-tycoon-$(PACKAGE_VERSION))
@@ -138,6 +142,9 @@ pac:
 	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/archbuild/PKGBUILD"
 
 	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck
+
+
+.PHONY: all clean cabinet tycoon install deb rpm pac
 
 
 # EOF - Makefile
