@@ -10,7 +10,7 @@ Kyoto Tycoon is a lightweight network server on top of the Kyoto Cabinet key-val
 
 It has its own fully-featured [protocol](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon)).
 
-It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://fallabs.com/kyototycoon/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
+It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
 
 What's this fork?
 -----------------
