@@ -8,14 +8,14 @@ Kyoto Tycoon is a lightweight network server on top of the Kyoto Cabinet key-val
   * hash and tree-based database formats
   * server-side scripting in [Lua](http://www.lua.org/)
 
-It has its own fully-featured [protocol](http://fallabs.com/kyototycoon/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon)).
+It has its own fully-featured [protocol](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon)).
 
 It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://fallabs.com/kyototycoon/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
 
 What's this fork?
 -----------------
 
-The development of [Kyoto Tycoon](http://fallabs.com/kyototycoon/) and [Kyoto Cabinet](http://fallabs.com/kyotocabinet/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
+The development of [Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) and [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
 
 We at [SAPO](http://www.sapo.pt/) intend this repository to be a place to keep readily usable (but conservative) versions for modern machines. Nevertheless, pull requests containing bug fixes or new features are welcome.
 
@@ -69,7 +69,7 @@ Besides being cleaner and more maintainable than installing directly from source
 Running
 -------
 
-If there's a place in need of improvement it's the documentation for the available server options in Kyoto Tycoon. Make sure to check the [command-line reference](http://fallabs.com/kyototycoon/command.html#ktserver) to understand what each option means and how it affects performance vs. data protection. But you may want to try this as a quick start for realistic use:
+If there's a place in need of improvement it's the documentation for the available server options in Kyoto Tycoon. Make sure to check the [command-line reference](http://sapo.github.io/kyoto/kyototycoon/doc/command.html#ktserver) to understand what each option means and how it affects performance vs. data protection. But you may want to try this as a quick start for realistic use:
 
     $ mkdir -p /data/kyoto/db
     $ /usr/local/bin/ktserver -ls -th 16 -port 1978 -pid /data/kyoto/kyoto.pid \
