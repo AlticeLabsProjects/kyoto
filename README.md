@@ -12,6 +12,8 @@ It has its own fully-featured [protocol](http://sapo.github.io/kyoto/kyototycoon
 
 It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
 
+![Example Architecture](https://raw.githubusercontent.com/sapo/kyoto/master/example.png)
+
 What's this fork?
 -----------------
 
