@@ -6,7 +6,7 @@ Kyoto Tycoon is a lightweight network server on top of the Kyoto Cabinet key-val
   * _master-slave_ and _master-master_ replication
   * in-memory and persistent databases (with optional binary logging)
   * hash and tree-based database formats
-  * server-side scripting in [Lua](http://www.lua.org/)
+  * server-side scripting in [Lua](http://www.lua.org/) ([API](http://sapo.github.io/kyoto/kyototycoon/doc/luadoc/))
 
 It has its own fully-featured [protocol](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon)).
 
