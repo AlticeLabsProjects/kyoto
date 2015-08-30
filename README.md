@@ -17,7 +17,7 @@ It can also be configured with simultaneous support for the [memcached](http://w
 What's this fork?
 -----------------
 
-The development of [Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) and [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
+The development of [Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) and [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable (see: [Caveats](#Caveats)), which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
 
 We at [SAPO](http://www.sapo.pt/) intend this repository to be a place to keep readily usable (but conservative) versions for modern machines. Nevertheless, pull requests containing bug fixes or new features are welcome.
 
@@ -73,7 +73,6 @@ Running
 
 If there's a place in need of improvement it's the documentation for the available server options in Kyoto Tycoon. Make sure to check the [command-line reference](http://sapo.github.io/kyoto/kyototycoon/doc/command.html#ktserver) to understand what each option means and how it affects performance vs. data protection. But you may want to try this as a quick start for realistic use:
 
-    $ mkdir -p /data/kyoto/db
     $ /usr/local/bin/ktserver -ls -th 16 -port 1978 -pid /data/kyoto/kyoto.pid \
                               -log /data/kyoto/ktserver.log -oat -uasi 10 -asi 10 -ash \
                               -sid 1001 -ulog /data/kyoto/db -ulim 104857600 \
@@ -84,7 +83,6 @@ Some of the durability options have a significant performance impact and you may
 
 If you have an idea of how many objects you'll be storing, you can use a persistent hash database instead:
 
-    $ mkdir -p /data/kyoto/db
     $ /usr/local/bin/ktserver -ls -th 16 -port 1978 -pid /data/kyoto/kyoto.pid \
                               -log /data/kyoto/ktserver.log -oat -uasi 10 -asi 10 -ash \
                               -sid 1001 -ulog /data/kyoto/db -ulim 104857600 \
