@@ -110,9 +110,13 @@ Caveats
 Based on our experience, you should consider a few things when using Kyoto Tycoon in production:
 
   * Don't use the `capsiz` option with on-disk databases as the server will temporarily stop responding to free up space when the maximum capacity is reached. In this case, try to keep the database size under control using auto-expiring keys instead.
-  * On-disk databases are sensitive to disk write performance (impacting record updates as well as reads). Enabling transactions and/or synchronization makes this worse, as does increasing the number of buckets for hash databases (larger structures to write). Having a disk controller with some kind of battery-backed write-cache enabled makes these issues mute.
+
+  * On-disk databases are sensitive to disk write performance (impacting record updates as well as reads). Enabling transactions and/or synchronization makes this worse, as does increasing the number of buckets for hash databases (larger structures to write). Having a disk controller with some kind of battery-backed write-cache makes these issues mute.
+
   * Choose your on-disk database tuning options carefully and don't tune unless you need to. Some options can be modified by a simple restart of the server (eg. `pccap`, `msiz`) but others require creating the database from scratch (eg. `bnum`, `opts=c`).
+
   * Make sure you have enough disk space to store your on-disk databases as they grow. The server uses `mmap()` for file access and handles out-of-space conditions by terminating immediately. The database should still be consistent if this happens, so don't fret too much about it.
+
   * The unique server ID (`-sid`) is used to break replication loops (a server instance ignores keys with its own SID). Keep this in mind when restoring failed _master-master_ instances. The documentation recommends always choosing a new SID but this doesn't seem a good idea in this case. If the existing master still has keys from the failed master with the old SID pending replication, the new master with a new SID will propagate them back.
 
 
