@@ -17,7 +17,7 @@ It can also be configured with simultaneous support for the [memcached](http://w
 What's this fork?
 -----------------
 
-The development of [Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) and [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable (see: [Caveats](#Caveats)), which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
+The development of [Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) and [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
 
 We at [SAPO](http://www.sapo.pt/) intend this repository to be a place to keep readily usable (but conservative) versions for modern machines. Nevertheless, pull requests containing bug fixes or new features are welcome.
 
