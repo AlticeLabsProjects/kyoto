@@ -1,7 +1,7 @@
 Kyoto Tycoon
 ============
 
-Kyoto Tycoon is a lightweight network server on top of the Kyoto Cabinet key-value database, built for high-performance and concurrency. Some of its features include:
+[Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) is a lightweight network server on top of the [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) key-value database, built for high-performance and concurrency. Some of its features include:
 
   * _master-slave_ and _master-master_ replication
   * in-memory and persistent databases (with optional binary logging)
@@ -45,7 +45,7 @@ Download our latest _stable_ [source release](https://github.com/sapo/kyoto/rele
 
 **Notes:**
 
-  * Make sure you have [zlib](http://www.zlib.net/) and [Lua 5.1](http://www.lua.org/versions.html#5.1) already installed (later versions of Lua are not supported);
+  * Make sure you have [zlib](http://www.zlib.net/), [lzo](http://www.oberhumer.com/opensource/lzo/) and [Lua 5.1.x](http://www.lua.org/versions.html#5.1) already installed;
   * The installation root directory (`PREFIX`) is optional. By default it already installs into `/usr/local`;
   * If you're building on FreeBSD, use `gmake` from the ports collection instead of standard `make`.
 
