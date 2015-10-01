@@ -7,7 +7,7 @@ pkgdesc="Kyoto Tycoon key-value server (and Kyoto Cabinet library)"
 arch=('i686' 'x86_64')
 url="http://github.com/sapo/kyoto"
 license=('GPL')
-depends=('lua' 'lua51')
+depends=('lua' 'lua51', 'lzo')
 install=kyoto.install
 backup=('etc/conf.d/kyoto')
 
@@ -24,7 +24,7 @@ package() {
 
   mkdir -p $pkgdir/var/lib/kyoto
   mkdir -p $pkgdir/etc/default
-	
+
   install -d -m755 "${pkgdir}/etc/conf.d"
   install -D -m644 "$srcdir/packaging/scripts/kyoto.conf" "${pkgdir}/etc/conf.d/kyoto"
   install -D -m644 "$srcdir/packaging/arch/kyoto.conf" "${pkgdir}/usr/lib/tmpfiles.d/kyoto.conf"

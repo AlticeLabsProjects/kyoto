@@ -42,7 +42,7 @@ endif
 	rm -rf build
 
 kyotocabinet/Makefile:
-	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)" $(CONFIG_FLAGS)
+	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)" --enable-lzo $(CONFIG_FLAGS)
 
 cabinet: kyotocabinet/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet
@@ -82,6 +82,7 @@ deb:
         # Check for build dependencies...
 	dpkg -l zlib1g-dev | grep -q ^ii
 	dpkg -l liblua5.1-0-dev | grep -q ^ii
+	dpkg -l liblzo2-dev | grep -q ^ii
 
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g')-$(shell date +%Y%m%d)~$(shell lsb_release -c | awk '{print $$2}' | tr '[A-Z]' '[a-z]'))
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))

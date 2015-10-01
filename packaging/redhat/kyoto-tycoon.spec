@@ -8,13 +8,13 @@
 Name: kyoto-tycoon
 Version: %{kt_version}
 Release: %{kt_timestamp}%{?dist}
-Summary: Kyoto Tycoon key-value server (and Kyoto Cabinet library)	
+Summary: Kyoto Tycoon key-value server (and Kyoto Cabinet library)
 
 License: GPL
 URL: https://github.com/sapo/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
-BuildRequires: lua-devel, zlib-devel
+BuildRequires: lua-devel, zlib-devel, lzo-devel
 Requires: redhat-lsb-core
 Requires(pre): /usr/sbin/useradd
 Requires(post): chkconfig
