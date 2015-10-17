@@ -142,7 +142,7 @@ pac:
 
 	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/archbuild/PKGBUILD"
 
-	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck
+	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck -s
 
 
 .PHONY: all clean cabinet tycoon install deb rpm pac
