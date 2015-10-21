@@ -22,12 +22,16 @@ post_install() {
 
 post_upgrade() {
 	
+  systemd-tmpfiles --create kyoto.conf
 	systemctl daemon-reload
 
 	exit 0
 }
 
 post_remove() {
+
+  systemctl daemon-reload
+
 	# Remove the service user for KT...
 	if grep -q "kyoto" /etc/passwd; then
 		pkill -KILL -U "kyoto" || true
@@ -38,6 +42,10 @@ post_remove() {
 	if grep -q "kyoto" /etc/group; then
 		groupdel "kyoto"
 	fi
+
+  if [ -d /run/kyoto/ ]; then
+    rm -rf /run/kyoto
+  fi
 
 	exit 0
 }
