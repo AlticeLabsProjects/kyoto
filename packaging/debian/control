@@ -4,6 +4,7 @@ Maintainer: Carlos Rodrigues <cefrodrigues@gmail.com>
 Homepage: https://github.com/sapo/kyoto
 Priority: optional
 Section: misc
+Build-Depends: zlib1g-dev, liblua5.1-0-dev, liblzo2-dev
 Depends: adduser, lsb-base
 Description: Kyoto Tycoon key-value server (and Kyoto Cabinet library)
  .

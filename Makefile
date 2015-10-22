@@ -79,10 +79,8 @@ deb:
 	rm -rf build
 	test -x /usr/bin/dpkg-deb && test -x /usr/bin/fakeroot
 
-        # Check for build dependencies...
-	dpkg -l zlib1g-dev | grep -q ^ii
-	dpkg -l liblua5.1-0-dev | grep -q ^ii
-	dpkg -l liblzo2-dev | grep -q ^ii
+	# Check for build dependencies...
+	dpkg-checkbuilddeps packaging/debian/control
 
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g')-$(shell date +%Y%m%d)~$(shell lsb_release -c | awk '{print $$2}' | tr '[A-Z]' '[a-z]'))
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
