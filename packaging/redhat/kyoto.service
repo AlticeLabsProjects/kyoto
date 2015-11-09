@@ -1,0 +1,15 @@
+[Unit]
+Description=Kyoto Tycoon server
+After=network.target
+
+[Service]
+User=kyoto
+Group=kyoto
+Type=simple
+WorkingDirectory=/var/lib/kyoto
+EnvironmentFile=-/etc/default/kyoto
+ExecStart=/usr/bin/ktserver $KTSERVER_OPTS
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

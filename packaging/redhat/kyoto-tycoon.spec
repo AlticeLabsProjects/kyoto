@@ -2,6 +2,9 @@
 %define kt_timestamp %(date +"%Y%m%d")
 %define kt_installdir /usr
 
+# Use systemd units instead of SysV initscripts on newer distributions...
+%define use_systemd ((0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7))
+
 # Needed to avoid unresolvable dependencies on RHEL7...
 %define debug_package %{nil}
 
@@ -15,11 +18,17 @@ URL: https://github.com/sapo/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
 BuildRequires: lua-devel, zlib-devel, lzo-devel
-Requires: redhat-lsb-core
-Requires(pre): /usr/sbin/useradd
-Requires(post): chkconfig
-Requires(preun): chkconfig, initscripts
-Requires(postun): /usr/sbin/userdel
+Requires: /bin/true, /bin/false
+Requires(pre): /usr/bin/grep, /usr/sbin/useradd, /usr/sbin/groupadd
+Requires(preun): /usr/bin/pkill
+Requires(postun): /usr/bin/grep, /usr/sbin/userdel, /usr/sbin/groupdel
+
+%if %{use_systemd}
+BuildRequires: systemd
+Requires: systemd
+%else
+Requires: initscripts, chkconfig, redhat-lsb-core
+%endif
 
 %description
 Kyoto Tycoon is a lightweight server on top of the Kyoto Cabinet
@@ -53,36 +62,70 @@ fi
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}/var/lib/kyoto
 
+%if %{use_systemd}
+%{__mkdir_p} ${RPM_BUILD_ROOT}%{_unitdir}
+%{__install} -m0755 packaging/redhat/kyoto.service ${RPM_BUILD_ROOT}%{_unitdir}/kyoto.service
+%else
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d
 %{__install} -m0755 packaging/redhat/kyoto-init.sh ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d/kyoto
+%endif
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/default
 %{__install} -m0644 packaging/scripts/kyoto.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/default/kyoto
 
 
 %pre
-if ! grep -q kyoto /etc/group; then
+if [ $1 -gt 1 ]; then  # ...do nothing on upgrade.
+	exit 0
+fi
+
+if ! /usr/bin/grep -q kyoto /etc/group; then
 	/usr/sbin/groupadd -r kyoto
 fi
 
-if ! grep -q kyoto /etc/passwd; then
+if ! /usr/bin/grep -q kyoto /etc/passwd; then
 	/usr/sbin/useradd -r -M -d /var/lib/kyoto -g kyoto -s /bin/false kyoto
 fi
 
 
 %post
+if [ $1 -gt 1 ]; then  # ...do nothing on upgrade.
+	exit 0
+fi
+
+%if !%{use_systemd}
 /sbin/chkconfig --add kyoto
+%endif
 
 
 %preun
-if [ $1 -eq 0 ]; then
-    /sbin/service kyoto stop >/dev/null 2>&1
-    /sbin/chkconfig --del kyoto
+if [ $1 -gt 0 ]; then  # ...do nothing on upgrade.
+	exit 0
 fi
+
+%if %{use_systemd}
+/usr/bin/systemctl stop kyoto.service 2>&1
+%else
+/sbin/service kyoto stop >/dev/null 2>&1
+%endif
+/usr/bin/pkill -KILL -U kyoto || /bin/true
+%if !%{use_systemd}
+/sbin/chkconfig --del kyoto
+%endif
 
 
 %postun
-/usr/sbin/userdel kyoto
+if [ $1 -gt 0 ]; then  # ...do nothing on upgrade.
+	exit 0
+fi
+
+if /usr/bin/grep -q kyoto /etc/passwd; then
+	/usr/sbin/userdel kyoto
+fi
+
+if /usr/bin/grep -q kyoto /etc/group; then
+	/usr/sbin/groupdel kyoto
+fi
 
 
 %clean
@@ -94,12 +137,15 @@ rm -rf %{buildroot}
 %doc LICENSE README.md
 %dir %attr(-,kyoto,kyoto) /var/lib/kyoto
 %config(noreplace) %{_sysconfdir}/default/kyoto
-%{_sysconfdir}/init.d/kyoto
 %{kt_installdir}/bin/*
 %{kt_installdir}/include/*
 %{kt_installdir}/lib*/*
 %{kt_installdir}/share/doc/*
 %{kt_installdir}/share/man/man1/*
+
+%if !%{use_systemd}
+%{_sysconfdir}/init.d/kyoto
+%endif
 
 
 %changelog
