@@ -64,7 +64,7 @@ fi
 
 %if %{use_systemd}
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_unitdir}
-%{__install} -m0755 packaging/redhat/kyoto.service ${RPM_BUILD_ROOT}%{_unitdir}/kyoto.service
+%{__install} -m0644 packaging/redhat/kyoto.service ${RPM_BUILD_ROOT}%{_unitdir}/kyoto.service
 %else
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d
 %{__install} -m0755 packaging/redhat/kyoto-init.sh ${RPM_BUILD_ROOT}%{_sysconfdir}/init.d/kyoto
@@ -109,7 +109,9 @@ fi
 /sbin/service kyoto stop >/dev/null 2>&1
 %endif
 /usr/bin/pkill -KILL -U kyoto || /bin/true
-%if !%{use_systemd}
+%if %{use_systemd}
+/usr/bin/systemctl disable kyoto.service 2>&1
+%else
 /sbin/chkconfig --del kyoto
 %endif
 
