@@ -104,13 +104,13 @@ if [ $1 -gt 0 ]; then  # ...do nothing on upgrade.
 fi
 
 %if %{use_systemd}
-/usr/bin/systemctl stop kyoto.service 2>&1
+/usr/bin/systemctl stop kyoto.service >/dev/null 2>&1
 %else
 /sbin/service kyoto stop >/dev/null 2>&1
 %endif
 /usr/bin/pkill -KILL -U kyoto || /bin/true
 %if %{use_systemd}
-/usr/bin/systemctl disable kyoto.service 2>&1
+/usr/bin/systemctl disable kyoto.service >/dev/null 2>&1
 %else
 /sbin/chkconfig --del kyoto
 %endif
