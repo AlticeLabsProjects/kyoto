@@ -18,10 +18,10 @@ URL: https://github.com/sapo/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
 BuildRequires: lua-devel, zlib-devel, lzo-devel
-Requires: /bin/true, /bin/false
-Requires(pre): /usr/bin/grep, /usr/sbin/useradd, /usr/sbin/groupadd
+Requires: /bin/grep, /bin/true, /bin/false
+Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
 Requires(preun): /usr/bin/pkill
-Requires(postun): /usr/bin/grep, /usr/sbin/userdel, /usr/sbin/groupdel
+Requires(postun): /usr/sbin/userdel, /usr/sbin/groupdel
 
 %if %{use_systemd}
 BuildRequires: systemd
@@ -55,7 +55,7 @@ make PREFIX=%{kt_installdir}
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-if echo %{_libdir} | grep -q 64; then
+if echo %{_libdir} | /bin/grep -q 64; then
 	# Otherwise the runtime linker won't find the libraries...
 	mv %{buildroot}/usr/lib %{buildroot}/usr/lib64
 fi
@@ -79,11 +79,11 @@ if [ $1 -gt 1 ]; then  # ...do nothing on upgrade.
 	exit 0
 fi
 
-if ! /usr/bin/grep -q kyoto /etc/group; then
+if ! /bin/grep -q kyoto /etc/group; then
 	/usr/sbin/groupadd -r kyoto
 fi
 
-if ! /usr/bin/grep -q kyoto /etc/passwd; then
+if ! /bin/grep -q kyoto /etc/passwd; then
 	/usr/sbin/useradd -r -M -d /var/lib/kyoto -g kyoto -s /bin/false kyoto
 fi
 
@@ -119,11 +119,11 @@ if [ $1 -gt 0 ]; then  # ...do nothing on upgrade.
 	exit 0
 fi
 
-if /usr/bin/grep -q kyoto /etc/passwd; then
+if /bin/grep -q kyoto /etc/passwd; then
 	/usr/sbin/userdel kyoto
 fi
 
-if /usr/bin/grep -q kyoto /etc/group; then
+if /bin/grep -q kyoto /etc/group; then
 	/usr/sbin/groupdel kyoto
 fi
 
