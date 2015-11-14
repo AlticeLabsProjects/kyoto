@@ -8,7 +8,7 @@ Kyoto Tycoon
   * hash and tree-based database formats (with optional compression)
   * server-side scripting in [Lua](http://www.lua.org/) ([API](http://sapo.github.io/kyoto/kyototycoon/doc/luadoc/))
 
-It has its own fully-featured [protocol](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon)).
+It has its own fully-featured [protocol](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon-ng)).
 
 It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
 
@@ -102,7 +102,7 @@ To enable simultaneous support for the _memcached_ protocol, use the `-plsv` and
                               -plex 'port=11211#opts=f' \
                               '*#bnum=100000#capsiz=256m'
 
-The `opts=f` parameter enables _flags_ support for the _memcached_ protocol. These are stored by Kyoto Tycoon as the last 4 bytes of the value, which means some care must be taken when mixing protocols (our [python library](https://github.com/sapo/python-kyototycoon#memcache-enabled-servers) can handle this for you, for example).
+The `opts=f` parameter enables _flags_ support for the _memcached_ protocol. These are stored by Kyoto Tycoon as the last 4 bytes of the value, which means some care must be taken when mixing protocols (our [python library](https://github.com/sapo/python-kyototycoon-ng#memcache-enabled-servers) can handle this for you, for example).
 
 Caveats
 -------
