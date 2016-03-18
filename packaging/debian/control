@@ -1,7 +1,7 @@
 Source: kyoto-tycoon
 Package: kyoto-tycoon
 Maintainer: Carlos Rodrigues <cefrodrigues@gmail.com>
-Homepage: https://github.com/sapo/kyoto
+Homepage: https://github.com/alticelabs/kyoto
 Priority: optional
 Section: misc
 Build-Depends: zlib1g-dev, liblua5.1-0-dev, liblzo2-dev
