@@ -120,4 +120,4 @@ Based on our experience, you should consider a few things when using Kyoto Tycoo
   * The unique server ID (`-sid`) is used to break replication loops (a server instance ignores keys with its own SID). Keep this in mind when restoring failed _master-master_ instances. The documentation recommends always choosing a new SID but this doesn't seem a good idea in this case. If the existing master still has keys from the failed master with the old SID pending replication, the new master with a new SID will propagate them back.
 
 
-[![Build Status](https://travis-ci.org/alticelabs/kyoto.svg?branch=master)](https://travis-ci.org/alticelabs/kyoto)
+<!--[![Build Status](https://travis-ci.org/alticelabs/kyoto.svg?branch=master)](https://travis-ci.org/alticelabs/kyoto)-->
