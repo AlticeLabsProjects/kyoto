@@ -14,7 +14,7 @@ Release: %{kt_timestamp}%{?dist}
 Summary: Kyoto Tycoon key-value server (and Kyoto Cabinet library)
 
 License: GPL
-URL: https://github.com/sapo/kyoto
+URL: https://github.com/alticelabs/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
 BuildRequires: lua-devel, zlib-devel, lzo-devel

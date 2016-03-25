@@ -1,32 +1,32 @@
 Kyoto Tycoon
 ============
 
-[Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) is a lightweight network server on top of the [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) key-value database, built for high-performance and concurrency. Some of its features include:
+[Kyoto Tycoon](http://alticelabs.github.io/kyoto/kyototycoon/doc/) is a lightweight network server on top of the [Kyoto Cabinet](http://alticelabs.github.io/kyoto/kyotocabinet/doc/) key-value database, built for high-performance and concurrency. Some of its features include:
 
   * _master-slave_ and _master-master_ replication
   * in-memory and persistent databases (with optional binary logging)
   * hash and tree-based database formats (with optional compression)
-  * server-side scripting in [Lua](http://www.lua.org/) ([API](http://sapo.github.io/kyoto/kyototycoon/doc/luadoc/))
+  * server-side scripting in [Lua](http://www.lua.org/) ([API](http://alticelabs.github.io/kyoto/kyototycoon/doc/luadoc/))
 
-It has its own fully-featured [protocol](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/sapo/python-kyototycoon-ng)).
+It has its own fully-featured [protocol](http://alticelabs.github.io/kyoto/kyototycoon/doc/spex.html#protocol) based on HTTP and a (limited) binary protocol for even better performance. There are several client libraries implementing them for multiple languages (we're maintaining one for Python [here](https://github.com/alticelabs/python-kyototycoon-ng)).
 
-It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://sapo.github.io/kyoto/kyototycoon/doc/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
+It can also be configured with simultaneous support for the [memcached](http://www.memcached.org/) protocol, with some [limitations](http://alticelabs.github.io/kyoto/kyototycoon/doc/spex.html#tips_pluggableserver) on available data update commands. This is useful if you wish to replace _memcached_ in larger-than-memory/persistency scenarios.
 
-![Example Architecture](https://raw.githubusercontent.com/sapo/kyoto/master/example.png)
+![Example Architecture](https://raw.githubusercontent.com/alticelabs/kyoto/master/example.png)
 
 What's this fork?
 -----------------
 
-The development of [Kyoto Tycoon](http://sapo.github.io/kyoto/kyototycoon/doc/) and [Kyoto Cabinet](http://sapo.github.io/kyoto/kyotocabinet/doc/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
+The development of [Kyoto Tycoon](http://alticelabs.github.io/kyoto/kyototycoon/doc/) and [Kyoto Cabinet](http://alticelabs.github.io/kyoto/kyotocabinet/doc/) by their original authors at [FAL Labs](http://fallabs.com/) seems to have halted around 2012. The software works as advertised and is very reliable, which may explain the lack of activity, but the unmodified upstream sources fail to build in recent operating system releases (with recent compilers).
 
-We at [SAPO](http://www.sapo.pt/) intend this repository to be a place to keep readily usable (but conservative) versions for modern machines. Nevertheless, pull requests containing bug fixes or new features are welcome.
+We at [Altice Labs](http://www.alticelabs.com/) (previously at [SAPO](http://www.sapo.pt/)) intend this repository to be a place to keep readily usable (but conservative) versions for modern machines. Nevertheless, pull requests containing bug fixes or new features are welcome.
 
 What's included?
 ----------------
 
 Here you can find improved versions of the latest available upstream releases, intended to be used together and tested in real-world production environments. The changes include bug fixes, minor new features and packaging for a few Linux distributions.
 
-Check our _stable_ [release history](https://github.com/sapo/kyoto/releases) to see what's new.
+Check our _stable_ [release history](https://github.com/alticelabs/kyoto/releases) to see what's new.
 
 Supported Platforms
 -------------------
@@ -38,7 +38,7 @@ The upstream sources claim to support additional platforms, but we haven't got a
 Installing
 ----------
 
-Download our latest _stable_ [source release](https://github.com/sapo/kyoto/releases/latest) or clone the [repository](https://github.com/sapo/kyoto) from GitHub. Then, to build and install the Kyoto Cabinet library and the Kyoto Tycoon server in one go, run:
+Download our latest _stable_ [source release](https://github.com/alticelabs/kyoto/releases/latest) or clone the [repository](https://github.com/alticelabs/kyoto) from GitHub. Then, to build and install the Kyoto Cabinet library and the Kyoto Tycoon server in one go, run:
 
     $ make PREFIX=/usr/local
     $ sudo make install
@@ -71,7 +71,7 @@ Besides being cleaner and more maintainable than installing directly from source
 Running
 -------
 
-If there's a place in need of improvement it's the documentation for the available server options in Kyoto Tycoon. Make sure to check the [command-line reference](http://sapo.github.io/kyoto/kyototycoon/doc/command.html#ktserver) to understand what each option means and how it affects performance vs. data protection. But you may want to try this as a quick start for realistic use:
+If there's a place in need of improvement it's the documentation for the available server options in Kyoto Tycoon. Make sure to check the [command-line reference](http://alticelabs.github.io/kyoto/kyototycoon/doc/command.html#ktserver) to understand what each option means and how it affects performance vs. data protection. But you may want to try this as a quick start for realistic use:
 
     $ /usr/local/bin/ktserver -ls -th 16 -port 1978 -pid /data/kyoto/kyoto.pid \
                               -log /data/kyoto/ktserver.log -oat -uasi 10 -asi 10 -ash \
@@ -102,7 +102,7 @@ To enable simultaneous support for the _memcached_ protocol, use the `-plsv` and
                               -plex 'port=11211#opts=f' \
                               '*#bnum=100000#capsiz=256m'
 
-The `opts=f` parameter enables _flags_ support for the _memcached_ protocol. These are stored by Kyoto Tycoon as the last 4 bytes of the value, which means some care must be taken when mixing protocols (our [python library](https://github.com/sapo/python-kyototycoon-ng#memcache-enabled-servers) can handle this for you, for example).
+The `opts=f` parameter enables _flags_ support for the _memcached_ protocol. These are stored by Kyoto Tycoon as the last 4 bytes of the value, which means some care must be taken when mixing protocols (our [python library](https://github.com/alticelabs/python-kyototycoon-ng#memcache-enabled-servers) can handle this for you, for example).
 
 Caveats
 -------
@@ -120,4 +120,4 @@ Based on our experience, you should consider a few things when using Kyoto Tycoo
   * The unique server ID (`-sid`) is used to break replication loops (a server instance ignores keys with its own SID). Keep this in mind when restoring failed _master-master_ instances. The documentation recommends always choosing a new SID but this doesn't seem a good idea in this case. If the existing master still has keys from the failed master with the old SID pending replication, the new master with a new SID will propagate them back.
 
 
-[![Build Status](https://travis-ci.org/sapo/kyoto.svg?branch=master)](https://travis-ci.org/sapo/kyoto)
+[![Build Status](https://travis-ci.org/alticelabs/kyoto.svg?branch=master)](https://travis-ci.org/alticelabs/kyoto)
