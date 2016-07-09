@@ -338,7 +338,7 @@ static int32_t procecho(const char* host, int32_t port, double tout) {
           } else {
             eprintf("%s: server: accept error: %s\n", g_progname, serv.error());
             err = true;
-            delete[] sock;
+            delete sock;
           }
           serv.set_event_flags(kt::Pollable::EVINPUT);
           if (!poll.undo(&serv)) {
