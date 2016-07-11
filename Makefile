@@ -15,10 +15,10 @@ ifeq ($(OS),Linux)
 	NPROCS := $(shell grep -c ^processor /proc/cpuinfo)
 endif
 ifeq ($(OS),Darwin)
-	NPROCS := $(shell sysctl -a | grep "hw.ncpu " | cut -d" " -f3)
+	NPROCS := $(shell sysctl "hw.ncpu" | grep -o "[0-9]\+\$$")
 endif
 ifeq ($(OS),FreeBSD)
-	NPROCS := $(shell sysctl -a | grep "hw.ncpu " | cut -d" " -f3)
+	NPROCS := $(shell sysctl "hw.ncpu" | grep -o "[0-9]\+\$$")
 endif
 
 # For dependencies below...
