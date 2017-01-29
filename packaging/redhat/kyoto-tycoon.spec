@@ -89,7 +89,11 @@ fi
 
 
 %post
-if [ $1 -gt 1 ]; then  # ...do nothing on upgrade.
+%if %{use_systemd}
+/usr/bin/systemctl daemon-reload
+%endif
+
+if [ $1 -gt 1 ]; then  # ...do nothing else on upgrade.
 	exit 0
 fi
 
@@ -117,7 +121,11 @@ fi
 
 
 %postun
-if [ $1 -gt 0 ]; then  # ...do nothing on upgrade.
+%if %{use_systemd}
+/usr/bin/systemctl daemon-reload
+%endif
+
+if [ $1 -gt 0 ]; then  # ...do nothing else on upgrade.
 	exit 0
 fi
 
