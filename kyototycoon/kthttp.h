@@ -861,14 +861,13 @@ class HTTPServer {
    * @param expr an expression of the address and the port of the server.
    * @param timeout the timeout of each network operation in seconds.  If it is not more than 0,
    * no timeout is specified.
-   * @param name the name of the server.  If it is an empty string, the host name is specified.
+   * @param name the name of the server.  If it is an empty string, the local host is specified.
    */
   void set_network(const std::string& expr, double timeout = -1, const std::string& name = "") {
     _assert_(true);
     if (timeout > 0) serv_.set_network(expr, timeout);
     if (name.empty()) {
-      name_ = Socket::get_local_host_name();
-      if (name.empty()) name_ = "localhost";
+      name_ = "localhost";
       const char* rp = std::strrchr(expr.c_str(), ':');
       if (rp) {
         rp++;
