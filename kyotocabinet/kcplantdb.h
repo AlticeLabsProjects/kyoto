@@ -2353,7 +2353,7 @@ class PlantDB : public BasicDB {
    */
   struct InnerNode {
     RWLock lock;                         ///< lock
-    int64_t id;                          ///< page ID numger
+    int64_t id;                          ///< page ID number
     int64_t heir;                        ///< child before the first link
     LinkArray links;                     ///< sorted array of links
     int64_t size;                        ///< total size of links

@@ -741,7 +741,7 @@ class RemoteDB {
    * Open the connection.
    * @param host the name or the address of the server.  If it is an empty string, the local host
    * is specified.
-   * @param port the port numger of the server.
+   * @param port the port number of the server.
    * @param timeout the timeout of each operation in seconds.  If it is not more than 0, no
    * timeout is specified.
    * @return true on success, or false on failure.
@@ -827,7 +827,7 @@ class RemoteDB {
    * Set the replication configuration.
    * @param host the name or the address of the master server.  If it is an empty string,
    * replication is disabled.
-   * @param port the port numger of the server.
+   * @param port the port number of the server.
    * @param ts the maximum time stamp of already read logs.  If it is kyotocabinet::UINT64MAX,
    * the current setting is not modified.  If it is kyotocabinet::UINT64MAX - 1, the current
    * time is specified.
@@ -2316,7 +2316,7 @@ class ReplicationClient {
    * Open the connection.
    * @param host the name or the address of the server.  If it is an empty string, the local host
    * is specified.
-   * @param port the port numger of the server.
+   * @param port the port number of the server.
    * @param timeout the timeout of each operation in seconds.  If it is not more than 0, no
    * timeout is specified.
    * @param ts the maximum time stamp of already read logs.
