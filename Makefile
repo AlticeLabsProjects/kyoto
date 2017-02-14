@@ -84,7 +84,7 @@ deb:
 
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g')-$(shell date +%Y%m%d)~$(shell lsb_release -c | awk '{print $$2}' | tr '[A-Z]' '[a-z]'))
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
-	$(eval PACKAGE_NAME := kyoto-tycoon-$(PACKAGE_VERSION))
+	$(eval PACKAGE_NAME := kyoto-tycoon_$(PACKAGE_VERSION)_$(PACKAGE_ARCH))
 
 	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
 
