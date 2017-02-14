@@ -2328,7 +2328,7 @@ class ReplicationClient {
   bool open(const std::string& host = "", int32_t port = DEFPORT, double timeout = -1,
             uint64_t ts = 0, uint16_t sid = 0, uint32_t opts = 0) {
     _assert_(true);
-    const std::string& thost = host.empty() ? Socket::get_local_host_name() : host;
+    const std::string& thost = host.empty() ? "localhost" : host;
     const std::string& addr = Socket::get_host_address(thost);
     if (addr.empty() || port < 1) return false;
     std::string expr;
