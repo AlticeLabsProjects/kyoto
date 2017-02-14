@@ -21,6 +21,16 @@ ifeq ($(OS),FreeBSD)
 	NPROCS := $(shell sysctl "hw.ncpu" | grep -o "[0-9]\+\$$")
 endif
 
+# Too much parallelism actually hurts the build...
+ifeq ($(shell test $(NPROCS) -gt 4; echo $$?),0)
+	NPROCS := 4
+endif
+
+# Avoid resource exhaustion on the Raspberry Pi...
+ifeq ($(shell test $(NPROCS) -gt 2 && egrep -qsi "raspberry\s*pi" /boot/LICENCE.broadcom; echo $$?),0)
+	NPROCS := 2
+endif
+
 # For dependencies below...
 ifeq ($(OS),Darwin)
 	SO_EXTENSION = dylib
