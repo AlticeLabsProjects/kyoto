@@ -7,6 +7,8 @@
 *.un~
 *.swp
 *.bak
+*.ulog
+*.kc[htdfx]
 .vagrant*
 check.out
 config.log
