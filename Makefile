@@ -51,6 +51,9 @@ ifneq ("","$(wildcard kyototycoon/Makefile)")
 endif
 	rm -rf build
 
+check:
+	$(MAKE) -C kyototycoon check
+
 kyotocabinet/Makefile:
 	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)" --enable-lzo $(CONFIG_FLAGS)
 
@@ -153,7 +156,7 @@ pac:
 	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck -s
 
 
-.PHONY: all clean cabinet tycoon install deb rpm pac
+.PHONY: all clean check cabinet tycoon install deb rpm pac
 
 
 # EOF - Makefile
