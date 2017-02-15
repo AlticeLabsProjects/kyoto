@@ -4,41 +4,17 @@
 #
 # When running "vagrant up" only the "debian" VM is started. To start the "centos"
 # VM you have to pass its name as a command argument (eg. "vagrant up centos").
-# Since the source tree is mounted from the host, make sure to remove all build
-# artifacts (with "make clean") when switching from one environment to the other.
 #
-# Dependencies: VirtualBox and Vagrant (obviously) with the "vagrant-vbguest" plugin.
+# The source tree is rsync'ed from the host because (unfortunately) VirtualBox shared
+# folders do not support "mmap()" with "MAP_SHARED" and this prevents the test suite
+# from running. Use "vagrant rsync" or "vagrant rsync-auto" to keep it synchronized.
+#
 # More info: https://www.vagrantup.com/docs/multi-machine/
 #
-
-# Required for shared folders support with VirtualBox...
-unless Vagrant.has_plugin?("vagrant-vbguest")
-    raise 'vagrant-vbguest is not installed: type vagrant plugin install vagrant-vbguest'
-end
 
 
 # Location of the external files used by this script...
 vagrant_assets = File.dirname(__FILE__) + "/vagrant"
-
-
-# Handle future CentOS releases correctly...
-class FixGuestAdditionsRH < VagrantVbguest::Installers::RedHat
-    def dependencies
-        packages = super
-
-        # If there's no "kernel-devel" package matching the running kernel in the
-        # default repositories, then the base box we're using doesn't match the
-        # latest CentOS release anymore and we have to look for it in the archives...
-        if communicate.test('test -f /etc/centos-release && ! yum -q info kernel-devel-`uname -r` &>/dev/null')
-            env.ui.warn("[#{vm.name}] Looking for the CentOS 'kernel-devel' package in the release archives...")
-            packages.sub!('kernel-devel-`uname -r`', 'http://mirror.centos.org/centos' \
-                                                     '/`grep -Po \'\b\d+\.[\d.]+\b\' /etc/centos-release`' \
-                                                     '/{os,updates}/`arch`/Packages/kernel-devel-`uname -r`.rpm')
-        end
-
-        packages
-    end
-end
 
 
 Vagrant.configure(2) do |config|
@@ -51,9 +27,6 @@ Vagrant.configure(2) do |config|
         vm.memory = 512
         vm.cpus = 1
 
-        # Install guest additions automatically...
-        override.vbguest.auto_update = true
-
         # Prevent guest time from drifting uncontrollably on older hosts, even with
         # time synchronization running in the guest VM. If you have a fairly recent
         # machine this probably won't affect you and can be safely commented-out...
@@ -64,8 +37,9 @@ Vagrant.configure(2) do |config|
         # make the guest VM easily accessible through a "*.local" domain...
         override.vm.network "private_network", type: "dhcp"
 
-        # Make the current directory visible (and editable) inside the VM...
-        override.vm.synced_folder ".", "/home/vagrant/kyoto"
+        # See note about "mmap()" failures with VirtualBox shared folders above...
+        override.vm.synced_folder ".", "/home/vagrant/kyoto", type: "rsync",
+                                  rsync__exclude: ".*", rsync__args: ["-a"]  # ...keep build artifacts.
     end
 
     # Debian is the default/primary development environment...
@@ -92,7 +66,6 @@ Vagrant.configure(2) do |config|
 
         centos.vm.provider "virtualbox" do |vm, override|
             vm.name = "Kyoto Development (CentOS)"
-            override.vbguest.installer = FixGuestAdditionsRH  # ...see fix above.
         end
 
         # The CentOS box defaults to using an rsynced folder...
