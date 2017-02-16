@@ -62,10 +62,6 @@ On Red Hat Linux (or a derivative such as CentOS), build both source and binary 
 
     $ make rpm
 
-On Arch Linux, build a binary `.pkg.tar.xz` package (into the `$HOME/archbuild` directory) by running:
-
-    $ make pac
-
 Besides being cleaner and more maintainable than installing directly from source, these packages also register init scripts to run the server with minimal privileges and install configuration files pre-filled with some examples.
 
 Running
