@@ -107,6 +107,10 @@ deb:
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/default"
 	cp packaging/scripts/kyoto.conf "build/$(PACKAGE_NAME)/etc/default/kyoto"
+
+	mkdir -p "build/$(PACKAGE_NAME)/etc/logrotate.d"
+	cp packaging/scripts/logrotate.conf "build/$(PACKAGE_NAME)/etc/logrotate.d/kyoto"
+
 	mkdir -p "build/$(PACKAGE_NAME)/var/lib/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/DEBIAN"

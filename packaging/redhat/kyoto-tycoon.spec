@@ -73,6 +73,8 @@ fi
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/default
 %{__install} -m0644 packaging/scripts/kyoto.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/default/kyoto
 
+%{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
+%{__install} -m0644 packaging/scripts/logrotate.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d/kyoto
 
 %pre
 if [ $1 -gt 1 ]; then  # ...do nothing on upgrade.
@@ -147,6 +149,7 @@ rm -rf %{buildroot}
 %doc LICENSE README.md
 %dir %attr(-,kyoto,kyoto) /var/lib/kyoto
 %config(noreplace) %{_sysconfdir}/default/kyoto
+%config(noreplace) %{_sysconfdir}/logrotate.d/kyoto
 %{kt_installdir}/bin/*
 %{kt_installdir}/include/*
 %{kt_installdir}/lib*/*

@@ -8,7 +8,11 @@ Group=kyoto
 Type=simple
 WorkingDirectory=/var/lib/kyoto
 EnvironmentFile=-/etc/default/kyoto
-ExecStart=/usr/bin/ktserver $KTSERVER_OPTS
+PermissionsStartOnly=true
+ExecStartPre=/usr/bin/touch /var/run/kyoto.pid /var/log/kyoto.log
+ExecStartPre=/usr/bin/chown kyoto:kyoto /var/run/kyoto.pid /var/log/kyoto.log
+ExecStart=/usr/bin/ktserver -pid /var/run/kyoto.pid -log /var/log/kyoto.log $KTSERVER_OPTS
+ExecStopPost=/usr/bin/rm -f /var/run/kyoto.pid
 Restart=no
 PrivateTmp=true
 
