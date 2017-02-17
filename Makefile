@@ -51,7 +51,7 @@ ifneq ("","$(wildcard kyototycoon/Makefile)")
 endif
 	rm -rf build
 
-check:
+check: all
 	$(MAKE) -C kyototycoon check
 
 kyotocabinet/Makefile:
