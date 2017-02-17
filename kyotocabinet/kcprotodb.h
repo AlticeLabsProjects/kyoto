@@ -111,7 +111,7 @@ class ProtoDB : public BasicDB {
       }
       const std::string& key = it_->first;
       const std::string& value = it_->second;
-      size_t vsiz;
+      size_t vsiz = 0;
       const char* vbuf = visitor->visit_full(key.data(), key.size(),
                                              value.data(), value.size(), &vsiz);
       if (vbuf == Visitor::REMOVE) {
