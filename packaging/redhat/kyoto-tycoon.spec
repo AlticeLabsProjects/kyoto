@@ -61,6 +61,7 @@ if echo %{_libdir} | /bin/grep -q 64; then
 fi
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}/var/lib/kyoto
+%{__mkdir_p} ${RPM_BUILD_ROOT}/var/log/kyoto
 
 %if %{use_systemd}
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_unitdir}
@@ -148,6 +149,7 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE README.md
 %dir %attr(-,kyoto,kyoto) /var/lib/kyoto
+%dir %attr(-,kyoto,kyoto) /var/log/kyoto
 %config(noreplace) %{_sysconfdir}/default/kyoto
 %config(noreplace) %{_sysconfdir}/logrotate.d/kyoto
 %{kt_installdir}/bin/*

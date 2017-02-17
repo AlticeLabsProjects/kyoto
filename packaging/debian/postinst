@@ -12,6 +12,7 @@ if ! grep -q kyoto /etc/passwd; then
 fi
 
 chown kyoto:kyoto /var/lib/kyoto
+chown kyoto:kyoto /var/log/kyoto
 
 # Set startup runlevels only on first install...
 if [ -z "$2" ]; then

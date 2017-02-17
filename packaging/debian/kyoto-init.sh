@@ -15,7 +15,7 @@ PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 DAEMON=/usr/bin/ktserver
 PIDFILE=/var/run/kyoto.pid
-LOGFILE=/var/log/kyoto.log
+LOGFILE=/var/log/kyoto/kyoto.log
 
 test -x $DAEMON || exit 5
 
@@ -27,9 +27,6 @@ RUNASUSER=kyoto
 
 touch $PIDFILE
 chown ${RUNASUSER}:${RUNASUSER} $PIDFILE
-
-touch $LOGFILE
-chown ${RUNASUSER}:${RUNASUSER} $LOGFILE
 
 KTSERVER_OPTS="-dmn -pid $PIDFILE -log $LOGFILE $KTSERVER_OPTS"
 

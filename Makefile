@@ -112,6 +112,7 @@ deb:
 	cp packaging/scripts/logrotate.conf "build/$(PACKAGE_NAME)/etc/logrotate.d/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/var/lib/kyoto"
+	mkdir -p "build/$(PACKAGE_NAME)/var/log/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/DEBIAN"
 	cd packaging/debian && cp compat conffiles control postinst postrm prerm "../../build/$(PACKAGE_NAME)/DEBIAN"
