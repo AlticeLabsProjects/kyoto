@@ -55,7 +55,11 @@ echo "provision-centos.sh: Running project-specific actions..."
 sudo yum -q -y install \
     gcc gcc-c++ automake \
     zlib-devel lzo-devel lua-devel \
-    rpmdevtools
+    rpmdevtools \
+    selinux-policy-devel setroubleshoot-server setools-console
+
+# Some SELinux tools require this file to be present, ensure it is...
+sudo touch /etc/selinux/targeted/contexts/files/file_contexts.local
 
 
 echo "provision-centos.sh: Done!"
