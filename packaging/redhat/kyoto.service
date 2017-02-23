@@ -13,7 +13,7 @@ ExecStartPre=/usr/bin/touch /var/run/kyoto.pid
 ExecStartPre=/usr/bin/chown kyoto:kyoto /var/run/kyoto.pid
 ExecStart=/usr/bin/ktserver -pid /var/run/kyoto.pid -log /var/log/kyoto/kyoto.log $KTSERVER_OPTS
 ExecStopPost=/usr/bin/rm -f /var/run/kyoto.pid
-Restart=on-success
+Restart=no
 PrivateTmp=true
 
 [Install]
