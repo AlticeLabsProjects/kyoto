@@ -9,24 +9,24 @@
 # Short-Description: Start Kyoto Tycoon daemon
 ### END INIT INFO
 
+if [ -r /etc/default/kyoto ]; then
+	. /etc/default/kyoto
+fi
+
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 . /lib/lsb/init-functions
 
 DAEMON=/usr/bin/ktserver
-PIDFILE=/var/run/kyoto.pid
-LOGFILE=/var/log/kyoto/kyoto.log
-
 test -x $DAEMON || exit 5
-
-if [ -r /etc/default/kyoto ]; then
-	. /etc/default/kyoto
-fi
 
 RUNASUSER=kyoto
 
-touch $PIDFILE
-chown ${RUNASUSER}:${RUNASUSER} $PIDFILE
+mkdir -m 0755 -p /var/run/kyoto
+chown ${RUNASUSER}:${RUNASUSER} /var/run/kyoto
+
+PIDFILE=/var/run/kyoto/kyoto.pid
+LOGFILE=/var/log/kyoto/kyoto.log
 
 KTSERVER_OPTS="-dmn -pid $PIDFILE -log $LOGFILE $KTSERVER_OPTS"
 

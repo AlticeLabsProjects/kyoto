@@ -9,7 +9,7 @@ if ps -ef | grep -q ^[k]yoto; then
     pkill -KILL -U "kyoto" || true
 fi
 
-rm -f /var/run/kyoto.pid
+rm -rf /var/run/kyoto
 
 
 # vim: set expandtab ts=4 sw=4:
