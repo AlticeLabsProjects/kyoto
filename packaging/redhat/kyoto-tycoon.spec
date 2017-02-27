@@ -158,7 +158,9 @@ rm -rf %{buildroot}
 %{kt_installdir}/share/doc/*
 %{kt_installdir}/share/man/man1/*
 
-%if !%{use_systemd}
+%if %{use_systemd}
+%{_unitdir}/kyoto.service
+%else
 %{_sysconfdir}/init.d/kyoto
 %endif
 
