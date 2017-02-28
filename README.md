@@ -61,6 +61,7 @@ On Debian, build a binary `.deb` package (into the `./build` directory) by runni
 On Red Hat Linux (or a derivative such as CentOS), build both source and binary `.rpm` packages (into the `$HOME/rpmbuild` directory) by running:
 
     $ make rpm
+    $ make rpm-selinux  # (optional) builds an extra package containing a hardened SELinux policy
 
 Besides being cleaner and more maintainable than installing directly from source, these packages also register init scripts to run the server with minimal privileges and install configuration files pre-filled with some examples.
 

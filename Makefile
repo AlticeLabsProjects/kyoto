@@ -141,6 +141,21 @@ rpm:
 	rpmbuild -ba "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 
+rpm-selinux:
+	test -d "$(HOME)/rpmbuild" || test -x /usr/bin/rpmdev-setuptree && rpmdev-setuptree
+	test -d "$(HOME)/rpmbuild" && test -x /usr/bin/rpmbuild
+
+	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
+	$(eval PACKAGE_DATE := $(shell date +%Y%m%d))
+
+	rm -f "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+	cp packaging/redhat/kyoto-tycoon-selinux.spec "$(HOME)/rpmbuild/SPECS/"
+	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+
+	cp -p selinux/kyoto.{te,fc,if} "$(HOME)/rpmbuild/SOURCES/"
+	rpmbuild -ba "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+
 pac:
 	rm -rf "$(HOME)/archbuild"
 	mkdir "$(HOME)/archbuild"
@@ -161,7 +176,7 @@ pac:
 	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck -s
 
 
-.PHONY: all clean check cabinet tycoon install deb rpm pac
+.PHONY: all clean check cabinet tycoon install deb rpm rpm-selinux pac
 
 
 # EOF - Makefile
