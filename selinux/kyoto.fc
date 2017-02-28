@@ -1,0 +1,6 @@
+/usr/bin/ktserver			--	gen_context(system_u:object_r:kyoto_exec_t,s0)
+/usr/libexec/ktplug.*\.so?		--	gen_context(system_u:object_r:kyoto_plugin_t,s0)
+/usr/lib/systemd/system/kyoto\.service	--	gen_context(system_u:object_r:kyoto_unit_file_t,s0)
+/var/run/kyoto(/.*)?				gen_context(system_u:object_r:kyoto_var_run_t,s0)
+/var/lib/kyoto(/.*)?				gen_context(system_u:object_r:kyoto_var_lib_t,s0)
+/var/log/kyoto(/.*)?				gen_context(system_u:object_r:kyoto_log_t,s0)
