@@ -43,6 +43,35 @@ Some of its features include:
   - support for the memcached protocol
 
 
+%package devel
+
+Summary: Kyoto Tycoon (and Kyoto Cabinet library) development files
+Requires: kyoto-tycoon = %{kt_version}
+
+%description devel
+
+Kyoto Tycoon is a lightweight server on top of the Kyoto Cabinet
+key-value database, built for high-performance and concurrency.
+
+This package contains header files and static libraries for the
+Kyoto Tycoon server and the bundled Kyoto Cabinet library.
+
+
+%package doc
+
+Summary: Kyoto Tycoon (and Kyoto Cabinet library) documentation
+BuildArch: noarch
+Requires: kyoto-tycoon = %{kt_version}
+
+%description doc
+
+Kyoto Tycoon is a lightweight server on top of the Kyoto Cabinet
+key-value database, built for high-performance and concurrency.
+
+This package contains additional documentation for the Kyoto Tycoon
+server and the API reference for the bundled Kyoto Cabinet library.
+
+
 %prep
 %setup -c
 
@@ -153,9 +182,7 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/default/kyoto
 %config(noreplace) %{_sysconfdir}/logrotate.d/kyoto
 %{kt_installdir}/bin/*
-%{kt_installdir}/include/*
-%{kt_installdir}/lib*/*
-%{kt_installdir}/share/doc/*
+%{kt_installdir}/lib*/*.so*
 %{kt_installdir}/share/man/man1/*
 
 %if %{use_systemd}
@@ -163,6 +190,19 @@ rm -rf %{buildroot}
 %else
 %{_sysconfdir}/init.d/kyoto
 %endif
+
+
+%files devel
+%defattr(-,root,root,-)
+%{kt_installdir}/include/*
+%{kt_installdir}/lib*/*.a
+%{kt_installdir}/lib*/pkgconfig/*
+
+
+%files doc
+%defattr(-,root,root,-)
+%{kt_installdir}/share/doc/kyotocabinet/*
+%{kt_installdir}/share/doc/kyototycoon/*
 
 
 %changelog
