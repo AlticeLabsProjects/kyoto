@@ -67,6 +67,10 @@ allow kyoto_t kyoto_t:tcp_socket create_stream_socket_perms;
 corenet_port(kyoto_port_t)
 allow kyoto_t kyoto_port_t:tcp_socket name_bind;
 
+# This should be allowed only when connecting to a master is allowed,
+# but the policy compiler barfs when this is inside an "if" block...
+sysnet_dns_name_resolve(kyoto_t)
+
 if (kyoto_connect_to_replication_master) {
     allow kyoto_t kyoto_port_t:tcp_socket name_connect;
 }
