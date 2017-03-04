@@ -31,7 +31,7 @@ Check our _stable_ [release history](https://github.com/alticelabs/kyoto/release
 Supported Platforms
 -------------------
 
-Our primary target platform for these packages is Linux (64-bit). Mostly Debian, but we've also done some testing on CentOS and some non-Linux platforms such as FreeBSD and MacOS X.
+Our primary target platform for these packages is Linux (64-bit). Mostly Debian and CentOS, but we've also done some testing on non-Linux platforms such as FreeBSD and MacOS X.
 
 The upstream sources claim to support additional platforms, but we haven't got around to test them for ourselves (yet). If you do, let us know.
 
