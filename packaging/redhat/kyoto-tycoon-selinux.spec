@@ -5,11 +5,11 @@
 %define kt_installdir /usr
 
 %define relabel_files() \
-restorecon -R %{kt_installdir}/bin/ktserver; \
-restorecon -R %{kt_installdir}/libexec/ktplug*.so; \
-restorecon -R %{_unitdir}/kyoto.service; \
-restorecon -R /var/lib/kyoto; \
-restorecon -R /var/log/kyoto; \
+/usr/sbin/restorecon -R %{kt_installdir}/bin/ktserver; \
+/usr/sbin/restorecon -R %{kt_installdir}/libexec/ktplug*.so; \
+/usr/sbin/restorecon -R %{_unitdir}/kyoto.service; \
+/usr/sbin/restorecon -R /var/lib/kyoto; \
+/usr/sbin/restorecon -R /var/log/kyoto; \
 
 Name: kyoto-tycoon-selinux
 Version: %{kt_version}
@@ -46,10 +46,10 @@ install -m 644 kyoto.pp %{buildroot}%{_datadir}/selinux/packages
 
 
 %post
-semodule -n -i %{_datadir}/selinux/packages/kyoto.pp
+/usr/sbin/semodule -n -i %{_datadir}/selinux/packages/kyoto.pp
 
 if [ $1 == 1 ]; then  # ...do not run on upgrade.
-	semanage port -a -t kyoto_port_t -p tcp 1978
+	/usr/sbin/semanage port -a -t kyoto_port_t -p tcp 1978
 fi
 
 if /usr/sbin/selinuxenabled; then
@@ -63,8 +63,8 @@ fi
 
 %postun
 if [ $1 == 0 ]; then  # ...do not run on upgrade.
-	semanage port -d -t kyoto_port_t -p tcp 1978
-	semodule -n -r kyoto >/dev/null
+	/usr/sbin/semanage port -d -t kyoto_port_t -p tcp 1978
+	/usr/sbin/semodule -n -r kyoto >/dev/null
 
 	if /usr/sbin/selinuxenabled; then
 		/usr/sbin/load_policy
