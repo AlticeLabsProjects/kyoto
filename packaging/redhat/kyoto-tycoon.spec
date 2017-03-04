@@ -123,6 +123,9 @@ fi
 %post
 %if %{use_systemd}
 /usr/bin/systemctl daemon-reload
+/usr/bin/systemctl try-restart kyoto.service
+%else
+/sbin/service kyoto try-restart >/dev/null 2>&1
 %endif
 
 if [ $1 -gt 1 ]; then  # ...do nothing else on upgrade.
