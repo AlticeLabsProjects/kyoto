@@ -44,6 +44,7 @@ allow kyoto_t kyoto_log_t:file { create_file_perms append_file_perms };
 files_search_pids(kyoto_t)
 files_pid_file(kyoto_var_run_t)
 files_pid_filetrans(kyoto_t, kyoto_var_run_t, file)
+allow kyoto_t kyoto_var_run_t:dir add_entry_dir_perms;
 allow kyoto_t kyoto_var_run_t:file manage_file_perms;
 
 # Allow full control over data files...

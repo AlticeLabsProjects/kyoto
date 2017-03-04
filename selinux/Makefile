@@ -19,6 +19,9 @@ install: all
 	sudo restorecon -F -R -v /var/lib/kyoto
 	sudo restorecon -F -R -v /var/log/kyoto
 
+	# Restart systemd to ensure it creates things with the correct labels...
+	test -x /usr/bin/systemctl && sudo /usr/bin/systemctl daemon-reexec
+
 clean:
 	rm -f *.pp
 	rm -rf tmp

@@ -55,6 +55,9 @@ fi
 if /usr/sbin/selinuxenabled; then
 	/usr/sbin/load_policy
 	%relabel_files
+
+	/usr/bin/systemctl daemon-reexec
+	/usr/bin/systemctl try-restart kyoto
 fi
 
 
@@ -66,6 +69,9 @@ if [ $1 == 0 ]; then  # ...do not run on upgrade.
 	if /usr/sbin/selinuxenabled; then
 		/usr/sbin/load_policy
 		%relabel_files
+
+		/usr/bin/systemctl daemon-reexec
+		/usr/bin/systemctl try-restart kyoto
 	fi
 fi
 
