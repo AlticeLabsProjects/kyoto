@@ -23,7 +23,7 @@ Source1: kyoto.fc
 Source2: kyoto.if
 
 BuildRequires: selinux-policy-devel >= %{selinux_policy_ver}
-Requires: kyoto-tycoon = %{kt_version}, systemd, selinux-policy-base >= %{selinux_policy_ver}, policycoreutils, libselinux-utils
+Requires: kyoto-tycoon = %{kt_version}, systemd, selinux-policy-base >= %{selinux_policy_ver}, selinux-policy-targeted >= %{selinux_policy_ver}, policycoreutils, libselinux-utils
 BuildArch: noarch
 
 %description
@@ -46,7 +46,7 @@ install -m 644 kyoto.pp %{buildroot}%{_datadir}/selinux/packages
 
 
 %post
-/usr/sbin/semodule -n -i %{_datadir}/selinux/packages/kyoto.pp
+/usr/sbin/semodule -n -s targeted -i %{_datadir}/selinux/packages/kyoto.pp
 
 if [ $1 == 1 ]; then  # ...do not run on upgrade.
 	/usr/sbin/semanage port -a -t kyoto_port_t -p tcp 1978
