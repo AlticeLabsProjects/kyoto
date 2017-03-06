@@ -1,13 +1,17 @@
 #!/bin/bash -e
 
 
-pkill -TERM -U "kyoto" || true
-sleep 2
+if ps --no-headers -U kyoto >/dev/null; then
+    /etc/init.d/kyoto stop
+    sleep 2
+fi
 
 if ps -ef | grep -q ^[k]yoto; then
     echo "Killing Kyoto Tycoon processes by force..."
     pkill -KILL -U "kyoto" || true
 fi
+
+rm -rf /var/run/kyoto
 
 
 # vim: set expandtab ts=4 sw=4:

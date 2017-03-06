@@ -391,14 +391,14 @@ class HTTPClient {
    * Open the connection.
    * @param host the name or the address of the server.  If it is an empty string, the local host
    * is specified.
-   * @param port the port numger of the server.
+   * @param port the port number of the server.
    * @param timeout the timeout of each operation in seconds.  If it is not more than 0, no
    * timeout is specified.
    * @return true on success, or false on failure.
    */
   bool open(const std::string& host = "", int32_t port = 80, double timeout = -1) {
     _assert_(true);
-    const std::string& thost = host.empty() ? Socket::get_local_host_name() : host;
+    const std::string& thost = host.empty() ? "localhost" : host;
     const std::string& addr = Socket::get_host_address(thost);
     if (addr.empty() || port < 1) return false;
     std::string expr;
@@ -861,14 +861,13 @@ class HTTPServer {
    * @param expr an expression of the address and the port of the server.
    * @param timeout the timeout of each network operation in seconds.  If it is not more than 0,
    * no timeout is specified.
-   * @param name the name of the server.  If it is an empty string, the host name is specified.
+   * @param name the name of the server.  If it is an empty string, the local host is specified.
    */
   void set_network(const std::string& expr, double timeout = -1, const std::string& name = "") {
     _assert_(true);
     if (timeout > 0) serv_.set_network(expr, timeout);
     if (name.empty()) {
-      name_ = Socket::get_local_host_name();
-      if (name.empty()) name_ = "localhost";
+      name_ = "localhost";
       const char* rp = std::strrchr(expr.c_str(), ':');
       if (rp) {
         rp++;

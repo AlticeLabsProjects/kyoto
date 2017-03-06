@@ -428,14 +428,7 @@ static int32_t procrpc(const char* proc, int64_t rnum,
                        const char* host, int32_t port, double tout) {
   oprintf("<RPC Test>\n  seed=%u  proc=%s  rnum=%lld  thnum=%d  host=%s  port=%d  tout=%.3f\n\n",
           g_randseed, proc, (long long)rnum, thnum, host ? host : "-", port, tout);
-  std::string lhost = kt::Socket::get_local_host_name();
-  if (!host) {
-    if (lhost.empty()) {
-      errprint(__LINE__, "getting the local host name failed");
-      return 1;
-    }
-    host = lhost.c_str();
-  }
+  if (!host) host = "localhost";
   bool err = false;
   class Worker : public kc::Thread {
    public:

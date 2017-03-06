@@ -68,7 +68,7 @@ class RPCClient {
    * Open the connection.
    * @param host the name or the address of the server.  If it is an empty string, the local host
    * is specified.
-   * @param port the port numger of the server.
+   * @param port the port number of the server.
    * @param timeout the timeout of each operation in seconds.  If it is not more than 0, no
    * timeout is specified.
    * @return true on success, or false on failure.

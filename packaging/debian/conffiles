@@ -1,1 +1,2 @@
 etc/default/kyoto
+etc/logrotate.d/kyoto

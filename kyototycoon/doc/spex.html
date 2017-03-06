@@ -1064,7 +1064,7 @@ key     09012345678
 value   John Doe
 </pre>
 
-<p>While keep-alive connection, clients can use cursor objects.  Each cursor has the ID number from 0 to 2^63.  Because each connection has a separate name space with each other, the same ID number can be used among different connections.  The cursor ID is specified by the "CUR" parameter.  If an unknown ID is specified, a new cursor with the ID numger is created.  The following example creates a cursor whose ID is 8 and sets its position to the record whose key is "mikio".</p>
+<p>While keep-alive connection, clients can use cursor objects.  Each cursor has the ID number from 0 to 2^63.  Because each connection has a separate name space with each other, the same ID number can be used among different connections.  The cursor ID is specified by the "CUR" parameter.  If an unknown ID is specified, a new cursor with the ID number is created.  The following example creates a cursor whose ID is 8 and sets its position to the record whose key is "mikio".</p>
 
 <pre>POST /rpc/cur_jump HTTP/1.1
 Host: localhost:1978
@@ -1141,7 +1141,7 @@ value   sailing
 <dt><code>/rpc/tune_replication</code></dt>
 <dd>Set the replication configuration.</dd>
 <dd>input: <code>host</code>: (optional): the name or the address of the master server.  If it is omitted, replication is disabled.</dd>
-<dd>input: <code>port</code>: (optional): the port numger of the server.  If it is omitted, the default port is specified.</dd>
+<dd>input: <code>port</code>: (optional): the port number of the server.  If it is omitted, the default port is specified.</dd>
 <dd>input: <code>ts</code>: (optional): the maximum time stamp of already read logs.  If it is omitted, the current setting is not modified.  If it is "now", the current time is specified.</dd>
 <dd>input: <code>iv</code>: (optional): the interval of each replication operation in milliseconds.  If it is omitted, the current setting is not modified.</dd>
 <dd>status code: 200.</dd>

@@ -43,6 +43,35 @@ Some of its features include:
   - support for the memcached protocol
 
 
+%package devel
+
+Summary: Kyoto Tycoon (and Kyoto Cabinet library) development files
+Requires: kyoto-tycoon = %{kt_version}
+
+%description devel
+
+Kyoto Tycoon is a lightweight server on top of the Kyoto Cabinet
+key-value database, built for high-performance and concurrency.
+
+This package contains header files and static libraries for the
+Kyoto Tycoon server and the bundled Kyoto Cabinet library.
+
+
+%package doc
+
+Summary: Kyoto Tycoon (and Kyoto Cabinet library) documentation
+BuildArch: noarch
+Requires: kyoto-tycoon = %{kt_version}
+
+%description doc
+
+Kyoto Tycoon is a lightweight server on top of the Kyoto Cabinet
+key-value database, built for high-performance and concurrency.
+
+This package contains additional documentation for the Kyoto Tycoon
+server and the API reference for the bundled Kyoto Cabinet library.
+
+
 %prep
 %setup -c
 
@@ -61,6 +90,7 @@ if echo %{_libdir} | /bin/grep -q 64; then
 fi
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}/var/lib/kyoto
+%{__mkdir_p} ${RPM_BUILD_ROOT}/var/log/kyoto
 
 %if %{use_systemd}
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_unitdir}
@@ -73,6 +103,8 @@ fi
 %{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/default
 %{__install} -m0644 packaging/scripts/kyoto.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/default/kyoto
 
+%{__mkdir_p} ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d
+%{__install} -m0644 packaging/scripts/logrotate.conf ${RPM_BUILD_ROOT}%{_sysconfdir}/logrotate.d/kyoto
 
 %pre
 if [ $1 -gt 1 ]; then  # ...do nothing on upgrade.
@@ -89,7 +121,14 @@ fi
 
 
 %post
-if [ $1 -gt 1 ]; then  # ...do nothing on upgrade.
+%if %{use_systemd}
+/usr/bin/systemctl daemon-reload
+/usr/bin/systemctl try-restart kyoto.service
+%else
+/sbin/service kyoto try-restart >/dev/null 2>&1
+%endif
+
+if [ $1 -gt 1 ]; then  # ...do nothing else on upgrade.
 	exit 0
 fi
 
@@ -117,7 +156,11 @@ fi
 
 
 %postun
-if [ $1 -gt 0 ]; then  # ...do nothing on upgrade.
+%if %{use_systemd}
+/usr/bin/systemctl daemon-reload
+%endif
+
+if [ $1 -gt 0 ]; then  # ...do nothing else on upgrade.
 	exit 0
 fi
 
@@ -138,16 +181,31 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %doc LICENSE README.md
 %dir %attr(-,kyoto,kyoto) /var/lib/kyoto
+%dir %attr(-,kyoto,kyoto) /var/log/kyoto
 %config(noreplace) %{_sysconfdir}/default/kyoto
+%config(noreplace) %{_sysconfdir}/logrotate.d/kyoto
 %{kt_installdir}/bin/*
-%{kt_installdir}/include/*
-%{kt_installdir}/lib*/*
-%{kt_installdir}/share/doc/*
+%{kt_installdir}/lib*/*.so*
 %{kt_installdir}/share/man/man1/*
 
-%if !%{use_systemd}
+%if %{use_systemd}
+%{_unitdir}/kyoto.service
+%else
 %{_sysconfdir}/init.d/kyoto
 %endif
+
+
+%files devel
+%defattr(-,root,root,-)
+%{kt_installdir}/include/*
+%{kt_installdir}/lib*/*.a
+%{kt_installdir}/lib*/pkgconfig/*
+
+
+%files doc
+%defattr(-,root,root,-)
+%{kt_installdir}/share/doc/kyotocabinet/*
+%{kt_installdir}/share/doc/kyototycoon/*
 
 
 %changelog

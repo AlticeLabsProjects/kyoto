@@ -31,7 +31,7 @@ Check our _stable_ [release history](https://github.com/alticelabs/kyoto/release
 Supported Platforms
 -------------------
 
-Our primary target platform for these packages is Linux (64-bit). Mostly Debian, but we've also done some testing on CentOS and some non-Linux platforms such as FreeBSD and MacOS X.
+Our primary target platform for these packages is Linux (64-bit). Mostly Debian and CentOS, but we've also done some testing on non-Linux platforms such as FreeBSD and MacOS X.
 
 The upstream sources claim to support additional platforms, but we haven't got around to test them for ourselves (yet). If you do, let us know.
 
@@ -61,10 +61,7 @@ On Debian, build a binary `.deb` package (into the `./build` directory) by runni
 On Red Hat Linux (or a derivative such as CentOS), build both source and binary `.rpm` packages (into the `$HOME/rpmbuild` directory) by running:
 
     $ make rpm
-
-On Arch Linux, build a binary `.pkg.tar.xz` package (into the `$HOME/archbuild` directory) by running:
-
-    $ make pac
+    $ make rpm-selinux  # (optional) builds an extra package containing a hardened SELinux policy
 
 Besides being cleaner and more maintainable than installing directly from source, these packages also register init scripts to run the server with minimal privileges and install configuration files pre-filled with some examples.
 

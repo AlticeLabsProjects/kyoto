@@ -8,8 +8,11 @@ Group=kyoto
 Type=simple
 WorkingDirectory=/var/lib/kyoto
 EnvironmentFile=-/etc/default/kyoto
-ExecStart=/usr/bin/ktserver $KTSERVER_OPTS
+RuntimeDirectory=kyoto
+ExecStart=/usr/bin/ktserver -pid /var/run/kyoto/kyoto.pid -log /var/log/kyoto/kyoto.log $KTSERVER_OPTS
 Restart=no
+PrivateTmp=true
+PrivateDevices=true
 
 [Install]
 WantedBy=multi-user.target

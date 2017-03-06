@@ -133,7 +133,7 @@ class CacheDB : public BasicDB {
           rvsiz = zsiz;
         }
       }
-      size_t vsiz;
+      size_t vsiz = 0;
       const char* vbuf = visitor->visit_full(dbuf, rksiz, rvbuf, rvsiz, &vsiz);
       delete[] zbuf;
       if (vbuf == Visitor::REMOVE) {

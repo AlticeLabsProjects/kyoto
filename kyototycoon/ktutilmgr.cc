@@ -434,14 +434,7 @@ static int32_t prochttp(const char* url, kt::HTTPClient::Method meth, const char
 // perform rpc command
 static int32_t procrpc(const char* proc, std::map<std::string, std::string>* params,
                        const char* host, int32_t port, double tout, int32_t ienc, int32_t oenc) {
-  std::string lhost = kt::Socket::get_local_host_name();
-  if (!host) {
-    if (lhost.empty()) {
-      eprintf("%s: getting the local host name failed", g_progname);
-      return 1;
-    }
-    host = lhost.c_str();
-  }
+  if (!host) host = "localhost";
   bool err = false;
   kt::RPCClient rpc;
   if (!rpc.open(host, port, tout)) {

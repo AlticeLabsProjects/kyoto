@@ -21,6 +21,16 @@ ifeq ($(OS),FreeBSD)
 	NPROCS := $(shell sysctl "hw.ncpu" | grep -o "[0-9]\+\$$")
 endif
 
+# Too much parallelism actually hurts the build...
+ifeq ($(shell test $(NPROCS) -gt 4; echo $$?),0)
+	NPROCS := 4
+endif
+
+# Avoid resource exhaustion on the Raspberry Pi...
+ifeq ($(shell test $(NPROCS) -gt 2 && egrep -qsi "raspberry\s*pi" /boot/LICENCE.broadcom; echo $$?),0)
+	NPROCS := 2
+endif
+
 # For dependencies below...
 ifeq ($(OS),Darwin)
 	SO_EXTENSION = dylib
@@ -40,6 +50,9 @@ ifneq ("","$(wildcard kyototycoon/Makefile)")
 	$(MAKE) -C kyototycoon distclean
 endif
 	rm -rf build
+
+check: all
+	$(MAKE) -C kyototycoon check
 
 kyotocabinet/Makefile:
 	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)" --enable-lzo $(CONFIG_FLAGS)
@@ -84,7 +97,7 @@ deb:
 
 	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g')-$(shell date +%Y%m%d)~$(shell lsb_release -c | awk '{print $$2}' | tr '[A-Z]' '[a-z]'))
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
-	$(eval PACKAGE_NAME := kyoto-tycoon-$(PACKAGE_VERSION))
+	$(eval PACKAGE_NAME := kyoto-tycoon_$(PACKAGE_VERSION)_$(PACKAGE_ARCH))
 
 	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
 
@@ -94,7 +107,12 @@ deb:
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/default"
 	cp packaging/scripts/kyoto.conf "build/$(PACKAGE_NAME)/etc/default/kyoto"
+
+	mkdir -p "build/$(PACKAGE_NAME)/etc/logrotate.d"
+	cp packaging/scripts/logrotate.conf "build/$(PACKAGE_NAME)/etc/logrotate.d/kyoto"
+
 	mkdir -p "build/$(PACKAGE_NAME)/var/lib/kyoto"
+	mkdir -p "build/$(PACKAGE_NAME)/var/log/kyoto"
 
 	mkdir -p "build/$(PACKAGE_NAME)/DEBIAN"
 	cd packaging/debian && cp compat conffiles control postinst postrm prerm "../../build/$(PACKAGE_NAME)/DEBIAN"
@@ -123,6 +141,21 @@ rpm:
 	rpmbuild -ba "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon.spec"
 
+rpm-selinux:
+	test -d "$(HOME)/rpmbuild" || test -x /usr/bin/rpmdev-setuptree && rpmdev-setuptree
+	test -d "$(HOME)/rpmbuild" && test -x /usr/bin/rpmbuild
+
+	$(eval PACKAGE_VERSION := $(shell grep _KT_VERSION kyototycoon/myconf.h | awk '{print $$3}' | sed 's/"//g'))
+	$(eval PACKAGE_DATE := $(shell date +%Y%m%d))
+
+	rm -f "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+	cp packaging/redhat/kyoto-tycoon-selinux.spec "$(HOME)/rpmbuild/SPECS/"
+	sed -i 's/__KT_VERSION_PLACEHOLDER__/$(PACKAGE_VERSION)/' "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+
+	cp -p selinux/kyoto.{te,fc,if} "$(HOME)/rpmbuild/SOURCES/"
+	rpmbuild -ba "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+	rpmbuild --clean "$(HOME)/rpmbuild/SPECS/kyoto-tycoon-selinux.spec"
+
 pac:
 	rm -rf "$(HOME)/archbuild"
 	mkdir "$(HOME)/archbuild"
@@ -143,7 +176,7 @@ pac:
 	cd $(HOME)/archbuild && makepkg --nocheck --skipinteg --skipchecksums --skippgpcheck -s
 
 
-.PHONY: all clean cabinet tycoon install deb rpm pac
+.PHONY: all clean check cabinet tycoon install deb rpm rpm-selinux pac
 
 
 # EOF - Makefile
