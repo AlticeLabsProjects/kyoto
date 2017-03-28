@@ -8,6 +8,7 @@ branches:
     - master
 
 sudo: false
+dist: trusty
 
 addons:
   apt:
