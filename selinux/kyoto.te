@@ -5,86 +5,94 @@
 policy_module(kyoto, 1.0.1)
 
 gen_require(`
-    type proc_t;
     type memcache_port_t;
-    type logrotate_t;
+    type proc_t;
 ')
+
+# Connecting to a replication master is allowed by
+# default because this is a very common use case...
+gen_tunable(kyoto_connect_to_replication_master, true)
 
 type kyoto_t;
 type kyoto_exec_t;
-type kyoto_unit_file_t;
-type kyoto_log_t;
-type kyoto_var_run_t;
-type kyoto_var_lib_t;
-type kyoto_plugin_t;
-type kyoto_port_t;
-
-# Allow outbound connections to a replication master...
-bool kyoto_connect_to_replication_master true;
+init_daemon_domain(kyoto_t, kyoto_exec_t)
 
 # Produce audit warnings but do not enforce the policy by default.
 # Equivalent to using "semanage permissive -a kyoto_t" at runtime.
 # permissive kyoto_t;
 
-# Transition into the "kyoto_t" domain when started as a service...
-init_daemon_domain(kyoto_t, kyoto_exec_t)
-systemd_unit_file(kyoto_unit_file_t)
-domain_use_interactive_fds(kyoto_t)
-
-# Allow logging, but don't allow modifying existing logs...
-logging_search_logs(kyoto_t)
+type kyoto_log_t;
 logging_log_file(kyoto_log_t)
+
+type kyoto_plugin_t;
+files_type(kyoto_plugin_t)
+
+type kyoto_port_t;
+corenet_port(kyoto_port_t)
+
+type kyoto_unit_file_t;
+systemd_unit_file(kyoto_unit_file_t)
+
+type kyoto_var_lib_t;
+files_type(kyoto_var_lib_t)
+
+type kyoto_var_run_t;
+files_pid_file(kyoto_var_run_t)
+
+# Background database snapshots require this
+# to be able to yield execution explicitly...
+allow kyoto_t self:process setsched;
+
+# Allow serving clients over TCP (no ports yet)...
+allow kyoto_t self:tcp_socket create_stream_socket_perms;
+
+# Allow creating and appending to log files...
+logging_search_logs(kyoto_t)
 logging_log_filetrans(kyoto_t, kyoto_log_t, file)
 allow kyoto_t kyoto_log_t:dir add_entry_dir_perms;
 allow kyoto_t kyoto_log_t:file { create_file_perms append_file_perms };
 
-# Allow full control over the PID file...
+# Allow loading server plugins (eg. memcached protocol)...
+allow kyoto_t kyoto_plugin_t:file exec_file_perms;
+
+# Allow serving clients over the allowed TCP server port set.
+# For policy modules, the port must be added to the set with
+# the "semanage port -a -t kyoto_port_t -p tcp 1978" command.
+allow kyoto_t kyoto_port_t:tcp_socket name_bind;
+
+# Ignore attempts to open "/proc/meminfo" when serving the "report" command,
+# instead of allowing the process to open/read arbitrary files in "/proc"...
+dontaudit kyoto_t proc_t:file { open read };
+
+# Allow full control over data files (eg. databases, snapshots)...
+manage_dirs_pattern(kyoto_t, kyoto_var_lib_t, kyoto_var_lib_t)
+manage_files_pattern(kyoto_t, kyoto_var_lib_t, kyoto_var_lib_t)
+manage_lnk_files_pattern(kyoto_t, kyoto_var_lib_t, kyoto_var_lib_t)
+files_var_lib_filetrans(kyoto_t, kyoto_var_lib_t, { dir file lnk_file })
+
+# Allow creating and deleting the PID file...
 files_search_pids(kyoto_t)
-files_pid_file(kyoto_var_run_t)
 files_pid_filetrans(kyoto_t, kyoto_var_run_t, file)
 allow kyoto_t kyoto_var_run_t:dir { add_entry_dir_perms del_entry_dir_perms };
 allow kyoto_t kyoto_var_run_t:file manage_file_perms;
 
-# Allow full control over data files...
-files_type(kyoto_var_lib_t)
-files_var_lib_filetrans(kyoto_t, kyoto_var_lib_t, { dir file lnk_file })
-manage_dirs_pattern(kyoto_t, kyoto_var_lib_t, kyoto_var_lib_t)
-manage_files_pattern(kyoto_t, kyoto_var_lib_t, kyoto_var_lib_t)
-manage_lnk_files_pattern(kyoto_t, kyoto_var_lib_t, kyoto_var_lib_t)
-
-# Allow loading server plugins (like memcached protocol)...
-files_type(kyoto_plugin_t)
-allow kyoto_t kyoto_plugin_t:file exec_file_perms;
-
-# Allow serving clients over TCP (no ports yet)...
-corenet_tcp_bind_generic_node(kyoto_t)
-allow kyoto_t kyoto_t:tcp_socket create_stream_socket_perms;
-
-# Allow serving clients over the default server port.
-# For policy modules, the port must be added to the set with
-# the "semanage port -a -t kyoto_port_t -p tcp 1978" command.
-corenet_port(kyoto_port_t)
-allow kyoto_t kyoto_port_t:tcp_socket name_bind;
-
-# This should be allowed only when connecting to a master is allowed,
-# but the policy compiler barfs when this is inside an "if" block...
-sysnet_dns_name_resolve(kyoto_t)
-
-if (kyoto_connect_to_replication_master) {
-    allow kyoto_t kyoto_port_t:tcp_socket name_connect;
-}
-
-# Allow serving clients using the memcached protocol plugin...
+# Allow serving clients using the memcached protocol plugin over
+# the same TCP port set as memcached, for maximum compatibility...
 allow kyoto_t memcache_port_t:tcp_socket name_bind;
 
-# For reloading after log rotation (SIGUSR1)...
-allow logrotate_t kyoto_t:process signal;
+corenet_tcp_bind_generic_node(kyoto_t)  # ...IP address.
+domain_use_interactive_fds(kyoto_t)  # ...log to stdout.
+sysnet_dns_name_resolve(kyoto_t)  # ...bind by hostname.
 
-# Mute attempts to open "/proc/meminfo" when serving the "report" command,
-# instead of allowing the process to open/read arbitrary files in "/proc"...
-dontaudit kyoto_t proc_t:file { open read };
+# Allow outbound connections to a replication master...
+tunable_policy(`kyoto_connect_to_replication_master',`
+    allow kyoto_t kyoto_port_t:tcp_socket name_connect;
+')
 
-# Background database snapshots require this...
-allow kyoto_t kyoto_t:process setsched;
+# Allow logrotate to reload ktserver after rotating its logs...
+optional_policy(`
+    gen_require(``type logrotate_t;'')
+    allow logrotate_t kyoto_t:process signal;
+')
 
 # EOF - kyoto.te
