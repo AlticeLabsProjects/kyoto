@@ -26,12 +26,10 @@ bool kyoto_connect_to_replication_master true;
 # Equivalent to using "semanage permissive -a kyoto_t" at runtime.
 # permissive kyoto_t;
 
-# Transition into the "kyoto_t" domain when started by systemd...
+# Transition into the "kyoto_t" domain when started as a service...
 init_daemon_domain(kyoto_t, kyoto_exec_t)
 systemd_unit_file(kyoto_unit_file_t)
-
-# Standard file descriptors aren't needed when logging to a file...
-# domain_use_interactive_fds(kyoto_t)
+domain_use_interactive_fds(kyoto_t)
 
 # Allow logging, but don't allow modifying existing logs...
 logging_search_logs(kyoto_t)
