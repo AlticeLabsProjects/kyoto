@@ -1,6 +1,10 @@
+#
+# kyoto-tycoon.spec - RPM packages for RHEL/CentOS 6 and 7.
+#
+
 %define kt_version __KT_VERSION_PLACEHOLDER__
 %define kt_timestamp %(date +"%Y%m%d")
-%define kt_installdir /usr
+%define kt_installdir %{_usr}
 
 # Use systemd units instead of SysV initscripts on newer distributions...
 %define use_systemd ((0%{?fedora} && 0%{?fedora} >= 18) || (0%{?rhel} && 0%{?rhel} >= 7))
@@ -13,7 +17,7 @@ Version: %{kt_version}
 Release: %{kt_timestamp}%{?dist}
 Summary: Kyoto Tycoon key-value server (and Kyoto Cabinet library)
 
-License: GPL
+License: GPLv3
 URL: https://github.com/alticelabs/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
@@ -86,7 +90,7 @@ make install DESTDIR=%{buildroot}
 
 if echo %{_libdir} | /bin/grep -q 64; then
 	# Otherwise the runtime linker won't find the libraries...
-	mv %{buildroot}/usr/lib %{buildroot}/usr/lib64
+	mv %{buildroot}%{kt_installdir}/lib %{buildroot}%{kt_installdir}/lib64
 fi
 
 %{__mkdir_p} ${RPM_BUILD_ROOT}/var/lib/kyoto
@@ -179,7 +183,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc LICENSE README.md
+%doc LICENSE
 %dir %attr(-,kyoto,kyoto) /var/lib/kyoto
 %dir %attr(-,kyoto,kyoto) /var/log/kyoto
 %config(noreplace) %{_sysconfdir}/default/kyoto
@@ -204,6 +208,7 @@ rm -rf %{buildroot}
 
 %files doc
 %defattr(-,root,root,-)
+%doc README.md
 %{kt_installdir}/share/doc/kyotocabinet/*
 %{kt_installdir}/share/doc/kyototycoon/*
 
