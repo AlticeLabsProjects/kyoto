@@ -1,1 +1,5 @@
-# This file intentionally left blank.
+# Allow another domain to transition into "kyoto_t"...
+interface(`kyoto_domtrans',`
+    gen_requires(`type kyoto_t, kyoto_exec_t;')
+    domtrans_pattern($1, kyoto_exec_t, kyoto_t)
+')
