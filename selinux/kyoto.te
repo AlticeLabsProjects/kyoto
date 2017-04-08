@@ -80,10 +80,11 @@ allow kyoto_t memcache_port_t:tcp_socket name_bind;
 # For reloading after log rotation (SIGUSR1)...
 allow logrotate_t kyoto_t:process signal;
 
-# Allow opening "/proc/meminfo" when serving the "report" command...
-allow kyoto_t proc_t:file { open read };
+# Mute attempts to open "/proc/meminfo" when serving the "report" command,
+# instead of allowing the process to open/read arbitrary files in "/proc"...
+dontaudit kyoto_t proc_t:file { open read };
 
 # Background database snapshots require this...
-allow kyoto_t kyoto_t:process { getsched setsched };
+allow kyoto_t kyoto_t:process setsched;
 
 # EOF - kyoto.te
