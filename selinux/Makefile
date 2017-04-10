@@ -27,7 +27,7 @@ clean:
 	rm -rf tmp
 
 
-.PHONY: all install
+.PHONY: all install clean
 
 
 # EOF - Makefile
