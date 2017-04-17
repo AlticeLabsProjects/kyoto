@@ -276,6 +276,10 @@ then
     AC_CHECK_LIB($lualib, main, MYCMDLIBS="$MYCMDLIBS -l$lualib")
     if echo $MYCMDLIBS | grep -q lua
     then
+      if echo $LIBS | grep -q "\-ldl\b"
+      then
+        MYCMDLIBS="$MYCMDLIBS -ldl"
+      fi
       break
     fi
   done
