@@ -47,8 +47,8 @@ class UpdateLogger {
   static const uint64_t TSWACC = 1000;
   /* The accuracy of logical time stamp. */
   static const uint64_t TSLACC = 1000 * 1000;
-  /* The waiting seconds of auto flush. */
-  static const double FLUSHWAIT = 0.1;
+  /* The waiting milliseconds of auto flush. */
+  static const uint32_t FLUSHWAIT = 100;
  public:
   /**
    * Reader of update logs.
@@ -511,7 +511,7 @@ class UpdateLogger {
     void run() {
       double asnext = 0;
       while (alive_ && !error_) {
-        kc::Thread::sleep(FLUSHWAIT);
+        kc::Thread::sleep(FLUSHWAIT/1000.0);
         if (ulog_->clock_.lock_try()) {
           if (ulog_->csiz_ > 0 && !ulog_->flush()) error_ = true;
           ulog_->clock_.unlock();
