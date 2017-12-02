@@ -21,7 +21,13 @@ License: GPLv3
 URL: https://github.com/alticelabs/kyoto
 Source0: kyoto-%{kt_timestamp}.tar.gz
 
-BuildRequires: lua-devel, zlib-devel, lzo-devel
+%if ("%(rpm -q --queryformat=1 luajit-devel)" == "1")
+BuildRequires: luajit-devel
+%else
+BuildRequires: lua-devel
+%endif
+
+BuildRequires: zlib-devel, lzo-devel
 Requires: /bin/grep, /bin/true, /bin/false
 Requires(pre): /usr/sbin/useradd, /usr/sbin/groupadd
 Requires(preun): /usr/bin/pkill

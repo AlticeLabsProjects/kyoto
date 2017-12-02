@@ -4,7 +4,7 @@ Maintainer: Carlos Rodrigues <cefrodrigues@gmail.com>
 Homepage: https://github.com/alticelabs/kyoto
 Priority: optional
 Section: misc
-Build-Depends: zlib1g-dev, liblua5.1-0-dev, liblzo2-dev
+Build-Depends: zlib1g-dev, liblua5.1-0-dev | libluajit-5.1-dev, liblzo2-dev
 Depends: adduser, lsb-base
 Description: Kyoto Tycoon key-value server (and Kyoto Cabinet library)
  .

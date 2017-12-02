@@ -144,13 +144,17 @@ if test "$enable_lua" = "yes"
 then
   MYCPPFLAGS="$MYCPPFLAGS -D_MYLUA"
 
-  for luaincpath in /usr/include/lua5.1 \
+  for luaincpath in /usr/include/luajit-2.1 \
+                    /usr/include/luajit-2.0 \
+                    /usr/include/lua5.1 \
                     /usr/include/lua-5.1 \
                     /usr/include/lua51 \
+                    /usr/include/lua \
+                    /usr/local/include/luajit-2.1 \
+                    /usr/local/include/luajit-2.0 \
                     /usr/local/include/lua5.1 \
                     /usr/local/include/lua-5.1 \
                     /usr/local/include/lua51 \
-                    /usr/include/lua \
                     /usr/local/include/lua
   do
     if test -e $luaincpath
@@ -161,13 +165,17 @@ then
     fi
   done
 
-  for lualibpath in /usr/lib/lua5.1 \
+  for lualibpath in /usr/lib/luajit-2.1 \
+                    /usr/lib/luajit-2.0 \
+                    /usr/lib/lua5.1 \
                     /usr/lib/lua-5.1 \
                     /usr/lib/lua51 \
+                    /usr/lib/lua \
+                    /usr/local/lib/luajit-2.1 \
+                    /usr/local/lib/luajit-2.0 \
                     /usr/local/lib/lua5.1 \
                     /usr/local/lib/lua-5.1 \
                     /usr/local/lib/lua51 \
-                    /usr/lib/lua \
                     /usr/local/lib/lua
   do
     if test -e $lualibpath
@@ -271,7 +279,7 @@ AC_CHECK_LIB(kyotocabinet, main)
 AC_CHECK_LIB(kyotocabinet, main, MYCMDLIBS="$MYCMDLIBS -lkyotocabinet")
 if test "$enable_lua" = "yes"
 then
-  for lualib in lua5.1 lua-5.1 lua51 lua
+  for lualib in luajit-5.1 lua5.1 lua-5.1 lua51 lua
   do
     AC_CHECK_LIB($lualib, main, MYCMDLIBS="$MYCMDLIBS -l$lualib")
     if echo $MYCMDLIBS | grep -q lua
