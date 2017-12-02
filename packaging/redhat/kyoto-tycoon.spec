@@ -87,7 +87,7 @@ server and the API reference for the bundled Kyoto Cabinet library.
 
 
 %build
-make PREFIX=%{kt_installdir}
+make PREFIX=%{kt_installdir} KC_OPTIONS="--enable-lzo" KT_OPTIONS="--enable-lua"
 
 
 %install

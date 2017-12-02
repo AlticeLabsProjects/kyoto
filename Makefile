@@ -4,10 +4,13 @@
 
 
 PREFIX ?= /usr/local
-DESTDIR =
+DESTDIR ?=
+NPROCS ?= 1
+
 OS := $(shell uname -s)
-NPROCS = 1
-CONFIG_FLAGS =
+
+KC_OPTIONS ?= --enable-lzo
+KT_OPTIONS ?= --enable-lua
 
 
 # Parallelize the build on Linux...
@@ -55,7 +58,7 @@ check: all
 	$(MAKE) -C kyototycoon check
 
 kyotocabinet/Makefile:
-	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)" --enable-lzo $(CONFIG_FLAGS)
+	test -x kyotocabinet/configure && cd kyotocabinet && ./configure --prefix="$(PREFIX)" $(KC_OPTIONS)
 
 cabinet: kyotocabinet/Makefile
 	$(MAKE) -j$(NPROCS) -C kyotocabinet
@@ -67,8 +70,8 @@ kyotocabinet/libkyotocabinet.$(SO_EXTENSION): cabinet
 kyototycoon/Makefile: kyotocabinet/libkyotocabinet.a kyotocabinet/libkyotocabinet.$(SO_EXTENSION)
 	$(eval CABINET_ROOT := $(shell awk '/^prefix *=/ {print $$3}' kyotocabinet/Makefile))
 	test -x kyototycoon/configure && cd kyototycoon && \
-	PKG_CONFIG_PATH="../kyotocabinet" CPPFLAGS="-I../kyotocabinet" LDFLAGS="-L../kyotocabinet" \
-	./configure --prefix="$(PREFIX)" --with-kc="$(CABINET_ROOT)" --enable-lua $(CONFIG_FLAGS)
+	PKG_CONFIG_PATH="../kyotocabinet" CPPFLAGS="-I../kyotocabinet $(CPPFLAGS)" LDFLAGS="-L../kyotocabinet $(LDFLAGS)" \
+	./configure --prefix="$(PREFIX)" --with-kc="$(CABINET_ROOT)" $(KT_OPTIONS)
 
 tycoon: kyototycoon/Makefile
 	$(MAKE) -j$(NPROCS) -C kyototycoon
@@ -99,7 +102,8 @@ deb:
 	$(eval PACKAGE_ARCH := $(shell dpkg-architecture -qDEB_BUILD_ARCH))
 	$(eval PACKAGE_NAME := kyoto-tycoon_$(PACKAGE_VERSION)_$(PACKAGE_ARCH))
 
-	$(MAKE) install PREFIX=/usr DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
+	$(MAKE) PREFIX=/usr KC_OPTIONS="--enable-lzo" KT_OPTIONS="--enable-lua"
+	$(MAKE) install DESTDIR="$(PWD)/build/$(PACKAGE_NAME)"
 
 	mkdir -p "build/$(PACKAGE_NAME)/etc/init.d"
 	cp packaging/debian/kyoto-init.sh "build/$(PACKAGE_NAME)/etc/init.d/kyoto"
