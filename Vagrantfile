@@ -44,7 +44,7 @@ Vagrant.configure(2) do |config|
 
     # Debian is the default/primary development environment...
     config.vm.define "debian", primary: true do |debian|
-        debian.vm.box = "debian/jessie64"
+        debian.vm.box = "debian/stretch64"
         debian.vm.hostname = "kyoto-dev-debian"
 
         debian.vm.provider "virtualbox" do |vm, override|
