@@ -34,7 +34,6 @@ case $1 in
 	start)
 		log_daemon_msg "Starting Kyoto Tycoon server" "kyoto"
 		start-stop-daemon --start --quiet --pidfile $PIDFILE --chuid $RUNASUSER --startas $DAEMON -- $KTSERVER_OPTS
-		$0 status >/dev/null
 		log_end_msg $?
 		;;
 	stop)
