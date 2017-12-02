@@ -45,7 +45,7 @@ Download our latest _stable_ [source release](https://github.com/alticelabs/kyot
 
 **Notes:**
 
-  * Make sure you have [zlib](http://www.zlib.net/), [lzo](http://www.oberhumer.com/opensource/lzo/) and [Lua 5.1.x](http://www.lua.org/versions.html#5.1) already installed;
+  * Make sure you have [zlib](http://www.zlib.net/), [lzo](http://www.oberhumer.com/opensource/lzo/) and [Lua 5.1.x](http://www.lua.org/versions.html#5.1) (or [LuaJIT](http://luajit.org/)) already installed;
   * The installation root directory (`PREFIX`) is optional. By default it already installs into `/usr/local`;
   * If you're building on FreeBSD, use `gmake` from the ports collection instead of standard `make`.
 
