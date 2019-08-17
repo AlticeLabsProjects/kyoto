@@ -21,6 +21,12 @@
 
 #define KTULPATHEXT  "ulog"              ///< extension of each file
 
+#if __cplusplus >= 201103L
+#define CONSTEXPR constexpr
+#else
+#define CONSTEXPR const
+#endif
+
 namespace kyototycoon {                  // common namespace
 
 
@@ -48,7 +54,7 @@ class UpdateLogger {
   /* The accuracy of logical time stamp. */
   static const uint64_t TSLACC = 1000 * 1000;
   /* The waiting seconds of auto flush. */
-  static const double FLUSHWAIT = 0.1;
+  static CONSTEXPR double FLUSHWAIT = 0.1;
  public:
   /**
    * Reader of update logs.
