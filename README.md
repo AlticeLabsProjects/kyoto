@@ -24,16 +24,16 @@ We at [Altice Labs](http://www.alticelabs.com/) (previously at [SAPO](http://www
 What's included?
 ----------------
 
-Here you can find improved versions of the latest available upstream releases, intended to be used together and tested in real-world production environments. The changes include bug fixes, minor new features and packaging for a few Linux distributions.
+Here are enhanced versions of the most recent upstream releases, designed for seamless integration and testing in real-world production environments. The updates encompass bug fixes, minor feature additions, and tailored packaging for specific Linux distributions.
 
 Check our _stable_ [release history](https://github.com/alticelabs/kyoto/releases) to see what's new.
 
 Supported Platforms
 -------------------
 
-Our primary target platform for these packages is Linux (64-bit). Mostly Debian and CentOS, but we've also done some testing on non-Linux platforms such as FreeBSD and MacOS X.
+We primarily focus on delivering packages optimized for the Linux (64-bit) environment, with a primary emphasis on Debian and CentOS distributions. Additionally, we conduct testing on diverse platforms, including non-Linux systems like FreeBSD and MacOS X.
 
-The upstream sources claim to support additional platforms, but we haven't got around to test them for ourselves (yet). If you do, let us know.
+While the upstream sources assert support for various additional platforms, we have not yet had the opportunity to conduct testing on them ourselves. If you undertake such testing, kindly inform us of your findings.
 
 Installing
 ----------
@@ -52,7 +52,7 @@ Download our latest _stable_ [source release](https://github.com/alticelabs/kyot
 Packaging
 ---------
 
-Instead of installing directly from source, you can optionally build packages for one of the Linux distributions listed below. If you distribution of choice doesn't happen to be supported, patches are always welcome.
+Rather than installing directly from the source, an alternative option is to choose package building for any of the listed Linux distributions below. If your preferred distribution is not currently supported, we welcome contributions in the form of patches.
 
 On Debian, build a binary `.deb` package (into the `./build` directory) by running:
 
@@ -63,7 +63,7 @@ On Red Hat Linux (or a derivative such as CentOS), build both source and binary 
     $ make rpm
     $ make rpm-selinux  # (optional) builds an extra package containing a hardened SELinux policy
 
-Besides being cleaner and more maintainable than installing directly from source, these packages also register init scripts to run the server with minimal privileges and install configuration files pre-filled with some examples.
+In addition to providing a cleaner and more maintainable alternative to direct source installation, these packages come equipped with registered init scripts. These scripts are designed to run the server with minimal privileges, and the packages also include pre-filled configuration files featuring practical examples.
 
 Running
 -------
@@ -79,7 +79,7 @@ This will start a standalone server using a persistent B-tree database with comp
 
 The data durability options (`-oat`, `-uasi`, `-asi`, `-ash`) have a significant performance impact and you may want to consider leaving them out if you're storing volatile data (which is the main use case for Kyoto Tycoon anyway).
 
-If you have an idea of how many objects you'll be storing, you can use a persistent hash database instead:
+If you have an estimate of the number of objects you intend to store, consider opting for a persistent hash database instead:
 
     $ /usr/local/bin/ktserver -ls -th 16 -port 1978 -pid /data/kyoto/kyoto.pid \
                               -log /data/kyoto/ktserver.log -oat -uasi 10 -asi 10 -ash \
@@ -88,7 +88,7 @@ If you have an idea of how many objects you'll be storing, you can use a persist
 
 In this case `bnum=1000000` configures 1 million hash buckets (should be set to about twice the number of expected keys) and `msiz=256m` sets the size of the memory mapped region (larger is better, provided you have enough RAM). Like the B-tree database above, performance considerations about data durability options also apply here.
 
-Another example, this time for an in-memory cache hash database limited to 256MB of stored data (LRU-based):
+As another example, you might opt for an in-memory cache hash database specifically constrained to store up to 256MB of data, utilizing an LRU (Least Recently Used) strategy.
 
     $ /usr/local/bin/ktserver -log /var/log/ktserver.log -ls '*#bnum=100000#capsiz=256m'
 
@@ -104,7 +104,7 @@ The `opts=f` parameter enables _flags_ support for the _memcached_ protocol. The
 Caveats
 -------
 
-Based on our experience, you should consider a few things when using Kyoto Tycoon in production:
+Drawing from our practical experience, it is advisable to take certain factors into consideration when deploying Kyoto Tycoon in a production environment:
 
   * Don't use the `capsiz` option with on-disk databases as the server will temporarily stop responding to free up space when the maximum capacity is reached. In this case, try to keep the database size under control using auto-expiring keys instead.
 
